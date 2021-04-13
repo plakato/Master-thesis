@@ -1,8 +1,85 @@
-\chapter{Title of the second chapter}
-An~example citation: \cite{Delmonte2014}
-An~example citation: \cite{Malmi2016}
-An~example citation: \cite{Shi2017}
-An~example citation: \cite{Zhang2014}
-\section{Title of the first subchapter of the second chapter}
+\chapter{Lyrics evaluation}
 
-\section{Title of the second subchapter of the second chapter}
+\section{Rhyme detection}
+Although everyone instinctively knows what a rhyme is and can recognize one in a poem or a song, it does not have a very precise definition. It is described as "a word that has the same last sound as another word" by Cambridge Dictionary (\cite{walter2008cambridge}) or a "literary device, featured particularly in poetry, in which identical or similar concluding syllables in different words are repeated" by \cite{literarydevices2020}. It is clear that rhyme is a general and subjective term
+
+\todo{rephrase}However, there are more exact definitions for most common rhyme types and literary devices.
+
+\textbf{Perfect rhyme}  
+
+\textbf{Imperfect rhyme}
+
+\textbf{Identity}
+
+\textbf{Forced rhyme}
+
+\textbf{Assonance}
+
+\textbf{Consonance}
+
+\todo[inline]{How to do this part? Should I just copy and cite the definitions + an example?}
+
+\todo[inline]{Not sure how to connect this with the rest. Maybe the website demo will include rhyme type so we could put a paragraph about that here?}
+
+\subsection{Pronunciation}
+Unlike many other languages, English does not have a straight forward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from - IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{klautau2001arpabet})(see Table\ref{pronunciation_table} for comparison). We will be using 2-character ARPAbet because it is used by CMU dictionary.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c c c c} 
+		Example word & IPA & 1-character ARPAbet & 2-character ARPAbet \\ [0.5ex] 
+		\hline
+		st\textbf{o}ry & \textipa{O} & c & AO \\ 
+		bu\textbf{tt}er & \textipa{R} & F & DX \\
+	\end{tabular}
+	\caption{Comparison of different pronunciation alphabets.}
+	\label{pronunciation_table}
+\end{table}
+
+Carnegie Mellon University Pronouncing Dictionary (CMU dictionary) is an open-source machine-readable pronunciation dictionary for North American English that contains over 134,000 words(\cite{cmu}). 
+\todo[inline]{Not sure how to cite their webpage. And should this be in quotes?}  
+For each word there is one or several possible pronunciations including stress markers for primary, secondary or no stress. For the implementation we used its python wrapper package \textit{cmudict}.\footnote{https://pypi.org/project/cmudict/}
+
+This is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not in CMU dictionary. These included:
+
+\begin{itemize}
+	\item uncommon words, e.g. superglue, redundantly
+	\item misspelled words, e.g. decsion, girlfren
+	\item numbers
+	\item foreign words, e.g. revoluccion, ecolli
+	\item interjections, e.g. shoooshooo, woahwoah
+\end{itemize}
+
+\todo[inline]{Describe here how we dealt with the ones not in CMUdict.}
+
+\subsection{Syllabification}
+Once we have the pronunciations we can start to compare them. When comparing lines for rhymes we have to establish a system of alignment so that we analyze only relevant pairs of phonemes. Initially, we created a simple rhyme detector that just traversed both verses backwards phoneme by phoneme and compared them. However, rhyming words don't have to have an equal number of phonemes. For example words in the Table \ref{phon_misalign_table} have a 2-syllable rhyme. However if we compared each phonemes one by one they get misaligned on consonant clusters S-T-R and P-L and we will miss the second syllable rhyme.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c c} 
+		Word & ARPAbet transcription \\ [0.5ex] 
+		\hline
+		constrain & K AH N - S T R EY N \\ 
+		complain & K AH M - P L EY N \\
+	\end{tabular}
+	\caption{Example of misalignment when aligning by phonemes.}
+	\label{phon_misalign_table}
+\end{table}
+
+We need to make sure that we are comparing corresponding parts of verses otherwise we will miss the rhyme. A better approach would be to compare corresponding syllables. Each syllable can be further split into 3 groups ("CVC") - leading consonant cluster, vowel cluster, and trailing consonant cluster. Consonant clusters can sometimes be empty. For syllabification we used python library \textit{syllabify} \footnote{https://github.com/kylebgorman/syllabify} which conveniently returns syllables in CVC triplets as described above.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c} 
+	She's in the Class \textbf{A Team} \\
+	Stuck in her \textbf{daydream} \\
+	\end{tabular}
+	\caption{Example of multiword rhyme from song "The A Team" by Ed Sheeran.}
+	\label{multiword_rhyme_table}
+\end{table}
+
+Rhymes are located at the end of each line so there is no need to analyze the entire verse. How far should we look? The first choice would be to look at the last word. However rhymes can extend over more words as we see in Table \ref{multiword_rhyme_table}. To avoid being affected by word boundaries we decided to look at a fixed number of last syllables. We chose 4 last syllables because rhymes in music lyrics are usually not so sophisticated to exceed it.
+
+\section{Rating}
+
