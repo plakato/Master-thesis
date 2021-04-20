@@ -37,6 +37,7 @@ The last and penultimate term may seem as more of a tool for poets than songwrit
 
 Other rhyme types exist e.g. eye rhyme where "the spellings of the rhyming elements match, but the sounds do not, e.g. love/prove" (\cite{oxforddict2008literary}). We will be omitting them because we did not consider them relevant for song lyrics or the purpose of this thesis.
 
+
 \todo[inline]{I'm not sure about this part. I spent hours looking for an article that would contain all definitions, or at least most, unsuccessfully. They usually just define it vaguely and without citation or inconsistently. So I spent the rest of the day putting this together - most resources were on webpages but I don't know if that's good enough.}
 
 \todo[inline]{Should I somehow stylistically separate the examples? e.g. in italics on newline or I don't know, it looks a bit weird how it is.}
@@ -58,7 +59,7 @@ Unlike many other languages, English does not have a straight forward pronunciat
 \end{table}
 
 Carnegie Mellon University Pronouncing Dictionary (CMUdict) is an open-source pronunciation dictionary.\footnote{http://www.speech.cs.cmu.edu/cgi-bin/cmudict} Currently it contains 134,373 words (including their inflections) and their pronunciations in 2-character ARPAbet. \todo[inline]{Check the number - including lemmas?}
-For each word there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation we used its python wrapper package \textit{cmudict}.\footnote{https://pypi.org/project/cmudict/}
+For each word there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation we used its python wrapper package \textit{cmudict} \footnote{https://pypi.org/project/cmudict/}. To use this we need to strip the input of punctuation and convert it to lower case.
 
 This is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not in CMU dictionary. These included:
 
@@ -89,17 +90,91 @@ Once we have the pronunciations we can start to compare them. When comparing lin
 
 We need to make sure that we are comparing corresponding parts of verses otherwise we will miss the rhyme. A better approach would be to compare corresponding syllables. Each syllable can be further split into 3 groups ("CVC") - leading consonant cluster, vowel, and trailing consonant cluster. Consonant clusters can sometimes be empty. For syllabification we used python library \textit{syllabify} \footnote{https://github.com/kylebgorman/syllabify} which conveniently returns syllables in CVC triplets as described above.
 
+
+\subsection{Calculating rating for one rhyme}
+Finally, we have extracted pronunciation and syllables so we can continue to analyze the rhyme and rate the song. We decided to first calculate ratings for pairs of verses and then create an overall song rating based on these individual ratings. Another approach would be to analyze the complex statistics of the entire song and rate it at the end all at once. The second method could be better at incorporating the high-level properties like repeating of the refrain. We chose the first approach because it is more straight-forward and gives us a number for each rhyme which can be more interesting for the writer. Additional high-level analysis can be added later if necessary.
+
+So let's focus on the rhyme analysis of two verses - or rhyme fellows - as they are typically called. Rhymes are located at the end of each line so there is no need to analyze the entire verse. How far should we look? The first choice would be to look at the last word. However rhymes can extend over more words as we see in \todo[inline]{Find an example of multi-word rhyme where the second word is unaccented}. When we look at the rhyme types, the basic ones don't go further then the first stressed syllable (looking at the line backwards). Notably, even if the rhyme does extend further we can ignore the rest because it will not contribute to the rating. According to our research, the most perfect rhyme is perfect rhyme so it should get the perfect score. And if there are more rhyming syllables preceding the perfect rhyme, they cannot make the score better. Similarly, if the rhyme isn't perfect, syllables preceding the final stress would already be considered an internal rhyme - which is also used (mainly in rap lyrics) but less valued than the classical end rhyme. We will therefore limit our window to the minimum number of syllables needed to include the stressed syllable in both rhyme fellows. Having a sequence of four unstressed syllables is very unlikely in English language so we limited our word preprocessing (pronunciation + syllabification) to last 4 syllables to speed up the performance.
+
+To determine the rhyme we need to assess the match in sound of individual phonemes. Since we have each syllable separated into three groups we decided to give each group a number between -1 and 1 that would represent how similarly they sound. The numbers are assigned according to following heuristic:
+\todo[inline]{Rewrite this list in a better-readable manner.}
+\begin{itemize}
+	\item 1 - all phonemes are identical
+	\item 0.75
+	\begin{itemize}
+		\item one is a subset of another
+		\item it's a pair of similar sounding phonemes
+	\end{itemize}
+	\item A number between 0 and 1 if both are consonant clusters. This number is calculated:
+	\begin{enumerate}
+		\item Add 1/(length of the shorter consonant cluster) for each \textbf{shared} sound at the beginning or the end of the consonant clusters.
+		\item Add 0.75/(length of the shorter consonant cluster) for each \textbf{similar} sound at the beginning or the end of the consonant clusters.
+	\end{enumerate}
+	\item 0 - both are empty
+	\item -0.5 - one of them is empty
+	\item -1 - otherwise, meaning no matching or similar sounds
+	
+\end{itemize}
+
+To identify similar sounds, we look them up if there is a similarity group containing both of them. These similarity groups were created... \todo[inline]{Describe how it was done. The iterative appraoch? Or maybe Holtman's hierarchy?}
+
+Words for which we haven't found pronunciation cannot be further processed so they are given rhyme rating 0 and skipped. Some words may have multiple possible pronunciations - in that case we evaluate each possible combination of prunciations for given line pair. After we assign a rating for each combination, we will keep only the best rated combination of pronunciations and discard the rest. For an example of similarity evaluation see Table \ref{similarity_eval_table}.
+
 \begin{table}[h!]
 	\centering
-	\begin{tabular}{c} 
-	She's in the Class \textbf{A Team} \\
-	Stuck in her \textbf{daydream} \\
+	\begin{tabular}{c | c c c c} 
+		$1^{st}$ verse & on & her & front & door \\ [0.5ex] 
+		$2^{nd}$ verse & can't & stand & no & more \\ 
+		\hline
+		$1^{st}$ pronunciation & \_, AA, N & HH, ER, \_ & F R, AH, N T & D, AO, R \\
+		$2^{nd}$ pronunciation & DH, AH, \_ & P, EY, N & N, OW, \_ & M, AO, R \\
+		\hline
+		similarity & -0.5, 0.75, -0.5 & -1, -1, -0.5 & -1, -1, -0.5 & -1, 1, 1 \\
 	\end{tabular}
-	\caption{Example of multiword rhyme from song "The A Team" by Ed Sheeran.}
-	\label{multiword_rhyme_table}
+	\caption{Example similarity evaluation for the last 4 syllables of two verses from song Cheatin' Woman by Lynyrd Skynyrd.}
+	\label{similarity_eval_table}
 \end{table}
 
-Rhymes are located at the end of each line so there is no need to analyze the entire verse. How far should we look? The first choice would be to look at the last word. However rhymes can extend over more words as we see in Table \ref{multiword_rhyme_table}. To avoid being affected by word boundaries we decided to look at a fixed number of last syllables. We chose 4 last syllables because rhymes in music lyrics are usually not so sophisticated to exceed it.
+With these similarity values we can proceed to calculate the rating which we decided to be as typically between 0 and 1. We will look at it syllable by syllable a return an average. There are some cases we need to consider individually:
 
-\section{Rating}
+\begin{itemize}
+	\item different - if all similarities are equal to -1, we can definitely say they don't rhyme and return a rating of 0
+	\item identical - since identity is a weaker rhyme than perfect, it will be given a penalty for "little creativity" returning a fixed rating of 0.8
+	\item perfect - perfect rhyme has a specific structure and if that holds, we can return the perfect score of 1.0 
+\end{itemize}
+
+For the remaining cases we will create rules based on how rhymes behave. Not all phonemes are equally important so let's assign weights to reflect it. The key role in rhyming plays the vowel so it should have the strongest impact on the rating. Second important is the ending consonant because it's closer to the end. Beginning consonant can add up to a nicer rhyme but it cannot bear the rhyme on its own. Since the vowel itself can be enough to create the rhyming effect it should have more weight than the rest combined. Therefore we assigned weights as follows:
+
+Beginning consonants: 1,
+Vowel: 4,
+Ending consonants: 2
+
+The rating for one syllable is created as normalized sum of weights times similarities. Furthermore, we need to account for stress. We can do that by multiplying the result with a multiplication factor depending on how does the stress match.
+
+- 1.0 for stressed rhyme because it is the strongest
+
+- 0.9 for unstressed rhyme - it's weaker but the stress pattern matches
+
+- 0.8 for an unmatching stress pattern
+
+The final formula for a rhyme rating is an average of syllable ratings and looks like this:
+
+\[average(stress\_multiplication\_factor*weighted\_average(similarities))\]
+
+\section{Calculating song rating}
+The next step is to combine these rhyme ratings into one final rating for the entire song. 
+
+
+\todo[inline]{osnova co dalej:}
+
+
+- ako z toho spocitat rating pre celu pesnicku
+	- vramci toho aj rhyme scheme
+	
+- nejaky priklad ratingu pre pesnicku
+
+- pocitanie slabik + ako odhadujem slabiky ked nemam ARPAbet transcription
+	- k tomu by asi bola dobra nejaka statistika ze nam to k niecomu pomohlo
+	
+
 
