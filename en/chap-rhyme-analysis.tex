@@ -124,8 +124,8 @@ country (\textipa{\underline{k@n}-tri}) / contra (\textipa{\underline{kAn}-tr@})
 
 hickory dickory dock (\textipa{\underline{hI}-k@-ri \underline{dI}-k@-ri \underline{dAk}})
 
-\noindent Similarly as assonance, it applies to repetition anywhere. When seen at the end of verse, it can be considered a rhyme and again, various terms are used, perhaps the most common is "pararhyme" (\cite{britannica}, \cite{oxforddict2008literary}).\newline
-
+\noindent Similarly as assonance, it applies to repetition anywhere. When seen at the end of verse, it can be considered a rhyme and again, various terms are used, perhaps the most common is "pararhyme" (\cite{britannica}, \cite{oxforddict2008literary}).
+\newline
 
 The last two terms may seem as more of a tool for poets than songwriters. Surprisingly, they have found their way into song lyrics and have become a standard in genres like hip hop according to \cite{vanphonological}. From the creative point of view, it is not less sophisticated rather it enriches rhyme as we know it (\cite{brogan2016poeticterms}).
 \todo[inline]{Mention here we're not using it as a rhyme - or maybe if it will be highlighted in the visualization?}
@@ -214,19 +214,64 @@ The final formula for a rhyme rating is an average of syllable ratings and looks
 \todo[inline]{This formula formatting looks weird but I don't have an idea how to do it better.}
 
 \subsection{Calculating song rating}
-The next step is to combine these rhyme ratings into one final rating for the entire song. 
+
+The next step is to combine these rhyme ratings into one final rating for the entire song. In the previous section we created a function that returns rhyme rating for given two verses. To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be "brute force" - try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme - the author can even make it a part of his artistic expression  e.g. in "Author's Prologue" by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. But realistically, a rhyme between a line at the beginning of the lyrics and 20 lines later would not have an effect on the song listener - it requires a close proximity of rhyme fellows within the poem. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the distance to 3. Further than that the effect on the reader gets weaker really fast. 
+\todo[inline]{This probably needs a citation but I can't find any.}
+
+As we decided, for each line, we will look at 3 preceding lines to look for rhyme.
+
+.
+
+.
+
+.
+
+ Rhymes in songs or poems are typically marked using a rhyme scheme. That means each verse gets assigned a letter - lines that share the same letter rhyme and those with different letters don't. We also decided to adapt this common notation. In case the song needs more letters than there are in the alphabet we will add another letter and continue alphabetically - aa, ab, ac, ..., ba, bb, bc, ..., ca, etc.
+
+\ref{twinkle_analysis_table}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c|c|c|c} 
+	Rhyme & Rating & Lyrics & \begin{tabular}{@{}c@{}}Pronunciation \\ (last 2 syllables)\end{tabular}  \\ 
+	\hline
+	\hline 
+	a  & X    & Twinkle twinkle little star & 'T AH L', 'S T AA R' \\ 
+	a  & 1.0  & How I wonder what you are & 'Y UW ', ' AA R' \\
+	b  & X    & Up above the world so high & 'S OW ', 'HH AY ' \\
+	b  & 1.0  & Like a diamond in the sky &  'DH AH ', 'S K AY ' \\
+	a  & 1.0  & Twinkle twinkle little star & 'T AH L', 'S T AA R'\\
+	a  & 1.0  & How I wonder what you are &  'Y UW ', ' AA R' \\ [0.5ex]
+	\hline
+	c  & X    & When the blazing sun is gone &  ' IH Z', 'G AO N' \\
+	c  & 0.8  & When he nothing shines upon & ' AH ', 'P AA N' \\
+	d  & X    & Then you show your little light & 'T AH L', 'L AY T' \\
+	d  & 1.0  & Twinkle twinkle all the night &  'DH AH ', 'N AY T' \\
+	e  & X    & Twinkle twinkle little star &  'T AH L', 'S T AA R' \\
+	e  & 1.0  & How I wonder what you are &  'Y UW ', ' AA R' \\[0.5ex]
+	\hline
+	e  & X    & Then the traveler in the dark & 'DH AH ', 'D AA R K' \\
+	e  & 1.0  & Thanks you for your tiny spark &  'N IY ', 'S P AA R K' \\
+	f  & X    & He could not see which way to go &  'T UW ', 'G OW ' \\
+	f  & 1.0  & If you did not twinkle so & 'K AH L', 'S OW ' \\
+	e  & X    & Twinkle twinkle little star &  'T AH L', 'S T AA R' \\
+	e  & 1.0  & How I wonder what you are &  'Y UW ', ' AA R' \\[0.5ex]
+	\hline
+	g  & X    & In the dark blue sky you keep & 'Y UW ', 'K IY P' \\
+	g  & 1.0  & Often through my curtains peep &  'T AH N Z', 'P IY P' \\
+	h  & X    & For you never shut your eye &  'Y AO R', ' AY ' \\
+	h  & 1.0  & Till the sun is in the sky & 'DH AH ', 'S K AY ' \\
+	i  & X    & Twinkle twinkle little star & 'T AH L', 'S T AA R' \\
+	i  & 1.0  & How I wonder what you are &  'Y UW ', ' AA R' \\
+	\end{tabular}
+	\caption{Example of song analysis of the nursery rhyme "Twinkle, Twinkle Little Star".}
+	\label{twinkle_analysis_table}
+\end{table}
 
 
-
-
-
-- ako z toho spocitat rating pre celu pesnicku
-	- vramci toho aj rhyme scheme
 	
-- nejaky priklad ratingu pre pesnicku
+\noindent\rule{14cm}{0.4pt}
 
-- pocitanie slabik + ako odhadujem slabiky ked nemam ARPAbet transcription
-	- k tomu by asi bola dobra nejaka statistika ze nam to k niecomu pomohlo
-	
+Since meter plays an important role in rhymes, another relevant property to examine is the number of syllables. To count syllables for each line we used Python package \textit{syllabify} \footnote{https://github.com/kylebgorman/syllabify} which returns syllables using ARPAbet transcription. For words not in CMUdict we used a simple heuristic - since the nucleus of each syllable is most often a vowel (except for syllabic consonants) we counted the number of (groups of) vowels and used it as an estimation for the number of syllables. Although this gives a wrong estimate for words like \textit{rhythm} or \textit{house}it performed quite well when we tested it on a few out-of-dictionary words from our dataset. We found it unnecessary to try to further improve the heuristic since the words that are not in CMUdict are often foreign words that do not follow the standard pronunciation rules of English so any application of these rules would probably be of little help.
 
 
