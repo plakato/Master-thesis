@@ -30,6 +30,7 @@ This is a large dictionary and it includes also slang words so it should cover m
 	\item interjections and onomatopoeia, e.g. shoooshooo, woahwoah
 \end{itemize}
 
+Also, we applied some further data preprocessing that ensured more words in data would be found in the dictionary. We replaced the closing quotation mark "’" with the typewriter apostrophe "'" since only the second variant of apostrophe is accepted by CMUdict. We replaced hyphen "-" with a space " " to separate the hyphen-connected compound words into individual component words that have a higher chance of being found in the dictionary than the full version.
 \todo[inline]{Describe here how we dealt with the ones not in CMUdict.}
 
 \subsection{Syllabification}
@@ -218,17 +219,17 @@ The final formula for a rhyme rating is an average of syllable ratings and looks
 The next step is to combine these rhyme ratings into one final rating for the entire song. In the previous section we created a function that returns rhyme rating for given two verses. To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be "brute force" - try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme - the author can even make it a part of his artistic expression  e.g. in "Author's Prologue" by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. But realistically, a rhyme between a line at the beginning of the lyrics and 20 lines later would not have an effect on the song listener - it requires a close proximity of rhyme fellows within the poem. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the distance to 3. Further than that the effect on the reader gets weaker really fast. 
 \todo[inline]{This probably needs a citation but I can't find any.}
 
-As we decided, for each line, we will look at 3 preceding lines to look for rhyme.
+As we decided, for each line, we will look at 3 preceding lines to look for its rhyme fellow. In case multiple of them rhyme, the one with the smallest distance will be selected - if it's closer it's more probable the reader will associate it with the rhyme in the next line because it's the strongest in the memory. Consequently, a rating representing the score of this rhyming pair will be saved for the second rhyme fellow. It won't be saved for the first to ensure it's won't be added to the final rating twice. The first of the pair will either keep a rating it shares with another line before or it will get an "X" (as seen in Table \ref{twinkle_analysis_table}) that represent no rating. 
 
-.
+Let's focus now on the first four line marked with rhyme scheme letter "e" in Table \ref{twinkle_analysis_table}. They all rhyme with each other and all rhymes except for \textit{are/dark} are perfect. That means the line with "dark" would receive less than perfect score and it would lower the score of the entire song. If we instead ignore this rhyme and associate only the first two and the last two rhymes together we will receive a perfect score. Loosing rating by marking weaker rhymes doesn't make sense so we must add an exception to only keep the better score.
 
-.
+Using the ratings added to the lines a final score will be calculated as the average of lines that have a rating (not an "X").
 
-.
+\todo[inline]{Counterexample - we have a 4-line song where 2 lines rhyme and a 24-line song where 2 lines rhyme - they will receive the same score. That doesn't seem fair?}
+
 
  Rhymes in songs or poems are typically marked using a rhyme scheme. That means each verse gets assigned a letter - lines that share the same letter rhyme and those with different letters don't. We also decided to adapt this common notation. In case the song needs more letters than there are in the alphabet we will add another letter and continue alphabetically - aa, ab, ac, ..., ba, bb, bc, ..., ca, etc.
 
-\ref{twinkle_analysis_table}
 
 \begin{table}[h!]
 	\centering
@@ -264,7 +265,7 @@ As we decided, for each line, we will look at 3 preceding lines to look for rhym
 	i  & X    & Twinkle twinkle little star & 'T AH L', 'S T AA R' \\
 	i  & 1.0  & How I wonder what you are &  'Y UW ', ' AA R' \\
 	\end{tabular}
-	\caption{Example of song analysis of the nursery rhyme "Twinkle, Twinkle Little Star".}
+	\caption{Example of song analysis of the nursery rhyme "Twinkle, Twinkle Little Star" with a final rating of 0.989.}
 	\label{twinkle_analysis_table}
 \end{table}
 
