@@ -54,7 +54,9 @@
 \usepackage{tipa} % use IPA characters
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-
+\usepackage[toc, section=chapter]{glossaries}
+\makeglossary
+\include{glossary}
 %%% Basic information on the thesis
 
 % Thesis title in English (exactly as in the formal assignment)
@@ -81,7 +83,7 @@
 \def\SupervisorsDepartment{Institute of Formal and Applied Linguistics}
 
 % Study programme and specialization
-\def\StudyProgramme{Informatics}
+\def\StudyProgramme{Computer Science}
 \def\StudyBranch{Artificial Intelligence}
 
 % An optional dedication: you can thank whomever you wish (your supervisor,
@@ -138,7 +140,8 @@ Abstract.
 
 %%% Abbreviations used in the thesis, if any, including their explanation
 %%% In mathematical theses, it could be better to move the list of abbreviations to the beginning of the thesis.
-\chapwithtoc{List of Abbreviations}
+\clearpage
+\printglossary[title=Glossary of literary  and technical terms]
 
 %%% Attachments to the master thesis, if any. Each attachment must be
 %%% referred to at least once from the text of the thesis. Attachments
