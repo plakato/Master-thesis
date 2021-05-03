@@ -14,13 +14,24 @@
 \subsubsection*{RhymeTagger}
 \cite{plechavc2018collocation} came with a collocation-driven alternative named RhymeTagger. It uses the same dataset as the previous approach with addition of a larger Czech poetry corpus\footnote{\url{https://github.com/versotym/corpusCzechVerse}}. Each line-final word is transcribed into phonetic transcription and split into components -- \gls{syllable_peak} for each syllable and \gls{consonant_clusters} in between. In the "expectation" step, probabilities for each component pair are calculated based on their co-occurrence in line-final words, e.g. conditional probability of rhyme based on peak component pair \textipa{@U:@U} will be very high but for consonant component pair k:r quite low. These statistics for component pairs are then used in the "maximization" step to calculate the probability for line-final word pair as a combined probability of all their components (paired by means of usual association measure). If the probability of two words is above a given threshold they are considered a rhyme. After all such pairs are classified, probabilities are iteratively recalculated in the EM cycle. 
 
-For words that were not successfully classified with this method, there is a fallback. The author observed that some words are now pronounced differently than they were during the Shakespearean era they were written in and therefore using current pronunciation dictionaries may ruin the original rhyme, e.g. original near (\textipa{nE:r}) / there (\textipa{DE:r}) vs. contemporary near (\textipa{nI:r}) / there (\textipa{DE:r}). Original pronunciation can be therefore inferred from words with similar orthography. He calculated rhyme probability given final character trigrams, which helped achieve higher recall as seen in \ref{screenshotRT}. This method does not take into account meter.
+For words that were not successfully classified with this method, there is a fallback. The author observed that some words are now pronounced differently than they were during the Shakespearean era they were written in and therefore using current pronunciation dictionaries may ruin the original rhyme, e.g. original near (\textipa{nE:r}) / there (\textipa{DE:r}) vs. contemporary near (\textipa{nI:r}) / there (\textipa{DE:r}). Original pronunciation can be therefore inferred from words with similar orthography. He calculated rhyme probability given final character trigrams, which helped achieve higher recall. Although other methods may have better precision, collocation-driven approach wins in recall as seen in \ref{screenshotRT}. This method does not take into account meter.
+
+For evaluation, they used precision, recall and F-score calculated as follows:
+
+\[PRECISION=\frac{true\ positives}{true\ positives+false\ positives}\]
+
+\[RECALL=\frac{true\ positives}{true\ positives+false\ negatives}\]
+
+\[F-SCORE=\frac{2*PRECISION*RECALL}{PRECISION+RECALL}\]
+
+For an intuitive view, the reader can imagine precision as how many of algorithm's rhymes were actually rhymes and recall as how many rhymes were discovered. F-score describes the trade-off between the two.
 
 \begin{figure}[h]\centering
 	\includegraphics[scale=0.4]{../img/plechac_eval.png}
-	\caption{Evaluation of RhymeTagger on English corpus in comparison with EM algorithm and simple rule-based approach.\protect\footnote{\url{http://versologie.cz/talks/2017basel/evaluation\_en.php?lang=en}}}\label{screenshotRT}
+	\caption{Evaluation of RhymeTagger on English corpus in comparison with EM algorithm and simple rule-based approach.\protect\footnote{\url{http://versologie.cz/talks/2017basel/evaluation\_en.php?lang=en}}} The x axis is the year when the tested poem was written, the y axis are the evaluation scores as described above.
+	\label{screenshotRT}
 \end{figure}
-\todo[inline]{U obrazku doriesit 4 body z komentarov.}
+\todo[inline]{Popisat preco nejdu ich data pouzit na testovanie mojej detekcie rymov}
 
 \subsubsection*{Deep-speare}
 As a part of their \gls{sonnet} \gls{quatrain} generating model, \cite{lau2018deep} have implemented a Rhyme component that identifies and generates rhymes. It is a unidirectional forward \gls{LSTM} (\cite{hochreiter1997long}) that learns to separate rhyming word pairs from non-rhyming. They generate input by pairing one line-final word with the other three from the same quatrain. Since the rhyme scheme of a \gls{sonnet} \gls{quatrain} is always \textit{abab} this will result in one rhyming pair and two non-rhyming. Additional non-rhyming pairs are generated with random word sampling. Then the model with margin-based loss learns the margin separating the best pair from all the others. It returns a cosine similarity score that estimates how well do two words rhyme.
