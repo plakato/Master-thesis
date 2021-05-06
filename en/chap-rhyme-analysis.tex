@@ -3,7 +3,7 @@
 \section{Rhyme detection}
 
 \subsection{Pronunciation}
-Unlike many other languages, English does not have a straight forward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{klautau2001arpabet})(see Table\ref{pronunciation_table} for comparison). We will be using 2-character ARPAbet because it is used by CMU dictionary.
+Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{klautau2001arpabet})(see Table\ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.
 
 \begin{table}[h!]
 	\centering
@@ -18,9 +18,9 @@ Unlike many other languages, English does not have a straight forward pronunciat
 \end{table}
 
 Carnegie Mellon University Pronouncing Dictionary (CMUdict) is an open-source pronunciation dictionary.\footnote{\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}} Currently it contains 134,373 words (including their inflections) and their pronunciations in 2-character ARPAbet. 
-For each word there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation we used its python wrapper package \textit{cmudict} \footnote{\url{https://pypi.org/project/cmudict/}}. To use this we need to strip the input of punctuation and convert it to lower case.
+For each word, there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation, we used its Python wrapper package \textit{cmudict} \footnote{\url{https://pypi.org/project/cmudict/}}. To use this we need to strip the input of punctuation and convert it to lower case.
 
-This is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not in CMU dictionary. These included:
+CMUdict is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not in CMU dictionary. These included:
 
 \begin{itemize}
 	\item uncommon words, e.g. superglue, redundantly
@@ -31,10 +31,10 @@ This is a large dictionary and it includes also slang words so it should cover m
 \end{itemize}
 
 Also, we applied some further data preprocessing that ensured more words in data would be found in the dictionary. We replaced the closing quotation mark "’" with the typewriter apostrophe "'" since only the second variant of apostrophe is accepted by CMUdict. We replaced hyphen "-" with a space " " to separate the hyphen-connected compound words into individual component words that have a higher chance of being found in the dictionary than the full version.
-\todo[inline]{Describe here how we dealt with the ones not in CMUdict.}
+\todo[inline]{Describe here how we dealt with the ones not in CMUdict. Open MaryTTS?}
 
 \subsection{Syllabification}
-Once we have the pronunciations we can start to compare them. When comparing lines for rhymes we have to establish a system of alignment so that we analyze only relevant pairs of phonemes. Initially, we created a simple rhyme detector that just traversed both verses backwards phoneme by phoneme and compared them. However, rhyming words do not have to have an equal number of phonemes. For example words in the Table \ref{phon_misalign_table} have a 2-syllable rhyme. However if we compared each phonemes one by one they get misaligned on consonant clusters S-T-R and P-L and we will miss the second syllable rhyme.
+Once we have the pronunciations, we can start to compare them. When comparing lines for rhymes, we have to establish a system of alignment so that we analyze only relevant pairs of phonemes. Initially, we created a simple rhyme detector that just traversed both verses backwards phoneme by phoneme and compared them. However, rhyming words do not have to have an equal number of phonemes. For example words in the Table \ref{phon_misalign_table} have a 2-syllable rhyme. However if we compared each phonemes one by one they get misaligned on consonant clusters S-T-R and P-L and we will miss the second syllable rhyme.
 
 \begin{table}[h!]
 	\centering
@@ -178,7 +178,7 @@ For an example of similarity evaluation see Table \ref{similarity_eval_table}.
 	\label{similarity_eval_table}
 \end{table}
 
-To identify similar sounds, we look them up if there is a similarity group containing both of them. These similarity groups were created... \todo[inline]{Describe how it was done. The iterative appraoch? Or maybe Holtman's hierarchy?}
+To identify similar sounds, we look them up if there is a similarity group containing both of them. These similarity groups were created... \todo[inline]{Describe how it was done. The iterative appraoch? Or maybe Holtman's hierarchy? panPhon? \cite{mortensen2016panphon}}
 
 Words for which we have not found pronunciation cannot be further processed so they are given rhyme rating 0 and skipped. Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for given line pair. After we assign a rating for each combination, we will keep only the best rated combination of pronunciations and discard the rest. 
 

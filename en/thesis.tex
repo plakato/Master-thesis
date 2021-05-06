@@ -57,6 +57,7 @@
 \usepackage[toc, section=chapter]{glossaries}
 \makeglossary
 \include{glossary}
+
 %%% Basic information on the thesis
 
 % Thesis title in English (exactly as in the formal assignment)
@@ -106,7 +107,17 @@ Abstract.
 %% metadata to PDF (including the table of contents).
 %% Most settings are pre-set by the pdfx package.
 \hypersetup{unicode}
-\hypersetup{breaklinks=true}
+\definecolor{dgreen}{rgb}{.0,.4,.0}
+\hypersetup{
+	pdfdisplaydoctitle, breaklinks,
+	colorlinks,
+	%pdfborderstyle={/S/U/W 1}, allbordercolors=dgreen,
+	linkcolor=dgreen, citecolor=dgreen, filecolor=black, urlcolor=dgreen,
+	%backref=page,
+	pagebackref=true,
+	pdfencoding=auto,
+}
+
 
 % Definitions of macros (see description inside)
 \include{macros}
