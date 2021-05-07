@@ -1,4 +1,6 @@
-of a bibliographical database for bibTeX
+% Encoding: UTF-8
+%
+%  An example of a bibliographical database for bibTeX
 %
 %  Recommended software for maintenance of *.bib files:
 %    JabRef, http://jabref.sourceforge.net/
@@ -10,17 +12,11 @@ of a bibliographical database for bibTeX
 %
 %  ===========================================================================
 
-@ARTICLE{Delmonte2014,
-	title = {{SPARSAR}: An Expressive Poetry Reader},
-	author = {Delmonte, R.  and Prati, A. M.},
-	booktitle = {Proceedings of the Demonstrations at the 14th Conference of the {E}uropean Chapter of the Association for Computational Linguistics},
-	month = {apr},
-	year = {2014},
-	address = {Gothenburg, Sweden},
-	publisher = {Association for Computational Linguistics},
-	url = {https://www.aclweb.org/anthology/E14-2019},
-	doi = {10.3115/v1/E14-2019},
-	pages = {73--76},
+@WWW{plrosevis2017sourceforge,
+  author = {ProseVis},
+  date   = {6.5.2021},
+  title  = {ProseVis},
+  url    = {https://sourceforge.net/projects/prosevis/},
 }
 
 @ARTICLE{Malmi2016,
@@ -268,16 +264,4 @@ publisher={Norton New York}
 	publisher = {{ACL}},
 	year      = {2016}
 }
-@WWW{plechac2017presentation,
-	author = {Petr Plecháč},
-	date   = {6.5.2021},
-	title  = {COLLOCATION-DRIVEN METHOD OF DISCOVERING RHYMES IN A CORPUS OF CZECH, ENGLISH, AND FRENCH POETIC TEXTS},
-	url    = {http://versologie.cz/talks/2017basel/},
-}
-@WWW{prosevis2017sourceforge,
-	author = {ProseVis},
-	date   = {6.5.2021},
-	title  = {ProseVis},
-	url    = {https://sourceforge.net/projects/prosevis/},
-	year   = {2014},
-}
+@Comment{jabref-meta: databaseType:biblatex;}

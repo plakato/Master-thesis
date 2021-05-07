@@ -1,1 +1,25 @@
-\chapter{About data}
+\chapter{Data}
+
+A crucial part of every analysis are the data. To be able to conduct an analysis with results that can reasonably represent the domain, we need to have enough of them - the more the better. Our dataset consist of 658,460 song lyrics scraped from the crowd-sourced website Genius\footnote{\url{https://genius.com/}}. Sadly, the original author of the dataset is unknown, it has been passed on to us by a colleague as a potentially interesting source for research. However all song lyrics are publicly available on the Genius website.
+\todo[inline]{Not sure how to articulate this not to sound that bad...} 
+
+\section{Preprocessing}
+
+In most areas it is very hard to find a dataset of good quality and large quantity. Usually at least one of the two suffers. It is not any different with our data - although the dataset is large, the contents were created by ordinary people and intended for human readers so they are not well suited for automated processing. It is necessary to look closely at the data, remove faulty or redundant items, and clean the rest with preprocessing.
+
+We received the dataset in JSON format, with each song as a separate item, each containing following features:
+
+\begin{itemize}
+	\item \textit{title} - the name of the song
+	\item \textit{lyrics} - the text of the song's lyrics
+	\item \textit{album} - song's album (or null)
+	\item \textit{genre} - one of the following: rap, pop, rock, r-b, country
+	\item \textit{artist} - song's author
+	\item \textit{url} - the url of the lyrics page on Genius website
+	\item \textit{year} - the year the song was produced
+	\item other song details: \textit{producer, featured artist, recording location, charts, writer, samples, sampled in, has featured video, has featured annotation}
+	\item other website specific information: \textit{rg artist id,rg type, rg tag id, rg song id, rg album id, rg created, has verified callout}	
+\end{itemize}
+
+
+
