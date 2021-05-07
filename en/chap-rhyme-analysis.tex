@@ -1,6 +1,7 @@
 \chapter{Lyrics evaluation}
 
 \section{Rhyme detection}
+\todo[inline]{Describe the original attempt with SPARSAR.}
 
 \subsection{Pronunciation}
 Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{klautau2001arpabet})(see Table\ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.

@@ -14,12 +14,80 @@ We received the dataset in JSON format, with each song as a separate item, each 
 	\item \textit{lyrics} - the text of the song's lyrics
 	\item \textit{album} - song's album (or null)
 	\item \textit{genre} - one of the following: rap, pop, rock, r-b, country
-	\item \textit{artist} - song's author
+	\item \textit{artist} - song's performer
 	\item \textit{url} - the url of the lyrics page on Genius website
 	\item \textit{year} - the year the song was produced
+	\item \textit{is\_music} - boolean flag distinguishing song lyrics from other texts
 	\item other song details: \textit{producer, featured artist, recording location, charts, writer, samples, sampled in, has featured video, has featured annotation}
-	\item other website specific information: \textit{rg artist id,rg type, rg tag id, rg song id, rg album id, rg created, has verified callout}	
+	\item other website specific information: \textit{rg artist id, rg type, rg tag id, rg song id, rg album id, rg created, has verified callout}	
 \end{itemize}
+
+The features from the last two points were \textit{null} for all or most of the items. That, and the fact that they do not give us much more information that would contribute to the lyrics analysis, made them useless and so we decided not to keep them. We removed all songs for which the attribute \textit{is\_music} was False, indicating it was not a song (often a poem or prose) or they did not contain lyrics - 34,259 songs in total. We further removed one song with invalid (incomplete) JSON. After comparing the lyrics to each other, we found and removed 32,551 duplicates.
+
+Upon further inspection, we found out that our dataset also contains lyrics in different languages. We used the neural network model for language identification by Google (CLD3)\footnote{\url{https://github.com/google/cld3}} for the classification. It showed that our dataset contains exactly 100 different languages, most of them represented only marginally. Since other languages did not have enough data to support a good analysis and implementing them would be above the scope of this thesis, we kept only English lyrics. We further removed 832 items with language detection errors. All of them were under 10 lines long so they would not be a valuable addition anyway. At this point our dataset contained 438,037 items.
+
+\begin{figure}[!htb]
+	\minipage{0.49\textwidth}
+	\includegraphics[width=\linewidth]{../img/histogram_song_length_in_char.png}
+	\caption{Histogram of number of characters in songs of our dataset.}\label{hist_chars}
+	\endminipage\hfill
+	\minipage{0.49\textwidth}
+	\includegraphics[width=\linewidth]{../img/histogram_song_length_in_words.png}
+	\caption{Histogram of number of words in songs of our dataset.}\label{hist_words}
+	\endminipage\hfill
+	
+\end{figure}
+\begin{figure}[!h]\centering
+	\minipage{0.49\textwidth}
+	\includegraphics[width=\linewidth]{../img/histogram_song_length_in_lines.png}
+	\caption{Histogram of number of lines in songs of our dataset.}\label{hist_lines}
+	\endminipage\hfill
+\end{figure}
+
+To learn more about our data, we created histograms with song's length in characters, words, and lines (see Figures \ref{hist_chars}, \ref{hist_words}, \ref{hist_lines}). Knowing the common issues of extreme values, we manually examined a few of the shortest and a few of the longest items. Confirming our expectations, we found out that they were not valid songs either. The long ones were usually book excerpts or rap improvisation battles, while the short ones were often links to advertisements or motivational quotes. We removed 14 long and 1,838 short lyrics. Although it may not seem as much, it could have strong negative influence mainly during the generation phase. In the Figures \ref{hist_chars}, \ref{hist_words}, and \ref{hist_lines}, red lines mark the borders for removal - only the items in between them were kept.
+\todo[inline]{Should I move the boundaries to remove more extremes?}
+
+\section{Structure of the data}
+
+This section gives statistical information about the dataset after preprocessing. Table \ref{basic_stats} sums up basic statistics about the data. All attributes and the number of items for which are their values non-empty is described in Table \ref{stats_nonempty_values}. Lastly, pie chart in Figure \ref{piechart_genres} shows the portions of the data belonging to each genre. 
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c c} 
+		Total number of songs: & 436,185\\ 
+		Average number of lines per song: & 43.3619 \\
+		Average number of words per line: & 5.9574 \\
+	\end{tabular}
+	\caption{Basic statistics about the dataset.}
+	\label{basic_stats}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{| c | c |} 
+		\hline
+		Attribute & Non-empty values \\ [0.5ex] 
+		\hline
+		lyrics & 436,185 \\
+		title & 436,179 \\
+		album & 112,060 \\
+		genre & 436,185 \\ 
+		artist & 436,184 \\ 
+		url & 436,185 \\
+		year & 96,491 \\ 
+		lang & 436,185 \\
+		id & 436,185 \\
+		word\_count & 436,185 \\
+		\hline
+	\end{tabular}
+	\caption{Attributes and their counts of non-empty values.}
+	\label{stats_nonempty_values}
+\end{table}
+
+
+\begin{figure}[h]\centering
+	\includegraphics[scale=0.25]{../img/piechart_genres.png}
+	\caption{Distribution of genres in the dataset.}\label{piechart_genres}
+\end{figure}
 
 
 
