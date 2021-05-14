@@ -1,10 +1,11 @@
 \chapter{Lyrics evaluation}
+\todo[inline]{sucast zadania ze to bude bez zvukovej stranky hoci to vplyv ma}
 
 \section{Rhyme detection}
 \todo[inline]{Describe the original attempt with SPARSAR.}
 
 \subsection{Pronunciation}
-Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{klautau2001arpabet})(see Table\ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.
+Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{lea1980trends})(see Table\ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.
 
 \begin{table}[h!]
 	\centering
@@ -83,7 +84,7 @@ For an example of similarity evaluation see Table \ref{similarity_eval_table}.
 	\centering
 	\begin{tabular}{c | c c c c} 
 		$1^{st}$ verse & on & her & front & door \\ [0.5ex] 
-		$2^{nd}$ verse & can't & stand & no & more \\ 
+		$2^{nd}$ verse & the & pain & no & more \\ 
 		\hline
 		$1^{st}$ pronunciation & \_, AA, N & HH, ER, \_ & F R, AH, N T & D, AO, R \\
 		$2^{nd}$ pronunciation & DH, AH, \_ & P, EY, N & N, OW, \_ & M, AO, R \\
@@ -191,4 +192,4 @@ Using the ratings added to the lines a final score will be calculated as the ave
 
 Since meter plays an important role in rhymes, another relevant property to examine is the number of syllables. To count syllables for each line we used Python package \textit{syllabify} \footnote{\url{https://github.com/kylebgorman/syllabify}} which returns syllables using ARPAbet transcription. For words not in CMUdict we used a simple heuristic -- since the nucleus of each syllable is most often a vowel (except for syllabic consonants) we counted the number of (groups of) vowels and used it as an estimation for the number of syllables. Although this gives a wrong estimate for words like \textit{rhythm} or \textit{house}it performed quite well when we tested it on a few out-of-dictionary words from our dataset. We found it unnecessary to try to further improve the heuristic since the words that are not in CMUdict are often foreign words that do not follow the standard pronunciation rules of English so any application of these rules would probably be of little help.
 
-
+\todo[inline]{Nemalo by tu mozno byt este nieco o tom ako sme to testovali? Resp. netreba to odtestovat nejak systematickejsie nez od oka?}
