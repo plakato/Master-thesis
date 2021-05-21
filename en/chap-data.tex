@@ -7,6 +7,8 @@ A crucial part of every analysis are the data. To be able to conduct an analysis
 
 In most areas it is very hard to find a dataset of good quality and large quantity. Usually at least one of the two suffers. It is not any different with our data - although the dataset is large, the contents were created by ordinary people and intended for human readers so they are not well suited for automated processing. It is necessary to look closely at the data, remove faulty or redundant items, and clean the rest with preprocessing.
 
+To assess what are the problems in the data and how to address them, we created a very small dataset of only about 10 songs which we cleaned manually. To select these songs, we looked at about 100 random songs and chose the ones that contained the most common faults. We also tried to contain a broad spectrum of errors by focusing on the diversity in the selected dataset. We then iteratively implemented an automated solution for each type of data corruption, comparing the automatically and manually cleaned data, until they matched. We also extracted statistical information that further showed the weak points that needed addressing.
+
 We received the dataset in JSON format, with each song as a separate item, each containing following features:
 
 \begin{itemize}
@@ -50,17 +52,32 @@ To learn more about our data, we created histograms with song's length in charac
 
 \section{Structure of the data}
 
-This section gives statistical information about the dataset after preprocessing. Table \ref{basic_stats} sums up basic statistics about the data. All the attributes are listed in Table \ref{stats_nonempty_values} along with the number of items for which these attributes have non-empty values. Lastly, pie chart in Figure \ref{piechart_genres} shows the portions of the data belonging to each genre. 
+This section gives statistical information about the dataset after preprocessing. Table \ref{basic_stats} sums up basic statistics about the data overall and for each genre specifically. Pie chart in Figure \ref{piechart_genres} shows the portions of the data belonging to each genre. All the attributes are listed in Table \ref{stats_nonempty_values}. For some songs, not all attributes are available. Number of items for with non-empty values is given as well.
 \begin{table}[h!]
 	\centering
-	\begin{tabular}{c r} 
-		Total number of songs: & 436,185\\ 
-		Average number of lines per song: & 43.36 \\
-		Average number of words per line: & 5.96 \\
+	\begin{tabular}{c | r r r} 
+		Genre & Songs & Avg. lines per song & Avg. words per line \\ 
+		\midrule \midrule
+		Pop & 293,679& 36.73 & 5.50\\
+		Rap & 99,189 & 64.32 & 6.88 \\
+		Rock & 34,372 & 38.73 & 5.30 \\
+		R\&B & 5,126 & 52.82 & 5.51 \\
+		Country & 3,819 & 38.43 & 5.85 \\
+		\midrule
+		Total & 436,185 & 43.36 & 5.96 \\
 	\end{tabular}
 	\caption{Basic statistics about the dataset.}
 	\label{basic_stats}
 \end{table}
+
+
+
+\begin{figure}[h]\centering
+	\includegraphics[scale=0.25]{../img/piechart_genres.png}
+	\caption{Distribution of genres in the dataset.}\label{piechart_genres}
+\end{figure}
+
+
 
 \begin{table}[h!]
 	\centering
@@ -83,12 +100,4 @@ This section gives statistical information about the dataset after preprocessing
 	\caption{Attributes and their counts of non-empty values.}
 	\label{stats_nonempty_values}
 \end{table}
-
-
-\begin{figure}[h]\centering
-	\includegraphics[scale=0.25]{../img/piechart_genres.png}
-	\caption{Distribution of genres in the dataset.}\label{piechart_genres}
-\end{figure}
-
-
 
