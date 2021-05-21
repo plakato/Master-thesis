@@ -21,6 +21,7 @@ We received the dataset in JSON format, with each song as a separate item, each 
 	\item other song details: \textit{producer, featured artist, recording location, charts, writer, samples, sampled in, has featured video, has featured annotation}
 	\item other website specific information: \textit{rg artist id, rg type, rg tag id, rg song id, rg album id, rg created, has verified callout}	
 \end{itemize}
+\todo[inline]{Dopisat, ze som to robila iterativne ...}
 
 The features from the last two points were \textit{null} for all or most of the items. That, and the fact that they do not give us much more information that would contribute to the lyrics analysis, made them useless and so we decided not to keep them. We removed all songs for which the attribute \textit{is\_music} was False, indicating it was not a song (often a poem or prose) or they did not contain lyrics - 34,259 songs in total. We further removed one song with invalid (incomplete) JSON. After comparing the lyrics to each other, we found and removed 32,551 duplicates.
 
@@ -52,10 +53,10 @@ To learn more about our data, we created histograms with song's length in charac
 This section gives statistical information about the dataset after preprocessing. Table \ref{basic_stats} sums up basic statistics about the data. All the attributes are listed in Table \ref{stats_nonempty_values} along with the number of items for which these attributes have non-empty values. Lastly, pie chart in Figure \ref{piechart_genres} shows the portions of the data belonging to each genre. 
 \begin{table}[h!]
 	\centering
-	\begin{tabular}{c c} 
+	\begin{tabular}{c r} 
 		Total number of songs: & 436,185\\ 
-		Average number of lines per song: & 43.3619 \\
-		Average number of words per line: & 5.9574 \\
+		Average number of lines per song: & 43.36 \\
+		Average number of words per line: & 5.96 \\
 	\end{tabular}
 	\caption{Basic statistics about the dataset.}
 	\label{basic_stats}
@@ -63,7 +64,7 @@ This section gives statistical information about the dataset after preprocessing
 
 \begin{table}[h!]
 	\centering
-	\begin{tabular}{| c | c |} 
+	\begin{tabular}{| c | r |} 
 		\hline
 		Attribute & Non-empty values \\ [0.5ex] 
 		\hline
