@@ -1,8 +1,8 @@
 \chapter{Lyrics evaluation}
 \todo[inline]{sucast zadania ze to bude bez zvukovej stranky hoci to vplyv ma}
-
+\todo[inline]{pri popise taggeru dat typy rymov, ktore nezvlada}
 \section{Rhyme detection}
-\todo[inline]{Describe the original attempt with SPARSAR.}
+\todo[inline]{Describe the original attempt with SPARSAR.- uviest priklady pesnicky, ktora sa zjavne rymuje ale urcilo ju to zle; priklad slova na ktorom sparsar spadne }
 
 \subsection{Pronunciation}
 Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{lea1980trends})(see Table\ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.
@@ -95,7 +95,7 @@ For an example of similarity evaluation see Table \ref{similarity_eval_table}.
 	\label{similarity_eval_table}
 \end{table}
 
-To identify similar sounds, we look them up if there is a similarity group containing both of them. These similarity groups were created... \todo[inline]{Describe how it was done. The iterative appraoch? Or maybe Holtman's hierarchy? panPhon? \cite{mortensen2016panphon}}
+To identify similar sounds, we look them up if there is a similarity group containing both of them. These similarity groups were created... \todo[inline]{Describe how it was done. The iterative approach? Or maybe Holtman's hierarchy? panPhon? \cite{mortensen2016panphon}}
 
 Words for which we have not found pronunciation cannot be further processed so they are given rhyme rating 0 and skipped. Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for given line pair. After we assign a rating for each combination, we will keep only the best rated combination of pronunciations and discard the rest. 
 
@@ -132,6 +132,11 @@ The final formula for a rhyme rating is an average of syllable ratings and looks
 \todo[inline]{This formula formatting looks weird but I don't have an idea how to do it better.}
 
 \subsection{Calculating song rating}
+\todo[inline]{rating celej piesne je priemer 2. stlpca, okrem '-' }
+\todo[inline]{- rozlišovat terminologicky:
+	- (rhyme) rating, tedy rating dvou veršů=řádků, číslo mezi 0 a 1
+	- assigned (rhyme) rating, tedy rating, který nakonec danému řádku přidělíte(zatím jako nejvyšší možný z předchozích 1-5 řádků; případně 0, jsou-li všechny ratingy <0.8; případně žádný, jde-li o první řádku skupiny)
+	- (rhyme) score, skóre celé písně, tedy průměr všech assigned ratings.}
 
 The next step is to combine these rhyme ratings into one final rating for the entire song. In the previous section we created a function that returns rhyme rating for given two verses. To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be "brute force" -- try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme -- the author can even make it a part of his artistic expression  e.g. in "Author's Prologue" by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. But realistically, a rhyme between a line at the beginning of the lyrics and 20 lines later would not have an effect on the song listener -- it requires a close proximity of rhyme fellows within the poem. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the distance to 3. Further than that the effect on the reader gets weaker really fast. 
 \todo[inline]{This probably needs a citation but I can't find any.}
