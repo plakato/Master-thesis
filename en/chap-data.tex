@@ -23,7 +23,6 @@ We received the dataset in JSON format, with each song as a separate item, each 
 	\item other song details: \textit{producer, featured artist, recording location, charts, writer, samples, sampled in, has featured video, has featured annotation}
 	\item other website specific information: \textit{rg artist id, rg type, rg tag id, rg song id, rg album id, rg created, has verified callout}	
 \end{itemize}
-\todo[inline]{Dopisat, ze som to robila iterativne ...}
 
 The features from the last two points were \textit{null} for all or most of the items. That, and the fact that they do not give us much more information that would contribute to the lyrics analysis, made them useless and so we decided not to keep them. We removed all songs for which the attribute \textit{is\_music} was False, indicating it was not a song (often a poem or prose) or they did not contain lyrics - 34,259 songs in total. We further removed one song with invalid (incomplete) JSON. After comparing the lyrics to each other, we found and removed 32,551 duplicates.
 
