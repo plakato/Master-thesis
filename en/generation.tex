@@ -1,4 +1,89 @@
 \chapter{Generation}
+Writing a lyrics for a song is a task that requires creativity. This is one of a few areas where AI has not become better than humans yet. While it is generally capable of keeping similar structure and topic, it still fails use rhymes and other literary devices.
+
+As described in section \ref{generation_tools}, current state-of-art tool for generation is GPT-3 \cite{brown2020language}. During writing of this thesis, it was introduced to public with only limited access. Realizing the power of this tool, the authors did not want to make it available to broad public, fearing it might be misused with bad intentions. Instead they created a form to sign up for access, reviewed individual requests, granting access only to a small portion of them. We have sent several requests for the API but have not received a reply to this day.
+
+The second-best option was therefore its earlier version GPT-2. It offers pre-trained models of sizes small, medium, large, and XL that can be further fine-tuned to the specific task. Since training models of such sizes has very high memory requirements, we would only be able to fine-tune the small model on available school clusters. 
+
+However, our colleagues from UFAL institute at Charles University agreed to let us generate on GPT-2 XL that they are using in their ongoing research project THEaiTRE \cite{rosa2021theaitre}. It is a vanilla model, meaning that it has not been fine-tuned to specific task, but as their research confirms, it adapts very well when given a relevant primer. We do not have resources to fine-tune the large model and we decided not to fine-tune the small either. Having available such a large model it would ... Knowing it has been trained on 8 million web pages, it is highly probable that it has already seen our data (or any similar web containing lyrics data). 
+
+\
+\begin{figure}[htb]\centering
+	\minipage{0.9\textwidth}
+	A chair is still a chair \\
+	\color{blue}In most other aspects, I think the two camps in this debate can agree. We're in good company, for instance, as far as the law is concerned. When it comes to the "should" part of the debate, the fact that some states have no-fault insurance mandates, and others have them, is not a matter of opinion, or of opinion alone. \\
+	\endminipage\hfill
+	\caption{Result of generation (in blue) using 1-line primer (in black).} \label{fig_1line_primer}
+\end{figure} 
+
+
+
+
+
+%"url": "http://genius.com/Luther-vandross-a-house-is-not-a-home-lyrics", "year": "1981-08-12", "lang": "en", "id": 13056, "word_count": 310,
+
+\begin{table}
+	\begin{tabular}{cc}
+		\textbf{Original} &   \textbf{2-line primer} \\ \midrule
+			\begin{minipage}[c]{0.47\textwidth}
+		A chair is still a chair\\
+		Even when there's no one sittin' there\\
+		But a chair is not a house\\
+		And a house is not a home\\
+		When there's no one there to hold you tight\\
+		And no one there you can kiss goodnight\\
+		Woah girl
+		\end{minipage}
+		 & 
+		\begin{minipage}[b]{0.47\textwidth}
+		A chair is still a chair\\
+		 Even when there's no one sittin' there\\
+		 \color{blue} I still think there are people here\\
+		 A chair is still a chair\\
+		 Even when there's no one sittin' thereI still think there are people here\\
+		 A chair is still a chair 
+		 \end{minipage}\\[6pt]
+	 \textbf{4-line primer} &   \textbf{8-line primer} \\ \midrule
+	 \begin{minipage}[c]{0.47\textwidth}
+	 	A chair is still a chair\\
+	 	Even when there's no one sittin' there\\
+	 	But a chair is not a house\\
+	 	And a house is not a home\\
+		\color{blue}
+	 	So why do we make up the terms?\\
+	 	It's not just us who insist on the word house, we use it in all sorts of other contexts too. For example, if you want to use a single word to refer to a group of people, you might say:\\
+	 	If you want to invite everyone to an event, you might say:\\
+	 	It's not hard to see why we seem to love using a term like 'house' to refer to a group of people – it's the easiest word for us to remember.
+	 \end{minipage}
+	 & 
+	 \begin{minipage}[b]{0.47\textwidth}
+	 A chair is still a chair\\
+	 Even when there's no one sittin' there\\
+	 But a chair is not a house\\
+	 And a house is not a home\\
+	 When there's no one there to hold you tight\\
+	 And no one there you can kiss goodnight\\
+	 Woah girl\\
+	 \\
+	 A room is a still a room\\
+	 \color{blue} And a still a room is still a home\\
+	 When there's no one there to hold you tight\\
+	 And no one there you can kiss goodnight\\
+	 I'm a little man on a little island\\
+	 And a lonely little bird on a lonely little island\\	 
+	 But a lonely little bird is not a castle\\
+	 And a lonely little bird is not a home\\
+	 And a lonely little bird is not a world\\
+	 I'm a little man in a little house\\
+	 And a lonely little bird in a lonely little house
+	 \end{minipage}\\[6pt]
+	\end{tabular}
+	\caption{Beginning of "A House Is Not A Home" lyrics by Luther Vandross - genre R\&B. Comparison with results generated using 2,4, and 8-line primers.}
+\end{table}
+
+%Clouds Crash Lyrics by The matches, pop
+
+
  generovanie
 -  z kazdeho zanru 1 pesnicku
 - dat z pesnicky 1, 2, 4, 8 riadkov ako primer
