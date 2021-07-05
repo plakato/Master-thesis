@@ -345,6 +345,14 @@ OUTPUT thesis.glo
 OUTPUT glossary.aux
 INPUT glossary.tex
 INPUT glossary.tex
+INPUT /usr/share/texlive/texmf-dist/tex/latex/subfig/subfig.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/subfig/subfig.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/ltcaption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/ltcaption.sty
 OUTPUT macros.aux
 INPUT macros.tex
 INPUT macros.tex
@@ -360,6 +368,8 @@ INPUT chap-data.aux
 INPUT chap-data.aux
 INPUT chap-rhyme-analysis.aux
 INPUT chap-rhyme-analysis.aux
+INPUT generation.aux
+INPUT generation.aux
 INPUT epilog.aux
 INPUT epilog.aux
 INPUT bibliography.aux
@@ -450,8 +460,8 @@ INPUT preface.tex
 OUTPUT chap-related-work.aux
 INPUT chap-related-work.tex
 INPUT chap-related-work.tex
-INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr12.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmri12.tfm
 INPUT /usr/share/texmf/tex/latex/lm/omslmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/omslmr.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr8.tfm
@@ -485,11 +495,11 @@ INPUT /usr/share/texmf/tex/latex/lm/t1lmtt.fd
 INPUT /usr/share/texmf/tex/latex/lm/t1lmtt.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmtt10.tfm
 INPUT /usr/share/texmf/fonts/tfm/fkr/tipa/tipa12.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
 INPUT ../img/plechac_eval.png
 INPUT ../img/plechac_eval.png
 INPUT ../img/plechac_eval.png
-INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmri12.tfm
 INPUT ../img/ScreenshotPV.png
 INPUT ../img/ScreenshotPV.png
 INPUT ../img/ScreenshotPV.png
@@ -521,6 +531,9 @@ OUTPUT chap-rhyme-analysis.aux
 INPUT chap-rhyme-analysis.tex
 INPUT chap-rhyme-analysis.tex
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr6.tfm
+OUTPUT generation.aux
+INPUT generation.tex
+INPUT generation.tex
 OUTPUT epilog.aux
 INPUT epilog.tex
 INPUT epilog.tex
@@ -552,6 +565,8 @@ INPUT chap-data.aux
 INPUT chap-data.aux
 INPUT chap-rhyme-analysis.aux
 INPUT chap-rhyme-analysis.aux
+INPUT generation.aux
+INPUT generation.aux
 INPUT epilog.aux
 INPUT epilog.aux
 INPUT bibliography.aux
