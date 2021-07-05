@@ -39,12 +39,12 @@ Also, we applied some further data preprocessing that ensured more words in data
 Once we have the pronunciations, we can start to compare them. When comparing lines for rhymes, we have to establish a system of alignment so that we analyze only relevant pairs of phonemes. Initially, we created a simple rhyme detector that just traversed both verses backwards phoneme by phoneme and compared them. However, rhyming words do not have to have an equal number of phonemes. For example words in the Table \ref{phon_misalign_table} have a 2-syllable rhyme. However if we compared each phonemes one by one they get misaligned on consonant clusters S-T-R and P-L and we will miss the second syllable rhyme.
 
 \begin{table}[h!]
-	\centering
-	\begin{tabular}{c c} 
+		\centering
+	\begin{tabular}{c r} 
 		Word & ARPAbet transcription \\ [0.5ex] 
 		\hline
 		constrain & K AH N - S T R EY N \\ 
-		complain & K AH M - P L EY N \\
+		complain & K AH M - \space\space\space P L EY N \\
 	\end{tabular}
 	\caption{Example of misalignment when aligning by phonemes.}
 	\label{phon_misalign_table}
