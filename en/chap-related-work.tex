@@ -105,7 +105,7 @@ Other rhyme types exist e.g. eye rhyme where "the spellings of the rhyming eleme
 
 
 
-\section{Rhyme detection tools}
+\section{Rhyme detection tools}\label{rhyme_detection_tools}
 We have defined what to look for, and now we will focus on how to do it. According to \cite{plechac2017presentation}, there are 4 methods for rhyme detection. We will describe each one and evaluate existing tools. For our use case, it is important that we can use the tool for automatic evaluation - there must be a way to run it with code whether it would be an API, or an executable script, or as a library/module. Another requirement is for it to be able to run on a block of text and generate rhyme scheme as a result. Lastly, it has to be free and preferably open-source.
 
 \subsection{Naive rule-based approach} 
@@ -202,6 +202,31 @@ This software is unique in the fact that the analysis is integrated in the proce
 
 
 \section{Generation tools}\label{generation_tools}
+
+Generation of text, especially artistic, is a very challenging task for a machine. As we observed the outputs of exiting tools, we found that the most common flaws include lack of creativity, unnatural and frequent change of the subject, and incoherence. Generation of song lyrics is basically a more specified branch of text generation. Similarly, it can be distinguished into two main methods -- rule-based and machine learning. 
+
+Rule-based models are inherently very complex and the output is often limited to certain structure or topic. They usually require the user to input starting configuration, whether it is genre, topic, time period, amount and type of rhymes, phrases, etc. They tend to be less creative but better at rhyming and following the form and structure. To achieve that, they may use rhyming dictionaries (see section \ref{rhyme_detection_tools}). Simpler ones just use a large set of pre-written templates, e.g. MasterPiece Generator\footnote{\url{https://www.song-lyrics-generator.org.uk/}}. For this thesis, we will focus on generation using artificial intelligence (AI).
+
+\subsection{Generating using AI}
+There are many algorithms in AI that can be used for lyrics generation and 
+\subsubsection*{Deepspeare}
+\subsubsection*{EM algorithm by Reddy and Knight}
+\subsubsection*{GPT-2}
+Generative pre-trained Transformer version 2 (GPT-2) is created by AI-based research laboratory named OpenAI 
+
+This model was trained on (and evaluated against) WebText, a dataset consisting of the text contents of 45 million links posted by users of the ‘Reddit’ social network. WebText is made of data derived from outbound links from Reddit and does not consist of data taken directly from Reddit itself. Before generating the dataset we used a blocklist to ensure we didn’t sample from a variety of subreddits which contain sexually explicit or otherwise offensive content.
+
+To get a sense of the data that went into GPT-2, we’ve published a list of the top 1,000 domains present in WebText and their frequency. The top 15 domains by volume in WebText are: Google, Archive, Blogspot, GitHub, NYTimes, Wordpress, Washington Post, Wikia, BBC, The Guardian, eBay, Pastebin, CNN, Yahoo!, and the Huffington Post.
+1.5 billion parameters: the fourth and largest GPT-2 version. We have also released 124 million, 355 million, and 774 million parameter models.
+\cite{radford2019gpt2}
+\subsubsection*{GPT-3}
+
+
+Originally, this thesis intended to focus more on lyrics generation. However, as our research of works in this field shows, there is an abundance of tools for purpose. Users can just choose a tool that fits their needs. Creating one tool that would be better or more versatile would either require more computing power or literary knowledge, and is above the scope of a master thesis. Therefore, we shifted our main focus to automatic rhyme detection and evaluation, which seems to be far less explored and more interesting topic.
+
+\todo[inline]{Is this a good argumentation or should I leave it out?}
+
+
 \cite{lau2018deep} - learns rhyme automatically, for sonnets, results indistinguishable, apart from expert evaluation, missing emotion
 \todo[inline]{generation by Reddy}
 \todo[inline]{
