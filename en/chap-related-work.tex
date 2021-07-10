@@ -91,9 +91,9 @@ free /\textipa{\underline{fri:}}/ -- breeze /\textipa{\underline{bri:z}}/
 
 \paragraph{Consonance} is "the recurrence or repetition of identical or similar consonants" (\cite{britannica}). Examples: 
 
-country (\textipa{\underline{k@n}-tri}) / contra (\textipa{\underline{kAn}-tr@})
+country /\textipa{\underline{k@n}.tri}/ -- contra /\textipa{\underline{kA:n}.tr@}/
 
-hickory dickory dock (\textipa{\underline{hI}-k@-ri \underline{dI}-k@-ri \underline{dAk}})
+hickory dickory dock /\textipa{\underline{hI}.k@.ri \underline{dI}.k@.ri \underline{dA:k}}/
 
 \noindent Similarly as assonance, it applies to repetition of consonants in any part of the verse. When seen at the end of verse, it can be considered a rhyme and again, various terms are used -- perhaps the most common is "pararhyme" (\cite{britannica}, \cite{oxforddict2008literary}).
 \newline
@@ -115,15 +115,27 @@ Pronouncing\footnote{\url{https://pypi.org/project/pronouncing/}} is a Python li
 
 
 \subsection{Advanced rule-based approach}
-\subsubsection*{Datamuse}
+Enhancing the naive approach with various similarity measures or other features allows us to find more subtle rhymes like \textit{imperfect} or \textit{forced}.
+
 \subsubsection*{Rhyme Genie}
+Although this tool is not free, it is the most commercial\footnote{It was included in Grammy Awards gift bag.} and perhaps the most used by general public, so it is worth mentioning. Rhyme Genie\footnote{\url{https://www.rhymegenie.com/rhyme-genie.html}} is a desktop application for Windows and MacOS that suggests 30 different rhyme types for a given word. Additionally, in includes sayings, clichés, idioms, and a very unique feature - adjustable rhyme similarity. However, its use case a the reverse of what we are looking for - rhymes are not found, only suggested.
+
 \subsubsection*{SPARSAR}
-SPARSAR (\cite{Delmonte2014}) is also a very interesting tool for poetry analysis and expressive Text-to-speech conversion. It is originally designed for a thorough examination of a very strictly structured Shakespeare's sonnets. To achieve this, it has to run analyses on many levels -- and these results can be used to analyze any poem. It looks at the poem on three levels: phonetic (pronunciation, consonant and vowel tongue position, assonances, etc.), poetic (metrical structure, rhyme schemes, acoustic length, etc.), and semantic (sentiment, methaphorically linked words, anaphora, etc.).
+SPARSAR (\cite{Delmonte2014}) is also a very interesting tool for poetry analysis and expressive Text-to-speech conversion. It is originally designed for a thorough examination of a very strictly structured Shakespeare's sonnets. To achieve this, it has to run analyses on many levels -- and these results can be used to analyze any poem. It looks at the poem on three levels: phonetic (pronunciation, consonant and vowel tongue position, assonance, etc.), poetic (metrical structure, rhyme schemes, acoustic length, etc.), and semantic (sentiment, metaphorically linked words, anaphora, etc.).
 
 User can choose between a window application with graphs and diagrams or a \gls{headless_mode} with .xml output files. Its main disadvantage for our use case is that it is written in Prolog and therefore is very strict on the input format and runs only under a specific older version of Ubuntu. 
 
+\subsubsection*{Datamuse}
+Datamuse API\footnote{\url{https://www.datamuse.com/api/}} combines the advantages of rhyming dictionary and semantic analysis. It uses CMUdict for phonetic transcription, analyzes CommonCrawl\footnote{\url{https://commoncrawl.org/}} web data repository for forced rhymes, Google Books Ngrams (\cite{weiss2015google}) for building language model, and WordNet 3.0 (\cite{pearson2005encyclopedia}) for semantic relations. Users can send complex queries, e.g. ``words that rhyme with \textit{grape} that are related to \textit{breakfast}''. Similarly to Rhyme Genie, it focuses more on rhyme suggestion rather than rhyme detection.
+
+
 \subsection{Similarity (distance) based approach}
+Generally, substituting arbitrary consonant in perfect rhyme does not necessary create forced rhyme -- corresponding phonemes must have similar sound. Objective criteria to measure this similarity can be phoneme's features e.g. plosive, nasal, fricative, voiced, etc. Rhyme detectors can use these features and other specific sound rules to calculate sound distance between two words. We found no specific tool focusing on this approach, but some listed tools like Rhyme Genie incorporated it into their algorithm. 
+
+However, not all phonetic features contribute to similar sound the same. Furthermore, speakers from different areas perceive sound differently and may have distinct boundaries for what is similar and what is not. Consequentially, there are no written rules for similarity so other researchers tried to make AI create them.
+
 \subsection{Machine learning}
+
 \subsubsection*{EM algorithm}
 \cite{reddy2011unsupervised} proposed a language-independent model for finding rhyme schemes in poetry. They created an unsupervised model based on EM algorithm that assigns the most probable rhyme scheme for each sequence of line-final words. It achieved good results when tested on annotated English and French corpus with poetry from 15\textsuperscript{th} to 20\textsuperscript{th} century. However its big pitfall lies in the fact that it is biased towards the rhyme schemes from golden data. It has a predefined set of all rhyme schemes found in tested data and those are the only ones it chooses from. For illustration, in a 14-line stanza it can choose from 90 schemes which is only 0.00005\% of all possible options. In 29\% of cases from French corpus it has only one choice.\footnote{\url{http://versologie.cz/talks/2017basel/}}
 
