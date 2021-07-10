@@ -104,7 +104,6 @@ The last two terms may seem as more of a tool for poets than songwriters. Surpri
 Other rhyme types exist e.g. eye rhyme where "the spellings of the rhyming elements match, but the sounds do not, e.g. love /\textipa{\underline{l@v}}/ -- prove /\textipa{\underline{pru:v}}/" (\cite{oxforddict2008literary}). We do not consider them relevant for song lyrics or the purpose of this thesis.
 
 
-
 \section{Rhyme detection tools}\label{rhyme_detection_tools}
 We have defined what to look for, and now we will focus on how to do it. According to \cite{plechac2017presentation}, there are 4 methods for rhyme detection. We will describe each one and evaluate existing tools. For our use case, it is important that we can use the tool for automatic evaluation - there must be a way to run it with code whether it would be an API, or an executable script, or as a library/module. Another requirement is for it to be able to run on a block of text and generate rhyme scheme as a result. Lastly, it has to be free and preferably open-source.
 
@@ -135,14 +134,15 @@ Generally, substituting arbitrary consonant in perfect rhyme does not necessary 
 However, not all phonetic features contribute to similar sound the same. Furthermore, speakers from different areas perceive sound differently and may have distinct boundaries for what is similar and what is not. Consequentially, there are no written rules for similarity so other researchers tried to make AI create them.
 
 \subsection{Machine learning}
+AI is inherently very good at solving rule-based problems so it is no wonder that the majority of recent tools took this approach. We will describe one tool that uses \gls{LSTM} neural network and two tools that use EM algorithm, with more focus towards Rhyme Tagger, as we will use this tool later for inspiration and comparison with our detector.
 
 \subsubsection*{EM algorithm}
 \cite{reddy2011unsupervised} proposed a language-independent model for finding rhyme schemes in poetry. They created an unsupervised model based on EM algorithm that assigns the most probable rhyme scheme for each sequence of line-final words. It achieved good results when tested on annotated English and French corpus with poetry from 15\textsuperscript{th} to 20\textsuperscript{th} century. However its big pitfall lies in the fact that it is biased towards the rhyme schemes from golden data. It has a predefined set of all rhyme schemes found in tested data and those are the only ones it chooses from. For illustration, in a 14-line stanza it can choose from 90 schemes which is only 0.00005\% of all possible options. In 29\% of cases from French corpus it has only one choice.\footnote{\url{http://versologie.cz/talks/2017basel/}}
 
 \subsubsection*{RhymeTagger}
-\cite{plechavc2018collocation} came with a collocation-driven alternative named RhymeTagger. It uses the same dataset as the previous approach with addition of a larger Czech poetry corpus\footnote{\url{https://github.com/versotym/corpusCzechVerse}}. Each line-final word is transcribed into phonetic transcription and split into components -- \gls{syllable_peak} for each syllable and \gls{consonant_clusters} in between. In the "expectation" step, probabilities for each component pair are calculated based on their co-occurrence in line-final words, e.g. conditional probability of rhyme based on peak component pair \textipa{@U:@U} will be very high but for consonant component pair k:r quite low. These statistics for component pairs are then used in the "maximization" step to calculate the probability for line-final word pair as a combined probability of all their components (paired by means of usual association measure). If the probability of two words is above a given threshold they are considered a rhyme. After all such pairs are classified, probabilities are iteratively recalculated in the EM cycle. 
+\cite{plechavc2018collocation} came with an open-source collocation-driven alternative named RhymeTagger. It uses the same dataset as the previous approach with addition of a larger Czech poetry corpus\footnote{\url{https://github.com/versotym/corpusCzechVerse}}. Each line-final word is transcribed into phonetic transcription and split into two types of components -- \gls{syllable_peak} for each syllable and \gls{consonant_clusters} in between. In the \textit{expectation} step, probabilities for each component pair are calculated based on their co-occurrence in line-final words, e.g. conditional probability of rhyme based on peak component pair \textipa{@U}:\textipa{@U} will be very high but for consonant component pair k:r quite low. These statistics for component pairs are then used in the \textit{maximization} step to calculate the probability for line-final word pair as a combined probability of all their components (paired by means of usual association measure). If the probability of two words is above a given threshold they are considered a rhyme. After all such pairs are classified, probabilities are iteratively recalculated in the EM cycle. 
 
-For words that were not successfully classified with this method, there is a fallback. The author observed that some words are now pronounced differently than they were during the Shakespearean era they were written in and therefore using current pronunciation dictionaries may ruin the original rhyme, e.g. original near (\textipa{nE:r}) / there (\textipa{DE:r}) vs. contemporary near (\textipa{nI:r}) / there (\textipa{DE:r}). Original pronunciation can be therefore inferred from words with similar orthography. He calculated rhyme probability given final character trigrams, which helped achieve higher recall. Although other methods may have better precision, collocation-driven approach wins in recall as seen in \ref{screenshotRT}. This method does not take into account meter.
+For words that were not successfully classified with this method, there is a fallback. The author observed that some words are now pronounced differently than during the Shakespearean era they were written in, therefore using current pronunciation dictionaries may ruin the original rhyme, e.g. original near /\textipa{nE:r}/ -- there /\textipa{DE:r}/ vs. contemporary near /\textipa{nI:r}/ -- there /\textipa{DE:r}/. Original pronunciation can be therefore inferred from words with similar orthography. He calculated rhyme probability given final character trigrams, which helped achieve higher recall. Although other methods may have better precision, collocation-driven approach wins in recall as seen in figure \ref{screenshotRT}. 
 
 For evaluation, they used precision, recall and F-score calculated as follows:
 
@@ -152,17 +152,17 @@ For evaluation, they used precision, recall and F-score calculated as follows:
 
 \[F-SCORE=\frac{2*PRECISION*RECALL}{PRECISION+RECALL}\]
 
-For an intuitive view, the reader can imagine precision as how many of algorithm's rhymes were actually rhymes and recall as how many rhymes were discovered. F-score describes the trade-off between the two.
+For an intuitive view, the reader can imagine precision as how many of algorithm-detected rhymes were actually rhymes, and recall as how many rhymes were discovered. F-score describes the trade-off between the two.
 
 \begin{figure}[h]\centering
 	\includegraphics[scale=0.4]{../img/plechac_eval.png}
 	\caption[RhymeTagger evaluation]{Evaluation of RhymeTagger on English corpus in comparison with EM algorithm and simple rule-based approach. The x axis is the year when the tested poem was written, the y axis are the evaluation scores as described above. Reproduced from \cite{plechac2017presentation}.}
 	\label{screenshotRT}
 \end{figure}
-\todo[inline]{Popisat preco nejdu ich data pouzit na testovanie mojej detekcie rymov}
+
 
 \subsubsection*{Deep-speare}
-As a part of their \gls{sonnet} \gls{quatrain} generating model, \cite{lau2018deep} have implemented a Rhyme component that identifies and generates rhymes. It is a unidirectional forward \gls{LSTM} (\cite{hochreiter1997long}) that learns to separate rhyming word pairs from non-rhyming. They generate input by pairing one line-final word with the other three from the same quatrain. Since the rhyme scheme of a \gls{sonnet} \gls{quatrain} is always \textit{abab} this will result in one rhyming pair and two non-rhyming. Additional non-rhyming pairs are generated with random word sampling. Then the model with margin-based loss learns the margin separating the best pair from all the others. It returns a cosine similarity score that estimates how well do two words rhyme.
+As a part of their \gls{sonnet} \gls{quatrain} generating model, \cite{lau2018deep} have implemented a Rhyme component that identifies and generates rhymes. It is a unidirectional forward \gls{LSTM} (\cite{hochreiter1997long}) that learns to separate rhyming word pairs from non-rhyming. They generate input by pairing one line-final word with the other three from the same quatrain. Since the rhyme scheme of a \gls{sonnet} \gls{quatrain} is always \textit{abab}, this will result in one rhyming pair and two non-rhyming. Additional non-rhyming pairs are generated with random word sampling. Then the model with margin-based loss learns the margin separating the best pair from all the others. It returns a cosine similarity score that estimates how well do two words rhyme.
 
 To evaluate this model, authors used phoneme matching with CMUdict \footnote{\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}} and the EM model from \cite{reddy2011unsupervised} trained on their own data and they were able to outperform both based on F1 score.
 
@@ -170,7 +170,7 @@ To evaluate this model, authors used phoneme matching with CMUdict \footnote{\ur
 
 \section{Visualization tools}
 In the following section, we will describe existing visualization tools for poetry. Software mentioned below focuses on poems, however song lyrics can be considered just a more structurally relaxed version of a regular poem.
-\subsection{Poem Viewer}
+\subsection*{Poem Viewer}
 Quite complex and comprehensive visualization tool is Poem Viewer \cite{Abdul2013}. With no need for complicated installations it is easily available for the writers as a web-based application as shown in Figure \ref{screenshotPV}. Unfortunately, at the time of writing this thesis the upload of custom text was not working. Luckily, this is still an ongoing project so this might be just a temporary issue. Nevertheless there are some default poems available to demonstrate this software's capabilities.
 \begin{figure}[h]\centering
 	\includegraphics[scale=0.24]{../img/ScreenshotPV.png}
@@ -185,14 +185,10 @@ Quite complex and comprehensive visualization tool is Poem Viewer \cite{Abdul201
 Most of the analyzed features (shown in Figure \ref{screenshotPV-options} focus on the phonetic aspects of the poem. After phonetic transcription to IPA users can analyze consonant features, vowel length and position, stress, syllables, word classes and sentiment using color codes and markers. A second layout offers six different graphs/animations of tongue positions during each verse. Arcs are used to mark end rhyme, alliteration, assonance, consonance, their particular frequencies and repeating words.
 
 
-Overall this software, although very elaborate, appears crammed and confusing for an inexperienced user. Moreover, it is perhaps better suited for its original use case -- a well-structured poem -- than less regular song lyrics.
+Overall this software, although very elaborate, feels overwhelming and confusing for an inexperienced user. Moreover, it is perhaps better suited for its original use case -- a well-structured poem -- than less regular song lyrics.
 
-\subsection{SPARSAR}
-SPARSAR (\cite{Delmonte2014}) is also a very interesting tool for poetry analysis and expressive Text-to-speech conversion. It is originally designed for a thorough examination of a very strictly structured Shakespeare's sonnets. To achieve this, it has to run analyses on many levels -- and these results can be used to analyze any poem. It looks at the poem on three levels: phonetic (pronunciation, consonant and vowel tongue position, assonances, etc.), poetic (metrical structure, rhyme schemes, acoustic length, etc.), and semantic (sentiment, methaphorically linked words, anaphora, etc.).
 
-User can choose between a window application with graphs and diagrams or a \gls{headless_mode} with .xml output files. Its main disadvantage for our use case is that it is written in Prolog and therefore is very strict on the input format and runs only under a specific older version of Ubuntu. 
-
-\subsection{ProseVis}
+\subsection*{ProseVis}
 This Java desktop visualization tool by \cite{Clement2013} analyzes text through
 parts-of-speech, phonemes, stress, tone, and break index. These features are extracted using OpenMary Text-to-speech system (\cite{Schroder2006}) and predictive classification. The authors believe their visualization will present the features to user in a more human readable form (\cite{prosevis2017sourceforge}).
 
@@ -201,16 +197,16 @@ parts-of-speech, phonemes, stress, tone, and break index. These features are ext
 	\caption[Comparison of two poems in ProseVis]{Comparison of two poems in ProseVis. Reproduced from \cite{prosevis2017sourceforge}.}\label{screenshotProsevis}
 \end{figure}
 
-\subsection{Poemage and RhymeDesign}
-Poemage (\cite{McCurdy2015poemage}) and RhymeDesign (\cite{McCurdy2015}) are both open-source applications with focus on analysis of sonic devices and sonic topology in poetry. Poemage\footnote{\url{http://www.sci.utah.edu/~nmccurdy/Poemage/}} focuses on complex structures of words connected through some sonic or linguistic resemblance across the space of the poem. It is available for MacOS or Windows with a web version currently under development. In MacOS application RhymeDesign -- which also provides the backend for Poemage -- users can enter their poem and query for one of the default rhyme types or choose a custom rhyme type.
+\subsection*{Poemage and RhymeDesign}
+Poemage (\cite{McCurdy2015poemage}) and RhymeDesign (\cite{McCurdy2015}) are both open-source applications with focus on analysis of sonic devices and sonic topology in poetry. Poemage\footnote{\url{http://www.sci.utah.edu/~nmccurdy/Poemage/}} focuses on complex structures of words connected through sonic or linguistic resemblance across the space of the poem. It is available for MacOS or Windows with a web version currently under development. In MacOS application RhymeDesign -- which also provides the backend for Poemage -- users can enter their poem and query for one of the default rhyme types or choose a custom rhyme type.
 
 \begin{figure}[h]\centering
 	\includegraphics[scale=0.24]{../img/poemage.pdf}
 	\caption{An example analysis in Poemage.}\label{screenshotPoemage}
 \end{figure}
 
-\subsection{Ambiances}
-This software is unique in the fact that the analysis is integrated in the process of writing. As described in the paper \cite{Meneses2015}, writers enter the poem, receive a visualization and can control this visualization with body and hand gestures which in turn influence the poem. By such interconnection the authors aim to make Ambiances a part of the writing process and give it a chance to influence the final result. However, the actual software does not seem to be openly available.
+\subsection*{Ambiances}
+This software is unique in the fact that the analysis is integrated in the process of writing. As described in the paper \cite{Meneses2015}, writers input the poem, receive a visualization and can control this visualization with body and hand gestures which in turn influence the poem. By such interconnection the authors aim to make Ambiances a part of the writing process and give it a chance to influence the final result. However, the actual software does not seem to be publicly available.
 
 
 \section{Generation tools}\label{generation_tools}
