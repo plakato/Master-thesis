@@ -4,7 +4,7 @@ A crucial part of every analysis are the data. To be able to conduct an analysis
 
 Our dataset consist of 658,460 song lyrics scraped from the crowd-sourced website 
 Genius\footnote{\url{https://genius.com/}}. Sadly, the original author of the dataset is unknown, it has been passed on to us by a colleague as a potentially interesting source for research. However, all song lyrics are publicly available on the Genius website and can be linked with the corresponding item of the dataset via the \textit{url} attribute.
-\todo[inline]{Not sure how to articulate this not to sound that bad...} 
+
 
 \section{Preprocessing}
 
@@ -50,7 +50,7 @@ Upon further inspection, we found out that our dataset also contains lyrics in d
 \end{figure}
 
 To learn more about our data, we created histograms with song's length in characters, words, and lines (see Figures \ref{hist_chars}, \ref{hist_words}, \ref{hist_lines}). Knowing the common issues of extreme values, we manually examined a few of the shortest and a few of the longest items. Confirming our expectations, we found out that they were not valid songs either. The long ones were usually book excerpts or rap improvisation battles, while the short ones were often links to advertisements or motivational quotes. We removed 14 long and 1,838 short lyrics. Although it may not seem as much, it could have strong negative influence mainly during the generation phase. In the Figures \ref{hist_chars}, \ref{hist_words}, and \ref{hist_lines}, red lines mark the borders for removal - only the items in between them were kept.
-\todo[inline]{Should I move the boundaries to remove more extremes?}
+
 
 \section{Structure of the data}
 

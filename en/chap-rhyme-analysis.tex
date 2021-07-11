@@ -13,8 +13,28 @@ Detecting rhymes may seem like a simple task at first, but looking into details 
 \section{Using available tools for detection}
 The simplest approach would be to use one of the tools described in section \ref{rhyme_detection_tools}. We want a detector that is free, strong (detects more than perfect rhymes), and offers headless mode (we could run it automatically from code). Ruling out unsuitable tools, we are left with Rhyme Tagger and SPARSAR. Rhyme Tagger is easy-to-use but only outputs rhyme scheme. To be able to automatically evaluate the rhyming quality of a song, we would need more information like stress or rhyme type.
 
-SPARSAR, on the other hand, has a very rich and detailed output. Although it is lacking documentation, the attributes seemed
+SPARSAR, on the other hand, has a very rich and detailed output. Although it is lacking documentation, the \textit{xml} output format is quite descriptive to understand what most of the values represent. It seemed promising so we attempted to pursue this path.
 
+To bridge the outdated system requirements, we contacted the authors for a newer build (for Ubuntu 19.1). They were very helpful and soon we were able to run it on our computer.
+
+bolo nutne pridat diakritiku - punctuator2
+tazky parsing xmlka
+
+failed on contractions like I'mma, y'all, yo', 'em
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c c c} 
+		Scheme & Line & \begin{tabular}{@{}c@{}}Last word's pronunciation \\ (as assigned by SPARSAR)\end{tabular}  \\ [0.5ex] 
+		\hline
+		a & Pulled out from the station & s-t-ey-sh-ah-n \\ 
+		h & fifteen after two & t-uw \\
+		a &	300 miles away from Vegas & v-ey-g-ah-s\\
+		b & We had nothin better to do & d-uw\\
+	\end{tabular}
+	\caption{Example of incorrect scheme assignment by SPARSAR. Excerpt from song \textit{Good Life}.}
+	\label{sparsar_wrong_scheme}
+\end{table}
 
 \section{Defining the requirements}\label{defining_the_requirements}
 \todo[inline]{Někde byste ale měla napsat, že předpokládáte 1 verš na řádku (a žádné rýmy uvnitř verše).}
