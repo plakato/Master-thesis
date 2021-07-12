@@ -1,7 +1,6 @@
 
 \chapter{Rhyme detection}
 Detecting rhymes may seem like a simple task at first, but looking into details one discovers many problems that need to be addressed. As we have seen in chapter \ref{chap-related-work}, it is not a well-defined task so boundaries need to be set.
-\todo[inline]{Describe the original attempt with SPARSAR.- uviest priklady pesnicky, ktora sa zjavne rymuje ale urcilo ju to zle; priklad slova na ktorom sparsar spadne }
 \todo[inline]{sucast zadania ze to bude bez zvukovej stranky hoci to vplyv ma}
 \todo[inline]{pri popise taggeru dat typy rymov, ktore nezvlada}
 
@@ -13,14 +12,15 @@ Detecting rhymes may seem like a simple task at first, but looking into details 
 \section{Using available tools for detection}
 The simplest approach would be to use one of the tools described in section \ref{rhyme_detection_tools}. We want a detector that is free, strong (detects more than perfect rhymes), and offers headless mode (we could run it automatically from code). Ruling out unsuitable tools, we are left with Rhyme Tagger and SPARSAR. Rhyme Tagger is easy-to-use but only outputs rhyme scheme. To be able to automatically evaluate the rhyming quality of a song, we would need more information like stress or rhyme type.
 
+\subsection*{SPARSAR}
 SPARSAR, on the other hand, has a very rich and detailed output. Although it is lacking documentation, the \textit{xml} output format is quite descriptive to understand what most of the values represent. It seemed promising so we attempted to pursue this path.
 
-To bridge the outdated system requirements, we contacted the authors for a newer build (for Ubuntu 19.1). They were very helpful and soon we were able to run it on our computer.
+To bridge the outdated system requirements, we contacted the authors for a newer build (for Ubuntu 19.1). They were very helpful and soon we were able to run it on our computer. Nevertheless, we encountered several issues, mostly stemming from the fact that SPARSAR was written in Prolog. Firstly, the xml output was difficult to parse, as the values were written in Prolog syntax, using the same delimiter for different levels of separation. Secondly, SPARSAR parses the text in sentences but lyrics are usually written without punctuation. We added punctuation using \textit{punctuator2} (\cite{tilk2016punctuation}) which also added space for error. 
 
-bolo nutne pridat diakritiku - punctuator2
-tazky parsing xmlka
+Lastly, when SPARSAR encountered an unknown word, it failed for the entire song. Since our data was crowd-sourced, in contained many unusual words, so in the beginning it failed on 80\% of our data. We iteratively worked with the authors for months on fixing bugs and adding words (mainly contractions, such as I'mma, y'all, yo', 'em, etc.) into their dictionary. In the end, we were able to successfully run it on 95\% of our data.
 
-failed on contractions like I'mma, y'all, yo', 'em
+However, we were still not very satisfied with the result. As you can see in the example in table \ref{sparsar_wrong_scheme}, it failed to detect the perfect rhyme between 2\textsuperscript{nd} and 4\textsuperscript{th} line, and instead marked a rhyme on line 1 and 3, where there was none. Such errors were not sparse and led us to believe, that the encoded inclination of this tool to look for sonnet-shaped schemes caused it to make errors in the diverse schemes of song lyrics. It may be a great tool for sonnets, but we have found it insufficient for our purpose, so we proceeded to create our own rhyme detector.
+
 
 \begin{table}[h!]
 	\centering
