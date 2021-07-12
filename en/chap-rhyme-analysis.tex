@@ -59,7 +59,7 @@ The main element of our output is rhyme scheme. As a single element, it gives th
 
 
 \section{Pronunciation}
-Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{lea1980trends})(see Table\ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.
+Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and (the more common) 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{lea1980trends})(see Table \ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.
 
 \begin{table}[h!]
 	\centering
@@ -69,14 +69,14 @@ Unlike many other languages, English does not have a straightforward pronunciati
 		st\textbf{o}ry & \textipa{O} & c & AO \\ 
 		bu\textbf{tt}er & \textipa{R} & F & DX \\
 	\end{tabular}
-	\caption{Comparison of different pronunciation alphabets.}
+	\caption{Short comparison of different pronunciation alphabets.}
 	\label{pronunciation_table}
 \end{table}
 
 Carnegie Mellon University Pronouncing Dictionary (CMUdict) is an open-source pronunciation dictionary.\footnote{\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}} Currently it contains 134,373 words (including their inflections) and their pronunciations in 2-character ARPAbet. 
-For each word, there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation, we used its Python wrapper package \textit{cmudict} \footnote{\url{https://pypi.org/project/cmudict/}}. To use this we need to strip the input of punctuation and convert it to lower case.
+For each word, there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation, we used its Python wrapper package \textit{cmudict} \footnote{\url{https://pypi.org/project/cmudict/}}. To use this we had to strip the input of punctuation and convert it to lower case.
 
-CMUdict is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not in CMU dictionary. These included:
+CMUdict is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not in CMU dictionary. We manually inspected a small portion of them and found out that they can be mostly split into these 5 categories:
 
 \begin{itemize}
 	\item uncommon words, e.g. superglue, redundantly
@@ -86,9 +86,10 @@ CMUdict is a large dictionary and it includes also slang words so it should cove
 	\item interjections and onomatopoeia, e.g. shoooshooo, woahwoah
 \end{itemize}
 
-Also, we applied some further data preprocessing that ensured more words in data would be found in the dictionary. We replaced the closing quotation mark "’" with the typewriter apostrophe "'" since only the second variant of apostrophe is accepted by CMUdict. We replaced hyphen "-" with a space " " to separate the hyphen-connected compound words into individual component words that have a higher chance of being found in the dictionary than the full version.
+Additionally, we replaced the closing quotation mark "\textipa{’}" (U+2019) with the typewriter apostrophe "\texttt{\fontencoding{OT1}\selectfont\symbol{13}}"
+ (U+0027) since only the second variant of apostrophe is accepted by CMUdict. However, this only decreased the percentage of unrecognized words to 5.47\%.
 
-Clearly, these modifications did not help us with all of the words. For the remainder, we used grapheme-to-phoneme library \textit{g2p} by \cite{g2pE2019}. It predicts the pronunciation for out-of-dictionary words using deep learning seq2seq model by TensorFlow (\cite{tensorflow2015-whitepaper}).
+Clearly, we needed a way to estimate the pronunciation for these words, so we used grapheme-to-phoneme library \textit{g2p} by \cite{g2pE2019}. It predicts the pronunciation for out-of-dictionary words using deep learning seq2seq model by TensorFlow (\cite{tensorflow2015-whitepaper}).
 
 Even having the pronunciation for every word will not ensure we find every rhyme intended. Song artists may take their liberty in modifying or skewing the pronunciation to make the rhyme work. Sometimes they can also sing two syllables in one beat or use an unusual pronunciation from different culture to convey a message. As we established in the beginning, we will focus only on information retrievable from the text and ignore these possible deviations in pronunciation.
 
