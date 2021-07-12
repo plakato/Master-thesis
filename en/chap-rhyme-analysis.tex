@@ -32,13 +32,31 @@ However, we were still not very satisfied with the result. As you can see in the
 		a &	300 miles away from Vegas & v-ey-g-ah-s\\
 		b & We had nothin better to do & d-uw\\
 	\end{tabular}
-	\caption{Example of incorrect scheme assignment by SPARSAR. Excerpt from song \textit{Good Life}.}
+	\caption{Example of incorrect scheme assignment by SPARSAR. Excerpt from the song \textit{Good Life}.}
 	\label{sparsar_wrong_scheme}
 \end{table}
 
 \section{Defining the requirements}\label{defining_the_requirements}
-\todo[inline]{Někde byste ale měla napsat, že předpokládáte 1 verš na řádku (a žádné rýmy uvnitř verše).}
-\todo[inline]{Definovat si slovnik - rymujuce riadky, componenty}
+Before we dive into algorithm selection and implementation details of our detector, let's define what exactly do we want our detector to do. Additionally, we also establish terms for common cases to keep our further explanations short and clear.
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{>{\bfseries}l l} 
+		component & a vowel or a consonant cluster of a syllable\\
+		rhyming fellows & two lines that rhyme together\\
+		rhyming part & the exact components that participate in rhyme \\&(are equal or similar in sound)\\
+		rhyme rating & rating of the quality of one rhyme between two lines\\
+		song rating & rating of the rhyming quality of the entire song\\
+	\end{tabular}
+%	\caption{Establishing terms for clearer communication.}
+	\label{terms}
+\end{table}
+
+\paragraph{Input}
+For our input, we expect song lyrics in English, formatted in lines with rhyme always at the end of line. If there will be rhyme in the middle of the line, it will be considered an \textit{\gls{internal_rhyme}} and will not be detected, as we decided in chapter \ref{chap-related-work} to only focus on end rhymes in this thesis. Optional empty lines between stanzas or chorus will be preserved but skipped.
+
+\paragraph{Output}
+The main element of our output is rhyme scheme. As a single element, it gives the best overview of the song and more importantly, it allows us to compare our detector with others or with the \gls{gold_data}. Additionally, we want more information to assess rhyme quality: rhyme rating for each individual rhyme, song rating, rhyme type, pronunciation of the rhyming part, optional modification of stress, etc.
+
 
 \section{Pronunciation}
 Unlike many other languages, English does not have a straightforward pronunciation rules. Therefore to be able to assess rhymes, we need to transcribe our text into a phonetic alphabet first. There are two commonly used alphabets to choose from -- IPA and ARPAbet. The original International Phonetic Alphabet (IPA) used since 1888 uses one UNICODE character to encode each phoneme and it is commonly used for example in dictionaries. Since it uses non-ASCII characters, ARPAbet was developed as an equivalent for computers. It has two versions: 1-character that uses upper-case and lower-case letters and 2-character version where each phoneme is represented by one or more upper-case ASCII characters (\cite{lea1980trends})(see Table\ref{pronunciation_table} for comparison). We will be using the 2-character ARPAbet because it is used by the CMUdict.
