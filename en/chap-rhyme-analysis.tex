@@ -53,6 +53,7 @@ Before we dive into algorithm selection and implementation details of our detect
 		rhyme candidates & two lines that are being compared for rhyme \\
 		rhyming fellows & two lines that rhyme together\\
 		rhyming part & the exact components that participate in rhyme \\&(are equal or similar in sound)\\
+		rhyme group & a group of lines that all rhyme together\\& (have identical scheme letter) \\
 		rhyme rating & rating of the quality of one rhyme between two lines\\
 		song rating & rating of the rhyming quality of the entire song\\
 	\end{tabular}
@@ -154,9 +155,7 @@ However, our system of alignment is different so our matrix components will look
 	\label{alignment}
 \end{table}
 
-Another difference is that Plechac only looks at the last word and 1 to 2 syllables while we at everything after the last stress up to 4 syllables.
-
-For the matrix initialization, Plechac calculates the collocations in the data and preserves only pairs with number of collocations above a set threshold. We instead initialized it with default value of 0.2 as we believe that to be sufficient. 
+Another difference is that Plechac only looks at the last word and 1 to 2 syllables while we look at everything after the last stress up to 4 syllables.
 
 Knowing that perfect match in sound always means perfect rhyme, we froze the values on matrix diagonal to reflect it. In \cite{plechavc2018collocation}, the diagonal was being recalculated as the rest of the matrix, and although it converged to high numbers we felt it did not reflect the superiority of the perfect match.
 
@@ -175,7 +174,7 @@ where\textit{ f(i,j)} represents the frequency of the co-occurrence of the pair 
 \subsection{Rhyme rating}
  We will first calculate rhyme ratings for pairs of verses and then use them to calculate an overall song rating. Not only do these rhyme ratings help us evaluate the rhyming quality of the song but they might also be an interesting feedback for the writer. 
  
- For each rhyme, we would like to assign a rating between 0 and 1. Since perfect rhyme is often in literature described as superior as it represent the perfect match in sound it will logically receive the highest rating of 1.
+ For each rhyme, we would like to assign a rating between 0 and 1. Since perfect rhyme is often in literature described as superior because it represents the perfect match in sound it will logically receive the highest rating of 1.
  
  For the cases, such as imperfect rhymes or some forced rhymes, where it was necessary to move the stress to the rhyming part, we will give a penalty of -0.1 for this imperfection. 
  
@@ -184,37 +183,49 @@ where\textit{ f(i,j)} represents the frequency of the co-occurrence of the pair 
 	\[rhyme\ rating = \prod_{i,j\ \epsilon\ rhyming\ part} p(i,j) \]
 
 
- Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for given line pair. After we assign a rating for each combination, we will keep only the best rated combination of pronunciations and discard the rest. 
+\section{Training the detector}
+Since we are using the EM algorithm to train our detector for recognizing similar phonemes, the outline of the algorithm is as follows:
+\begin{enumerate}
+	\item Initialize the matrix of collocation probabilities.
+	\item Find rhymes using this matrix.
+	\item Adjust the matrix based on detected rhymes.
+	\item Repeat steps 2 and 3 until convergence.
+\end{enumerate} 
 
+For the matrix initialization, Plechac calculates the collocations in the data and preserves only pairs with number of collocations above a set threshold. We instead initialized it with default value of 0.2. 
 
+\paragraph{}
 
 \section{Scheme}
--finding all rhymes and assigning scheme
-\section{Calculating song rating}
-\todo[inline]{rating celej piesne je priemer 2. stlpca, okrem '-' }
-\todo[inline]{-
-	- (rhyme) rating, číslo mezi 0 a 1
-	- assigned (rhyme) rating, tedy rating, který nakonec danému řádku přidělíte(zatím jako nejvyšší možný z předchozích 1-5 řádků; případně 0, jsou-li všechny ratingy <0.8; případně žádný, jde-li o první řádku skupiny)
-	- (rhyme) score, skóre celé písně, tedy průměr všech assigned ratings.}
+\subsection{Finding all rhymes}
+To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be "brute force" -- try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme -- the author can even make it a part of his artistic expression  e.g. in "Author's Prologue" by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. Realistically, a rhyme between a line at the beginning of the lyrics and 20 lines later would not have a strong effect on the song listener -- it requires a close proximity of rhyme fellows within the poem for the rhyme to be noticed by ear. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the default window size to 5. 
 
-The next step is to combine these rhyme ratings into one final rating for the entire song. In the previous section we created a function that returns rhyme rating for given two verses. To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be "brute force" -- try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme -- the author can even make it a part of his artistic expression  e.g. in "Author's Prologue" by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. Realistically, a rhyme between a line at the beginning of the lyrics and 20 lines later would not have a strong effect on the song listener -- it requires a close proximity of rhyme fellows within the poem for the rhyme to be noticed by ear. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the distance to 5. 
+We traversed the song lyrics from beginning to the end, line by line, for each line trying all rhyme candidates in the given window.
+
+Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for all words in the given line pair. For every such combination we assign rhyme rating and keep only those with rhyme rating above the selected threshold. For default, we have set this threshold to 0.8 because we found it to work quite well in our data. However, it can be adjusted by user to their value of choice, similarly with other parameters such as window size.  
+
+From this list of candidates for each line, we select only the candidate with the highest rhyme rating. When the ratings are identical, we select the closest line. Other candidates are kept in case changes need to be made later in scheme adjustment phase. When the line doesn't have any suitable rhyme candidates, it is assigned rating 0. If the line rhyme with a candidate that is already a part of a rhyme, they join together into a rhyme group of 3 (or more) lines.
 
 
-As we decided, for each line, we will look at 5 preceding lines to look for its rhyme fellow. In case multiple of them rhyme, ....the one with the smallest distance will be selected .
-
-...
+\subsection{Adjusting rhyme groups}
+\subsection{Assigning rhyme scheme}
+ Rhymes in songs or poems are typically marked using a rhyme scheme. That means each verse gets assigned a letter -- lines that share the same letter rhyme and those with different letters do not. We also decided to adapt this common notation. In case the song needs more letters than there are in the alphabet we will add another letter and continue alphabetically -- a, b, c, ..., aa, ab, ac, ..., ba, bb, bc, ..., ca, etc.
+ 
+ There are two options for representing non-rhyming lines. The first is to assign every non-rhyming line the same default character. We chose this option as the default, because it is easier to read for the user. The second option is to assign each non-rhyming line a unique rhyme scheme letter. This approach is more suitable for metrics that look at rhyme scheme letters as clusters of rhyming words. We support both options and can convert one the other when needed.
 
  Loosing rating by marking weaker rhymes does not make sense so we must add an exception to only keep the better score.
+\section{Calculating song rating}
+The next step is to combine these rhyme ratings into one final rating for the entire song. We will use the straight-forward approach of averaging the assigned rhyme ratings. The dilemma here is where to store the rhyme rating since rhyme is a property of two lines. The first logical idea would be to store it with each line participating in the rhyme. However, then we would add it to the final song rating twice. Moreover, for larger rhyme groups, it would be disproportionate, because third and all the following lines would be added only once. 
 
-Using the ratings added to the lines a final score will be calculated as the average of lines that have a rating (not an "X").
+Therefore we decided to store the rating only with the second line of the rhyme. That means the first line in each rhyme group will always be assigned the default value "-". It cannot be assigned rhyme rating 0 because that would mean it is a non-rhyming line and would lower the final average. In summary, song rating is the average of rhyme ratings for all rhymes except the lines with unassigned rating "-".
 
 
- Rhymes in songs or poems are typically marked using a rhyme scheme. That means each verse gets assigned a letter -- lines that share the same letter rhyme and those with different letters do not. We also decided to adapt this common notation. In case the song needs more letters than there are in the alphabet we will add another letter and continue alphabetically -- aa, ab, ac, ..., ba, bb, bc, ..., ca, etc.
+
+
 
 
 	
-\noindent\rule{14cm}{0.4pt}
-
+\section{Syllables}
+\todo[inline]{check if this wouldn't work with g2p}
 Since meter plays an important role in rhymes, another relevant property to examine is the number of syllables. To count syllables for each line we used Python package \textit{syllabify} \footnote{\url{https://github.com/kylebgorman/syllabify}} which returns syllables using ARPAbet transcription. For words not in CMUdict we used a simple heuristic -- since the nucleus of each syllable is most often a vowel (except for syllabic consonants) we counted the number of (groups of) vowels and used it as an estimation for the number of syllables. Although this gives a wrong estimate for some words e.g. \textit{rhythm} or \textit{house}, it performed quite well when we tested it on a few out-of-dictionary words from our dataset. We found it unnecessary to try to further improve the heuristic because the words that are not in CMUdict are often foreign words that do not follow the standard pronunciation rules of English so any application of these rules would probably be of little help.
 
-\todo[inline]{Nemalo by tu mozno byt este nieco o tom ako sme to testovali? Resp. netreba to odtestovat nejak systematickejsie nez od oka?}
