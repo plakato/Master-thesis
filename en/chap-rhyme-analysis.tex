@@ -27,7 +27,7 @@ To bridge the outdated system requirements, we contacted the authors for a newer
 
 Lastly, when SPARSAR encountered an unknown word, it failed for the entire song. Since our data was crowd-sourced, in contained many unusual words, so in the beginning it failed on 80\% of our data. We iteratively worked with the authors for months on fixing bugs and adding words (mainly contractions, such as I'mma, y'all, yo', 'em, etc.) into their dictionary. In the end, we were able to successfully run it on 95\% of our data.
 
-However, we were still not very satisfied with the result. As you can see in the example in table \ref{sparsar_wrong_scheme}, it failed to detect the perfect rhyme between 2\textsuperscript{nd} and 4\textsuperscript{th} line, and instead marked a rhyme on line 1 and 3, where there was none. Such errors were not sparse and led us to believe, that the encoded inclination of this tool to look for sonnet-shaped schemes caused it to make errors in the diverse schemes of song lyrics. It may be a great tool for sonnets, but we have found it insufficient for our purpose, so we proceeded to create our own rhyme detector.
+However, we were still not very satisfied with the result. As you can see in the example in Table \ref{sparsar_wrong_scheme}, it failed to detect the perfect rhyme between 2\textsuperscript{nd} and 4\textsuperscript{th} line, and instead marked a rhyme on line 1 and 3, where there was none. Such errors were not sparse and led us to believe, that the encoded inclination of this tool to look for sonnet-shaped schemes caused it to make errors in the diverse schemes of song lyrics. It may be a great tool for sonnets, but we have found it insufficient for our purpose, so we proceeded to create our own rhyme detector.
 
 
 \begin{table}[h!]
@@ -127,7 +127,7 @@ We need to make sure that we are comparing corresponding parts of verses otherwi
 
 
 \subsection{Extracting relevant components}
-Rhymes are located at the end of each line so there is no need to analyze the entire verse. How far should we look? The first choice would be to look at the last word. However rhymes can extend over more words as we see in figure \ref{two-word_rhyme}.
+Rhymes are located at the end of each line so there is no need to analyze the entire verse. How far should we look? The first choice would be to look at the last word. However rhymes can extend over more words as we see in Figure \ref{two-word_rhyme}.
 \begin{figure}[htb]\centering
 	I was the man the Duke \textbf{spoke to};\\
 	I helped the Duchess to cast off his \textbf{yoke, too};\\
@@ -143,7 +143,7 @@ To set ourselves apart from simple rhyme detectors, we need to detect more than 
 
 For this, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this matrix to predict rhymes, and then iteratively recalculated the matrix using EM algorithm. 
 
-However, our system of alignment is different so our matrix components will look differently. The differences are shown in table \ref{alignment}. The first difference is that Plechac only has vowels and consonant clusters without acknowledging the syllable separation. We do separate the consonant cluster into two on the border of syllable. The second difference is that Plechac recognized the position of the component and pairs only the components on the same position (shown as color). We do not believe that position has an effect on phoneme similarity and therefore we add it together for all positions, e.g. is once two phonemes co-occur on 3\textsuperscript{rd} position and once on the 5\textsuperscript{th} we will count that this pair of phonemes has 2 co-occurrences.
+However, our system of alignment is different so our matrix components will look differently. The differences are shown in Table \ref{alignment}. The first difference is that Plechac only has vowels and consonant clusters without acknowledging the syllable separation. We do separate the consonant cluster into two on the border of syllable. The second difference is that Plechac recognized the position of the component and pairs only the components on the same position (shown as color). We do not believe that position has an effect on phoneme similarity and therefore we add it together for all positions, e.g. is once two phonemes co-occur on 3\textsuperscript{rd} position and once on the 5\textsuperscript{th} we will count that this pair of phonemes has 2 co-occurrences.
 
 \begin{table}[h!]
 	\centering
@@ -204,16 +204,34 @@ We traversed the song lyrics from beginning to the end, line by line, for each l
 
 Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for all words in the given line pair. For every such combination we assign rhyme rating and keep only those with rhyme rating above the selected threshold. For default, we have set this threshold to 0.8 because we found it to work quite well in our data. However, it can be adjusted by user to their value of choice, similarly with other parameters such as window size.  
 
-From this list of candidates for each line, we select only the candidate with the highest rhyme rating. When the ratings are identical, we select the closest line. Other candidates are kept in case changes need to be made later in scheme adjustment phase. When the line doesn't have any suitable rhyme candidates, it is assigned rating 0. If the line rhyme with a candidate that is already a part of a rhyme, they join together into a rhyme group of 3 (or more) lines.
+From this list of candidates for each line, we select only the candidate with the highest rhyme rating. When the ratings are identical, we select the closest line. Other candidates are saved, in case changes need to be made later in scheme adjustment phase. When the line doesn't have any suitable rhyme candidates, it is assigned rating 0. If the line rhyme with a candidate that is already a part of a rhyme, they join together into a rhyme group of 3 (or more) lines.
+ 
 
 
-\subsection{Adjusting rhyme groups}
+
 \subsection{Assigning rhyme scheme}
  Rhymes in songs or poems are typically marked using a rhyme scheme. That means each verse gets assigned a letter -- lines that share the same letter rhyme and those with different letters do not. We also decided to adapt this common notation. In case the song needs more letters than there are in the alphabet we will add another letter and continue alphabetically -- a, b, c, ..., aa, ab, ac, ..., ba, bb, bc, ..., ca, etc.
  
  There are two options for representing non-rhyming lines. The first is to assign every non-rhyming line the same default character. We chose this option as the default, because it is easier to read for the user. The second option is to assign each non-rhyming line a unique rhyme scheme letter. This approach is more suitable for metrics that look at rhyme scheme letters as clusters of rhyming words. We support both options and can convert one the other when needed.
 
- Loosing rating by marking weaker rhymes does not make sense so we must add an exception to only keep the better score.
+\subsection{Scheme adjustment}
+In some cases, the algorithm of selecting the best rhyme for each line does not yield the best possible scheme. Consider, for illustration, the example in Table \ref{scheme_adjustment}. There is a perfect rhyme between lines 1-2 and 3-4, and a forced rhyme between lines 2-3. With the algorithm as is, it would receive \textit{aaaa} scheme. However, that is not what a human, for example the gold data annotator, would assign. He would see that similarity inside the first and the second tuple is greater so they logically form two rhyme groups and the scheme is \textit{aabb}. 
+
+Additionally, song rating for scheme \textit{aaaa} would be less than 1 (because of the forced rhyme rating) while the song rating for \textit{aabb} would be equal to 1. Loosing rating by marking weaker rhymes does not make sense so we must add an exception to only keep the better score. We can see that this problem is similar to the problem of maximizing song rating. 
+
+\begin{table}
+	\begin{tabular}{l l}
+		1&Packs of Backwoods and Dutches, leave the Swishers for the \textbf{sweeties}  \\
+		2&Only roaches in the dishes we be ripping up your \textbf{beedies}  \\
+		3&We be ripping up your treaties, I ain't ripping if it's \textbf{seedy}  \\
+		4&I ain't riffing, I ain't raffing, I'm just rapping on a \textbf{CD} \\
+	\end{tabular}
+	\caption[Scheme adjustment example.]{Example for scheme adjustment from \textit{aaaa} to \textit{aabb}. Excerpt from the song \textit{Whooping Cough} from  our dataset.}
+	\label{scheme_adjustment}
+\end{table}
+
+To address this issue, we have to do one more iteration over the resulting rhyme groups. We focused only on rhyme groups of size 4 and larger because for smaller group such changes would not increase the score. For a larger group, we iterate over the rhymes, starting from the ones with the lowest rating, and tried how would removing this rhyme affect the song rating. If it increased the song rating, we kept the change and split the rhyme group as necessary. If the rating did not increase, we tried removing the next rhyme, and if we ran out of rhymes to remove we kept the group as is.
+
 \section{Calculating song rating}
 The next step is to combine these rhyme ratings into one final rating for the entire song. We will use the straight-forward approach of averaging the assigned rhyme ratings. The dilemma here is where to store the rhyme rating since rhyme is a property of two lines. The first logical idea would be to store it with each line participating in the rhyme. However, then we would add it to the final song rating twice. Moreover, for larger rhyme groups, it would be disproportionate, because third and all the following lines would be added only once. 
 
