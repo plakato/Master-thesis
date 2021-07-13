@@ -140,24 +140,53 @@ When we look at our rhyme types, they do not go further then the first stressed 
 \subsection{Finding similar phonemes}
 To set ourselves apart from simple rhyme detectors, we need to detect more than just perfect and imperfect rhymes -- we need to find forced rhymes as well. To determine forced rhyme we need to assess the match in sound of individual phonemes.
 
-\cite{holtman1996generative}
+For this, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this matrix to predict rhymes, and then iteratively recalculated the matrix using EM algorithm. 
+
+However, our system of alignment is different so our matrix components will look differently. The differences are shown in table \ref{alignment}. The first difference is that Plechac only has vowels and consonant clusters without acknowledging the syllable separation. We do separate the consonant cluster into two on the border of syllable. The second difference is that Plechac recognized the position of the component and pairs only the components on the same position (shown as color). We do not believe that position has an effect on phoneme similarity and therefore we add it together for all positions, e.g. is once two phonemes co-occur on 3\textsuperscript{rd} position and once on the 5\textsuperscript{th} we will count that this pair of phonemes has 2 co-occurrences.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c r} 
+		Plechac & \textipa{\color{blue}k \color{magenta}A: \color{PineGreen} r.p \space\space \color{BurntOrange} @ \color{BrickRed}  n.t \space\space\color{Cerulean} @ \color{Fuchsia}r}\\
+		Ours & \textipa{\color{blue}k \color{magenta} A: \color{blue}r \space .p \color{magenta} @ \color{blue} n \space .t \color{magenta} @ \color{blue}r} \\
+	\end{tabular}
+	\caption[Comparison of alignments]{Comparison of our components for word \textit{carpenter} with those of \cite{plechavc2018collocation}. Different color signifies different component group.} 
+	\label{alignment}
+\end{table}
+
+Another difference is that Plechac only looks at the last word and 1 to 2 syllables while we at everything after the last stress up to 4 syllables.
+
+For the matrix initialization, Plechac calculates the collocations in the data and preserves only pairs with number of collocations above a set threshold. We instead initialized it with default value of 0.2 as we believe that to be sufficient. 
+
+Knowing that perfect match in sound always means perfect rhyme, we froze the values on matrix diagonal to reflect it. In \cite{plechavc2018collocation}, the diagonal was being recalculated as the rest of the matrix, and although it converged to high numbers we felt it did not reflect the superiority of the perfect match.
+
+To calculate the probabilities in the matrix, we used the formula from \cite{plechavc2018collocation} adding the adjustments described above. The formula is following: 
 
 
+	    \[ p(i,j) = \begin{cases} 
+	    \mbox{1.0,} & \mbox{if}  i=j \\ 
+	    \mbox{...,} 
+	     & \mbox{otherwise} \\
+	    \end{cases} \]
+
+where\textit{ f(i,j)} represents the frequency of the co-occurrence of the pair of components \textit{i} and \textit{j}, and similarly \textit{f(i)} represents the total number of occurrences of the component \textit{i}. \textit{p(i,j)} is then the value in the matrix on coordinates i, j.
 
 
 \subsection{Rhyme rating}
-\todo[inline]{Mohla byste zaĊít tím, že každému rýmu chcete přiřadit skóre v intervalu 0-1. Pak asi prostě uvést, že (jste se rozhodla, že) perfect rhyme dostane maximální skóre, tedy 1.}
  We will first calculate rhyme ratings for pairs of verses and then use them to calculate an overall song rating. Not only do these rhyme ratings help us evaluate the rhyming quality of the song but they might also be an interesting feedback for the writer. 
+ 
+ For each rhyme, we would like to assign a rating between 0 and 1. Since perfect rhyme is often in literature described as superior as it represent the perfect match in sound it will logically receive the highest rating of 1.
+ 
+ For the cases, such as imperfect rhymes or some forced rhymes, where it was necessary to move the stress to the rhyming part, we will give a penalty of -0.1 for this imperfection. 
+ 
+	When the phoneme sounds are similar, we will assign rhyme rating as a simple multiplication of probabilities for the individual components from the matrix.
+	
+	\[rhyme\ rating = \prod_{i,j\ \epsilon\ rhyming\ part} p(i,j) \]
+
 
  Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for given line pair. After we assign a rating for each combination, we will keep only the best rated combination of pronunciations and discard the rest. 
 
 
-stress penalty
-
-
-The final formula for a rhyme rating is ..simple multiplication...:
-
-\[average(stress\_multiplication\_factor*weighted\_average(similarities))\]
 
 \section{Scheme}
 -finding all rhymes and assigning scheme
