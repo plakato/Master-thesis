@@ -104,7 +104,10 @@ This section gives statistical information about the dataset after preprocessing
 \end{table}
 
 \section{Annotated subset}
+From the dataset described above, we separated a subset of 50 songs, 10 song for each genre, and annotated them with rhyme schemes ourselves. We then separated them into a development and test set, so that both groups would have an approximately equal number of non-empty lines per genre (plus or minus 2 lines). We reserved the development set for iterative testing and improvement of our algorithm. The test set was used as an additional checkpoint for final evaluation, as you can read in Chapter \ref{evaluation}.
 
-\section{Annotated data by Reddy}
-\todo[inline]{Add maybe something about gold data from reddy}
-\todo[inline]{Add about my annotated data.}
+\section{Chicago Rhyming Poetry Corpus}
+For an additional dataset for evaluation, we included one from an outside source -- the Chicago Rhyming Poetry Corpus\footnote{\url{https://github.com/sravanareddy/rhymedata}}, annotated with rhyme schemes by professionals. It contains 1,321 poems from 32 authors written in 14\textsuperscript{th} to 19\textsuperscript{th} century. It has a total of 93,045 lines with an average of 70.44 lines per song. It is the same dataset that was used for training and evaluation of Rhyme Tagger.
+
+
+
