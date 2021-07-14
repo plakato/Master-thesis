@@ -2,45 +2,53 @@
 In this chapter, we will evaluate our rhyme detector. In the beginning, we will compare its performance with Rhyme Tagger. Then we will use it to analyze our dataset and calculate statistics about song lyrics.
 
 \section{Performance evaluation on schemes}
-\todo[inline]{Popisat preco nejdu reddy data pouzit na testovanie mojej detekcie rymov}
+\todo[inline]{Popisat preco nejdu reddy data su menej vhodne na moju detekciu rymov}
 
 \section{Statistical analysis of the dataset}
-
+Although our detector was trained on our dataset, it was unsupervised so we can still use our detector to evaluate this dataset and give us new statistical information about a large number of song lyrics. We ran rhyme detection for nearly half a million songs and summed up the results in Tables \ref{rhyme_line_stats}, \ref{rhyme_types_perc}, \ref{rhyme_group_size}, \ref{song_rating_stats}, and \ref{rhyme_stats}. In the rest of this section, we will look at them more closely and discuss the outcome that might be surprising, or the opposite, confirms the specific  characteristics of a particular genre. Extreme values are emphasized in the tables. Keep in mind, that the lyrics and their classification to genres is crowd-sourced and might be biased.
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rock & 		Rap & 		R\&B & 		Country\\ 
+		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
 		\midrule
 		 Total songs& 293,679 & 99,185& 34,372& 5,125& 3,816 \\
 		Total lines& 9,104,273 &5,661,603& 1,087,245& 225,344& 121,207 \\ 
 		Total rhyming lines& 4,536,554& 2,849,905& 523,879& 117,862& 61,142 \\ 
 		 Rhyming lines (\%) & 49.8\%& 50.3\%& 48.2\%& 52.3\%& 50.4\%  \\
-		 Average lines per song & 31.001 & 57.081 & 31.632 & 43.970 & 31.763  \\
+		 Average lines per song & 31.001 & \textbf{57.081} & 31.632 & 43.970 & 31.763  \\
 
 	\end{tabular}
 	\caption{General statistics about dataset and rhymes, per genre.} 
 	\label{rhyme_line_stats}
 \end{table}
 
+In Table \ref{rhyme_line_stats}, we sum up the basic information for all genres including the portion of lines that rhyme and we can already see some interesting results. Surprisingly, the highest portion of rhyming lines is in the R\&B genre. We do not see any characteristic of this genre that could cause this. However, it is not a big difference and maybe having more examples from this genre would make it less significant. 
+
+We can see that throughout genres typically only about half of the lines rhyme. This shows, that rhyming in songs is not as essential as perhaps in poems. Predictably, rap has a significantly higher average number of lines per song which confirms the fact that this genre is more talkative. What may be unexpected is that it is nearly two times more than for the other genres -- only R\&B slightly stands out but that is not a surprise because it has been influenced by rap.
+
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rock & 		Rap & 		R\&B & 		Country\\ 
+		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
 		\midrule
-		Perfect masculine &	72.5& 	58.2& 	72.3& 	70.2& 	73.5 \\
+		Perfect masculine &	72.5& 	\textbf{58.2}& 	72.3& 	70.2& 	73.5 \\
 		Perfect feminine &	7.9&		8.4& 		7.7& 		8.5& 		6.2 \\
 		Perfect dactylic & 	0.7 &		0.5 & 	0.9 &		0.5& 		0.3 \\  
-		Imperfect & 		12.0& 	22.3 & 	12.1 & 	13.5 & 	12.2 \\
-		Forced &  			6.9 & 	10.6 & 	7.0 & 	7.3 &		7.8 \\
+		Imperfect & 		12.0& 	\textbf{22.3} & 	12.1 & 	13.5 & 	12.2 \\
+		Forced &  			6.9 & 	\textbf{10.6} & 	7.0 & 	7.3 &		7.8 \\
 	\end{tabular}
 	\caption{Percentage of different rhyme types from all rhymes in the dataset, per genre.} 
 	\label{rhyme_types_perc}
 \end{table}
 
+Next, Table \ref{rhyme_types_perc} shows distribution of different rhyme types. It did not come as a surprise that the most common type, by a long shot, is perfect masculine. The reasons behind this might be several -- not only has perfect match the strongest effect melodically, it is also the easiest to come up with, and makes the lyrics easy to remember. The multi-syllable perfect rhymes have a lower percentage as longer matching word pairs are rather rare. The amount of forced rhymes might be higher in reality because their detection is the hardest and they might be missed more often.
+
+Concerning rhyme types, we see that genres are generally not very different, except for rap. Rap is very unique with rhymes, its artists are known for playing with them more creatively, using \gls{internal_rhyme}s, consonance, and assonance more often. They frequently play with emphasis what can be seen as a rapid increase in imperfect rhymes. There are more forced rhymes as well and perfect rhymes are decreased as a result.
+
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rock & 		Rap & 		R\&B & 		Country\\ 
+		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
 		\midrule
 		Average groups per song& 6.134 &11.484 &6.091 &8.620 &6.676  \\
 		Average groups per 100 lines &19.787 &20.119 &19.255 &19.605 &21.018 \\
@@ -55,7 +63,7 @@ In this chapter, we will evaluate our rhyme detector. In the beginning, we will 
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rock & 		Rap & 		R\&B & 		Country\\ 
+		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
 		\midrule
 		Average song rating& 0.432 & 0.599 &0.420 &0.520 &0.456  \\
 		Median & 0.521 & 0.380 &0.357 &0.235 & 0.269\\
@@ -67,7 +75,7 @@ In this chapter, we will evaluate our rhyme detector. In the beginning, we will 
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rock & 		Rap & 		R\&B & 		Country\\ 
+		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
 		\midrule
 		 2 syllable rhymes & 91.1& 90.3& 91.1& 90.6 & 93.3\\
 		5 syllable rhymes& 8.2& 9.2& 8.0& 8.9& 6.4  \\
@@ -77,5 +85,5 @@ In this chapter, we will evaluate our rhyme detector. In the beginning, we will 
 
 	\end{tabular}
 	\caption{Statistics about rhyme properties in general, disregarding rhyme types, in percentage from total rhymes.} 
-	\label{song_rating_stats}
+	\label{rhyme_stats}
 \end{table}
