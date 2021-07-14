@@ -50,40 +50,52 @@ Concerning rhyme types, we see that genres are generally not very different, exc
 	\begin{tabular}{l | r r r r r} 	
 		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
 		\midrule
-		Average groups per song& 6.134 &11.484 &6.091 &8.620 &6.676  \\
-		Average groups per 100 lines &19.787 &20.119 &19.255 &19.605 &21.018 \\
+		2-syllable rhymes & 91.1& 90.3& 91.1& 90.6 & 93.3\\
+		5-syllable rhymes& 8.2& 9.2& 8.0& 8.9& 6.4  \\
+		8-syllable rhymes& 0.7& 0.5& 0.9& 0.5& 0.3 \\
+		Perfect sound match & 93.1&\textbf{ 89.4}& 93.0& 92.7& 92.2  \\
+		Stress moved & 14.5& \textbf{28.3}& 14.5& 16.5& 14.8 \\
+		
+	\end{tabular}
+	\caption{Statistics about rhyme properties in general, disregarding rhyme types, in percentage from total rhymes.} 
+	\label{rhyme_stats}
+\end{table}
+
+Table \ref{rhyme_stats} is quite similar to the previous table, but by counting syllables regardless of rhyme type, and evaluating sound match and stress separately, it offers us a little bit different angle. By seeing that the percentages of 8-syllable rhymes match the percentages we have seen in Table \ref{rhyme_types_perc}, we can assume that 8-syllable rhymes might be exclusively perfect. The decreased match in sound and increased moving of stress in rap confirm the unique properties of rap we have seen previously.
+
+A slightly increased percentage of 2-syllable in country may be noteworthy but we see no significant properties of country that could support this as a general claim.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{l | r r r r r} 	
+		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
+		\midrule
+		Average groups per song& 6.134 &\textbf{11.484} &6.091 &8.620 &6.676  \\
+		Average groups per 100 lines &19.787 &20.119 &19.255 &19.605 &\textbf{21.018} \\
 		Max groups per song & 169 &224 & 81 & 48 &98\\
-		Average group size & 2.518 &2.502 &2.502 &2.668 &2.400 \\
+		Average group size & 2.518 &2.502 &2.502 &2.668 &\textbf{2.400} \\
 		Max group size & 159 &98 & 68 & 42 & 24\\
 	\end{tabular}
 	\caption{Statistics about rhyme group size per genre.} 
 	\label{rhyme_group_size}
 \end{table}
 
+Table \ref{rhyme_group_size} summarizes statistics concerning size of rhyme groups. We can observe nearly double average size for rap compared to other genres, which directly corresponds to nearly double average song length, as we have seen in Table \ref{basic_stats}. 
+
+An interesting observation can be made for country -- average number of rhyme groups per 100 lines is slightly higher than for other genres. This corresponds with average group size being lower -- obviously country tends to contain more and smaller rhymes groups. It would be interesting to know, whether this is only a property of our dataset or a property of country music in general. Although maximum group size does not tell us any general information about the group because it may only be an outlier, but it is still interesting to see, that this number is again the smallest for country.
+
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l | r r r r r} 	
 		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
 		\midrule
-		Average song rating& 0.432 & 0.599 &0.420 &0.520 &0.456  \\
-		Median & 0.521 & 0.380 &0.357 &0.235 & 0.269\\
+		Average song rating& 0.432 & \textbf{0.599} &0.420 &0.520 &0.456  \\
+		Median & \textbf{0.521} & 0.380 &0.357 &0.235 & 0.269\\
 	\end{tabular}
 	\caption{Song rating per genre.} 
 	\label{song_rating_stats}
 \end{table}
 
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
-		\midrule
-		 2 syllable rhymes & 91.1& 90.3& 91.1& 90.6 & 93.3\\
-		5 syllable rhymes& 8.2& 9.2& 8.0& 8.9& 6.4  \\
-		 8 syllable rhymes& 0.7& 0.5& 0.9& 0.5& 0.3 \\
-		 Perfect sound match & 93.1& 89.4& 93.0& 92.7& 92.2  \\
-		 Stress moved & 14.5& 28.3& 14.5& 16.5& 14.8 \\
+Looking at average and median ratings in Table \ref{song_rating_stats}, we can observe two curious extremes -- rap having the highest average rating and pop with the highest median rating. Rap leading in the average, but this dominance not being translated into median, tells us that there must be some extremely high rated songs that pulled up the average. Although we did not predict this result, it shows that some artists probably took the importance of rhyme in rap very seriously and elaborately incorporated it densely into their lyrics.
 
-	\end{tabular}
-	\caption{Statistics about rhyme properties in general, disregarding rhyme types, in percentage from total rhymes.} 
-	\label{rhyme_stats}
-\end{table}
+Highest median in pop shows that many pop songs are filled with more rhymes what can be explained by their strong tendency to be memorable. However, it seems that there are some low extremes that pulled the average rating down.
