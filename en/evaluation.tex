@@ -2,7 +2,95 @@
 In this chapter, we will evaluate our rhyme detector. In the beginning, we will compare its performance with Rhyme Tagger. Then we will use it to analyze our dataset and calculate statistics about song lyrics.
 
 \section{Performance evaluation on schemes}
-\todo[inline]{Popisat preco nejdu reddy data su menej vhodne na moju detekciu rymov}
+To evaluate the quality of our Rhyme Detector, we will compare its rhyme scheme predictions with \gls{gold_data}. We have two annotated datasets we can use -- Chicago Rhyming Poetry Corpus and  the annotated subset of our own dataset. We will also compare our performance with that of RhymeTagger.
+
+\subsection{Taggers}
+We will be comparing different variants of the taggers to also evaluate the influence some factors have on the performance. The variants are following:
+\begin{itemize}
+	\item \textbf{Rhyme Tagger} - the original version of Rhyme Tagger, as it was trained by Plechac.
+	\item \textbf{Rhyme Tagger - fine-tuned} - Rhyme Tagger trained on one third of our data.
+	\item \textbf{Rhyme Detector} - our detector, as described in Chapter \ref{chap-rhyme-analysis}, with default settings
+	\item \textbf{Rhyme Detector - experiment} - an experimental version of our detector, that was not trained with EM algorithm, but instead the matrix was created by counting the co-occurrences in the data and using their probabilities
+	\item \textbf{Rhyme Detector - 1 iteration} - our detector after 1\textsuperscript{st} iteration of training
+	\item \textbf{Rhyme Detector - perfect} - our detector using the setting of only finding perfect rhymes - the co-occurrence matrix is an identity matrix
+\end{itemize}
+
+\subsection{Scores}
+To evaluate the performance, we need to find an appropriate measure that could compare the gold scheme with the prediction. This task may seem easy at first, but we need to be careful because the straight-forward approach of comparing the schemes letter by letter would not work. If the prediction made an error in the beginning it would alphabetically shift the rest of the scheme and it would no longer match with the gold data.
+
+\paragraph{Last Index Score (LI)} To solve this problem, we propose Last Index Score (LI score). The idea is to convert the scheme from letter representation to last rhyme's index representation. This means for each line, we will use the index of the last line that rhymed with it. If the line does not have a rhyme, we will use index -1. With such representation, we can compare these indexes directly, independently from scheme letters, and the proportion of matching indexes will give us a score between 0 and 1. For an illustrative example, see Table \ref{LI_score_example}.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c c | c c}
+		\multicolumn{2}{c |}{Straight-forward} &
+		\multicolumn{2}{c }{Last Index}\\
+		\hline
+		Gold & Prediction & Gold & Prediction\\
+		\hline
+		\color{OliveGreen}a		&\color{OliveGreen}a		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
+		\color{Bittersweet}a		&\color{Bittersweet}b		&\color{Bittersweet}0		&\color{Bittersweet}-1	\\
+		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}-1		&\color{OliveGreen}-1\\
+		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}2		&\color{OliveGreen}2	\\
+		\color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
+		\color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}4		&\color{OliveGreen}4	\\
+		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}3		&\color{OliveGreen}3	\\
+		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}6		&\color{OliveGreen}6	\\
+		\midrule
+		\multicolumn{2}{c |}{SCORE: 0.125} &
+		\multicolumn{2}{c }{SCORE: 0.875}\\
+	\end{tabular}
+	\caption[Comparison of the straight-forward approach and LI score.]{Comparison of the straight-forward approach and LI score.}
+	\label{LI_score_example}
+\end{table}
+
+\paragraph{ARI score} If we look at the rhyme scheme, we can notice that scheme letters can equally be represented as line cluster. All lines that share a scheme letter form one cluster together, and every line that does not have a rhyme is a cluster of its own. Adjusted Random Index Score is a corrected-for-chance statistical measure of similarity between two data clusterings. We can therefore convert the schemes to use a unique letter for each non-rhyming line and use this score to evaluate the similarity of the schemes. 
+
+\paragraph{} For these two scores, we include both micro and macro average on the dataset. Macro average is the average of all song scores, while micro average is the average of song scores weighted by the number of lines in each song.
+
+
+\subsection{Comparison of the results}
+We calculated the aforementioned scores for all variants of tagger and summed up the results in Tables \ref{reddy_eval} and \ref{my_eval}. They both performed better on the Chicago Poetry Corpus.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{l | r r | r r}
+	&	\multicolumn{2}{c |}{ARI} &
+		\multicolumn{2}{c }{LI}\\
+	\cline{2-5}	
+	&macro &  micro  & macro  & micro \\
+	\midrule
+	Rhyme Tagger & 0.9463 & 0.9384 & 0.9635 & 0.9534 \\
+	Rhyme Tagger fine-tuned& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
+	Rhyme Detector & 0.9040 & 0.8915 & 0.9413 & 0.9272 \\
+	Rhyme Detector - experiment & 0.9025 & 0.8906 & 0.9406 & 0.9272 \\
+	Rhyme Detector - 1 iteration & 0.9066 &0.8926 &0.9426 &0.9277 \\
+	Rhyme Detector - perfect &0.8824 &0.8732 &0.9293 &0.9149 \\
+ \end{tabular}
+	\caption{Evaluation of taggers on Chicago Rhyming Poetry Corpus.}
+	\label{reddy_eval}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{l | r r | r r}
+		&	\multicolumn{2}{c |}{ARI} &
+		\multicolumn{2}{c }{LI}\\
+		\cline{2-5}	
+		&macro &  micro  & macro  & micro \\
+		\midrule
+	Rhyme Tagger &  0.6519 &0.6627 &0.8021 & 0.8139 \\
+	Rhyme Tagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.804 \\
+	Rhyme Detector & 0.6157 &0.6306 &0.7716 &0.7861 \\
+	Rhyme detector - experiment &0.6359 &0.6571 &0.7866 &0.802 \\
+	Rhyme detector - 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
+	Rhyme Detector - perfect &0.6224 &0.641 &0.7838 &0.803\\
+	\end{tabular}
+	\caption{Evaluation of taggers on my annotated dataset.}
+	\label{my_eval}
+\end{table}
+
+
 
 \section{Statistical analysis of the dataset}
 Although our detector was trained on our dataset, it was unsupervised so we can still use our detector to evaluate this dataset and give us new statistical information about a large number of song lyrics. We ran rhyme detection for nearly half a million songs and summed up the results in Tables \ref{rhyme_line_stats}, \ref{rhyme_types_perc}, \ref{rhyme_group_size}, \ref{song_rating_stats}, and \ref{rhyme_stats}. In the rest of this section, we will look at them more closely and discuss the outcome that might be surprising, or the opposite, confirms the specific  characteristics of a particular genre. Extreme values are emphasized in the tables. Keep in mind, that the lyrics and their classification to genres is crowd-sourced and might be biased.
