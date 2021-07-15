@@ -50,7 +50,9 @@ To evaluate the performance, we need to find an appropriate measure that could c
 
 
 \subsection{Comparison of the results}
-We calculated the aforementioned scores for all variants of tagger and summed up the results in Tables \ref{reddy_eval} and \ref{my_eval}. They both performed better on the Chicago Poetry Corpus.
+We calculated the aforementioned scores for all variants of tagger and summed up the results in Tables \ref{reddy_eval} and \ref{my_eval}. 
+
+They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_eval}). Surprisingly, our detector performed the best after 1\textsuperscript{st} iteration, but the difference is not very significant.
 
 \begin{table}[h!]
 	\centering
@@ -60,16 +62,19 @@ We calculated the aforementioned scores for all variants of tagger and summed up
 	\cline{2-5}	
 	&macro &  micro  & macro  & micro \\
 	\midrule
-	Rhyme Tagger & 0.9463 & 0.9384 & 0.9635 & 0.9534 \\
+	Rhyme Tagger & \textbf{0.9463} & \textbf{0.9384} & \textbf{0.9635} & \textbf{0.9534} \\
 	Rhyme Tagger fine-tuned& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
+	\midrule
 	Rhyme Detector & 0.9040 & 0.8915 & 0.9413 & 0.9272 \\
 	Rhyme Detector - experiment & 0.9025 & 0.8906 & 0.9406 & 0.9272 \\
-	Rhyme Detector - 1 iteration & 0.9066 &0.8926 &0.9426 &0.9277 \\
+	Rhyme Detector - 1 iteration & \textbf{0.9066} &\textbf{0.8926} &\textbf{0.9426} &\textbf{0.9277} \\
 	Rhyme Detector - perfect &0.8824 &0.8732 &0.9293 &0.9149 \\
  \end{tabular}
 	\caption{Evaluation of taggers on Chicago Rhyming Poetry Corpus.}
 	\label{reddy_eval}
 \end{table}
+
+On our dataset (Table \ref{my_eval}), however, the best performing was the experiment variant. Surprisingly, the fine-tuned Rhyme Tagger performed worse than the original pre-trained version. The possible cause is the nature of our data -- song lyrics have a significantly smaller percentage of rhymes than poems, so the collocations approach might not work as well for our dataset. This might also be the reason why our detector, trained only on our data, does not perform as well as Rhyme Tagger.
 
 \begin{table}[h!]
 	\centering
@@ -79,12 +84,13 @@ We calculated the aforementioned scores for all variants of tagger and summed up
 		\cline{2-5}	
 		&macro &  micro  & macro  & micro \\
 		\midrule
-	Rhyme Tagger &  0.6519 &0.6627 &0.8021 & 0.8139 \\
+	Rhyme Tagger &  \textbf{0.6519} &\textbf{0.6627} &\textbf{0.8021} & \textbf{0.8139} \\
 	Rhyme Tagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.804 \\
+	\midrule
 	Rhyme Detector & 0.6157 &0.6306 &0.7716 &0.7861 \\
-	Rhyme detector - experiment &0.6359 &0.6571 &0.7866 &0.802 \\
+	Rhyme detector - experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.802 \\
 	Rhyme detector - 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
-	Rhyme Detector - perfect &0.6224 &0.641 &0.7838 &0.803\\
+	Rhyme Detector - perfect &0.6224 &0.641 &0.7838 &\textbf{0.803}\\
 	\end{tabular}
 	\caption{Evaluation of taggers on my annotated dataset.}
 	\label{my_eval}
