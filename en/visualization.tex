@@ -19,14 +19,15 @@ Pressing the \textit{Analyze} button will start the analysis and minimize the in
 \section{Visualization of the results}
 Visualization page contains lyrics with scheme, matrix visualization of rhymes, and short statistics. It is primarily designed for songs of short or moderate length, longer lyrics may not fit on the screen with the analysis side-by-side, and will have to be rearranged in a column, which makes the results less comfortable to read.
 
-\subsection{Lyrics and statistics}
+\subsection{Lyrics and statistics}\label{sec-lyrics_and_stats}
 Lyrics with their assigned scheme letters and line number are shown on the left, as we can see in Figure \ref{web-analysis_window5}. Rhyming lines are highlighted, each with a color corresponding to its rhyme type. For the sub-types of perfect rhyme, we selected similar colors to indicate that they are more closely related -- namely red for \textit{masculine}, orange for \textit{feminine}, and yellow for \textit{dactylic} rhymes. \textit{Imperfect} rhymes are highlighted in blue and \textit{forced} in green color. When user hovers over a rhyming line, this line and all lines rhyming with it are highlighted.
 
 Statistics is shown on the right under the matrix. It contains song rating and percentages of different rhyme types in the song.
 
 \begin{figure}[h]\centering
 %	\includegraphics[scale=0.24]{../img/web-empty-form.png}
-	\caption{Screenshot from analysis.}
+	\todo[inline]{add}
+	\caption{Screenshot from analysis with default window size.}
 	\label{web-analysis_window5}
 \end{figure}
 
@@ -39,8 +40,17 @@ To make a creative visualization, we took inspiration from Colin Morris\footnote
 	\label{songsim}
 \end{figure}
 
-Instead of words, in our matrix we compare rhymes.
+Instead of words, in our matrix, we compare rhymes. For rows and columns we use rhyme scheme letters for corresponding line, and when they agree, matrix cell will receive the color of this rhyme's type, as described in section \ref{sec-lyrics_and_stats} (Figure \ref{web-analysis_window5}). For comparison with default window, in Figure \ref{web-analysis_window_all}, we include a screenshot with longer window to better demonstrate the matrix.
 
+
+\begin{figure}[h]\centering
+	%	\includegraphics[scale=0.24]{../img/web-empty-form.png}
+	\todo[inline]{add}
+	\caption{Screenshot from analysis with window size matching the song length.}
+	\label{web-analysis_window_all}
+\end{figure}
+
+So far, user has been given a large picture overview of entire song. To explore the detail, user can view rhyme's properties by hovering over the particular matrix cell. Popover will display more details as shown in Figure \ref{web-popover}. \textit{Rhyming phonemes} for both rhyming lines display only phonemes participating in rhyme -- meaning from last stressed phoneme (or where the stress was moved) onward. Lines, that correspond to this rhyme, will also be highlighted in the text on the left. 
 
 \begin{figure}[h]\centering
 		\includegraphics[scale=0.45]{../img/popover-detail.png}
