@@ -25,9 +25,8 @@ Lyrics with their assigned scheme letters and line number are shown on the left,
 Statistics is shown on the right under the matrix. It contains song rating and percentages of different rhyme types in the song.
 
 \begin{figure}[h]\centering
-%	\includegraphics[scale=0.24]{../img/web-empty-form.png}
-	\todo[inline]{add}
-	\caption{Screenshot from analysis with default window size.}
+	\includegraphics[scale=0.25]{../img/love_game_lady_gaga.png}
+	\caption[Screenshot from analysis with default window size.]{Screenshot from analysis with default window size. Example from \textit{Love Game} by Lady Gaga.}
 	\label{web-analysis_window5}
 \end{figure}
 
@@ -43,10 +42,9 @@ To make a creative visualization, we took inspiration from Colin Morris\footnote
 Instead of words, in our matrix, we compare rhymes. For rows and columns we use rhyme scheme letters for corresponding line, and when they agree, matrix cell will receive the color of this rhyme's type, as described in section \ref{sec-lyrics_and_stats} (Figure \ref{web-analysis_window5}). For comparison with default window, in Figure \ref{web-analysis_window_all}, we include a screenshot with longer window to better demonstrate the matrix.
 
 
-\begin{figure}[h]\centering
-	%	\includegraphics[scale=0.24]{../img/web-empty-form.png}
-	\todo[inline]{add}
-	\caption{Screenshot from analysis with window size matching the song length.}
+\begin{figure}[!h]\centering
+		\includegraphics[scale=0.24]{../img/europes-skies.png}
+	\caption[Screenshot from analysis with window size matching the song length.]{Screenshot from analysis with window size matching the song length. Example from \textit{Europe's Skies} by Alexander Rybak.}
 	\label{web-analysis_window_all}
 \end{figure}
 
@@ -60,6 +58,6 @@ So far, user has been given a large picture overview of entire song. To explore 
 
 
 \section{Technologies}
-For the front-end of web page we used a TypeScript-based open-source web application framework --  Angular (\cite{jain2014angularjs}). For some of the features, we used \textit{ngx-bootstrap},\footnote{\url{https://getbootstrap.com/}} which the Angular powered version of standard Bootstrap's components. Back-end is written in Python (\cite{van1995python}) and uses our detector, in a classic variant without any modifications, as it was used for the evaluation in Chapter \ref{evaluation}.
+For the front-end of web page we used a TypeScript-based open-source web application framework --  Angular (\cite{angular}). As design library, we used Bootstrap\footnote{\url{https://getbootstrap.com/}}, and ported version of standard Bootstrap's components to Angular -- \textit{ngx-bootstrap}\footnote{\url{https://valor-software.com/ngx-bootstrap/}}. Back-end simple REST API is written in Python using micro-web framework \textit{Flask}\footnote{\url{https://flask.palletsprojects.com/en/2.0.x/}}. It calls our detector, in a classic variant without any modifications, as it was used for the evaluation in Chapter \ref{evaluation}. 
 
 We host it at a public url \url{https://rhyme-detector.brezinovi.sk/} from our personal computer, so some short-term unavailability is possible. In case of any difficulties, please do not hesitate to contact us at \textit{patricia@brezinovi.sk}.
