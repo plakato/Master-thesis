@@ -1,12 +1,34 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-This works may include some literary or technical terms that the reader is not familiar with. For their definition, please see the chapter "Glossary of literary and technical terms" at the end of this thesis.
+As artificial intelligence keeps catching up with humans, artistic fields are still not the same without the human aspect. For computers, it is hard to create art, and even harder to understand and analyze it. 
+
+A piece of art in everyday life of almost everyone is music. It is a complex form, where many aspects influence the audience, i.e. melody, rhythm, lyrics, performance, etc. Although we do realize they are interconnected and may affect each other, in this thesis, we will more deeply explore only one of these aspects -- song lyrics. 
+
+
+
+With this tool, we hope to give artists, authors of poems and songs, or even amateurs a new way to explore their texts.
+
 
 \todo[inline]{I can cite this \cite{greene2010automatic} when saying machine-generated poetry automatic evaluation is hard}
 
-\todo[inline]{Je otázka, zda bude vaše práce něĊím specifická pro písně (oproti básním), krom toho, že jako data máte písně. U písní by samozřejmě šlo dělat analýzu zvukové stránky (melodie, harmonie, rytmus) a studovat korelace s textovou stránkou, ale to je zřejmě mimo rámec této práce. Mohla byste to ale zmínit někde na zaĊátku, v zadání, že se schválně omezujete jen na ty (písňové) texty a ignorujete zvukovou stránku.}
 
-\todo[inline]{na zaĊátku nezapomenout na motivaci a tam vyjmenovat, kdo jsou cíloví uživatelé, mezi nimiž budou (zaĊínající) autoři básní/písní.}
+To round up the analyses and provide a source of machine-generated data for comparison, we will use current state-of-art pre-trained GPT-2 and demonstrate its capabilities in this field.
 
-To round up the analyses and provide additional source of data for comparison, we produced computer generated data using current state-of-art pre-trained GPT-2.
+This works may include some literary or technical terms that the reader is not familiar with. For their definition, please see the chapter "Glossary of literary and technical terms" at the end of this thesis.
+
+
+\section*{Outline}
+In Chapter \ref{chap-related-work}, we will make reader familiar with the literary background such as rhyme its types, and other literary devices. We will also describe approaches and review existing tools for rhyme detection, visualization, and lyrics generation. 
+
+Chapter \ref{data} introduces data that we will be working with, their structure and statistics, and the steps we took to pre-process them.
+
+The most complex part of this thesis is explained in Chapter \ref{chap-rhyme-analysis}, which specifies the details of how we perform rhyme detection in song lyrics.
+
+Chapter \ref{evaluation} evaluates our rhyme detector and shows the statistics when we run it for our dataset.
+
+How the output of our detector is brought to life by visualization is illustrated in Chapter \ref{visualization}.
+
+In Chapter \ref{generation}, we describe and review the results of lyrics generation experiment.
+
+Lastly, the results are summed up in Conclusion, including suggestions for future works.
