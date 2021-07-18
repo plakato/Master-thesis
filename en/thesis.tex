@@ -25,6 +25,7 @@
 % \setlength\headheight{0mm}
 % \let\openright=\cleardoublepage
 
+\usepackage[dvipsnames]{xcolor}         % pdfx imports xcolor without dvipsnames, so we need to import it first
 %% Generate PDF/A-2u
 \usepackage[a-2u]{pdfx}
 
@@ -49,8 +50,9 @@
 \usepackage{dcolumn}        % improved alignment of table columns
 \usepackage{booktabs}       % improved horizontal lines in tables
 \usepackage{paralist}       % improved enumerate and itemize
-\usepackage[dvipsnames]{xcolor}         % typesetting in color
 \usepackage[colorinlistoftodos]{todonotes} % leave in text comments
+\def\MP#1{\todo[color=green!40,inline]{#1}}
+
 \usepackage{tipa} % use IPA characters
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -107,12 +109,13 @@ I would like to thank my supervisors Mr. Popel, and his predecessor Mr. Hajič, 
 
 % Abstract (recommended length around 80-200 words; this is not a copy of your thesis assignment!)
 \def\Abstract{%
-We explore out dataset of almost half a million song lyrics through three different processes -- automatic evaluation, visualization, and generation. We create our own rhyme detector, using EM algorithm with several improvements and adjustable parameters. This may, in some cases, replace human evaluators that cannot be used, for example, after each iteration of lyrics generator to evaluate its improvement. By creating a web-page visualization of the results with interesting matrix rhyme highlighting, we make our evaluation accessible to the public. We discuss interesting genre differences discovered by applying our automatic evaluation on the entire dataset. Finally, we explore lyrics generation using state-of-art GPT-2.
+We explore out\MP{``a dataset'', případně ``our dataset'', ale ten dataset není úplně Váš, jen jste ho čistila}
+dataset of almost half a million song lyrics through three different processes -- automatic evaluation, visualization, and generation. We create our own rhyme detector, using EM algorithm with several improvements and adjustable parameters. This may, in some cases, replace human evaluators that cannot be used, for example, after each iteration of lyrics generator to evaluate its improvement. By creating a web-page visualization of the results with interesting matrix rhyme highlighting, we make our evaluation accessible to the public. We discuss interesting genre differences discovered by applying our automatic evaluation on the entire dataset. Finally, we explore lyrics generation using state-of-art GPT-2.
 }
 
 % 3 to 5 keywords (recommended), each enclosed in curly braces
 \def\Keywords{%
-{song lyrics} {automatic evaluation} {rhyme detection} {lyrics generation} {gpt-2}
+{song lyrics}, {automatic evaluation}, {rhyme detection}, {lyrics generation}, {GPT-2}
 }
 
 %% The hyperref package for clickable links in PDF and also for storing
