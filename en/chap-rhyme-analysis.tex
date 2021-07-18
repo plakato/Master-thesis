@@ -4,8 +4,8 @@ Detecting rhymes may seem like a simple task at first, but looking into details 
 \todo[inline]{sucast zadania ze to bude bez zvukovej stranky hoci to vplyv ma}
 \todo[inline]{pri popise taggeru dat typy rymov, ktore nezvlada}
 
+\cite{rhymes_overview}
 
-\footnote{\url{http://phylonetworks.blogspot.com/2020/07/automated-detection-of-rhymes-in-texts.html}}
 - points out most works focus on rhyme schemes in well structured poetry instead of common rhymes in text
 - where to draw the line between intended rhyme and accidental word similarity
 
@@ -23,9 +23,9 @@ The simplest approach would be to use one of the tools described in section \ref
 \subsection*{SPARSAR}
 SPARSAR, on the other hand, has a very rich and detailed output. Although it is lacking documentation, the \textit{xml} output format is quite descriptive to understand what most of the values represent. It seemed promising so we attempted to pursue this path.
 
-To bridge the outdated system requirements, we contacted the authors for a newer build (for Ubuntu 19.1). They were very helpful and soon we were able to run it on our computer. Nevertheless, we encountered several issues, mostly stemming from the fact that SPARSAR was written in Prolog. Firstly, the xml output was difficult to parse, as the values were written in Prolog syntax, using the same delimiter for different levels of separation. Secondly, SPARSAR parses the text in sentences but lyrics are usually written without punctuation. We added punctuation using \textit{punctuator2} (\cite{tilk2016punctuation}) which also added space for error. 
+To bridge the outdated system requirements, we contacted the authors for a newer build (for Ubuntu 19.1). They were very helpful and soon we were able to run it on our computer. Nevertheless, we encountered several issues, mostly stemming from the fact that SPARSAR was written in Prolog. Firstly, the xml output was difficult to parse automatically, as the values were written in Prolog syntax, using the same delimiter for different levels of separation. Secondly, SPARSAR parses the text in sentences but lyrics are usually written without punctuation. We added punctuation using \textit{punctuator2} (\cite{tilk2016punctuation}) which also added space for error. 
 
-Lastly, when SPARSAR encountered an unknown word, it failed for the entire song. Since our data was crowd-sourced, in contained many unusual words, so in the beginning it failed on 80\% of our data. We iteratively worked with the authors for months on fixing bugs and adding words (mainly contractions, such as I'mma, y'all, yo', 'em, etc.) into their dictionary. In the end, we were able to successfully run it on 95\% of our data.
+Lastly, when SPARSAR encountered an unknown word, it failed for the entire song. Since our data were crowd-sourced, it contained many unusual words, so in the beginning it failed on 80\% of our data. We iteratively worked with the authors for months on fixing bugs and adding words (mainly contractions, such as I'mma, y'all, yo', 'em, etc.) into their dictionary. In the end, we were able to successfully run it on 95\% of our data.
 
 However, we were still not very satisfied with the result. As you can see in the example in Table \ref{sparsar_wrong_scheme}, it failed to detect the perfect rhyme between 2\textsuperscript{nd} and 4\textsuperscript{th} line, and instead marked a rhyme on line 1 and 3, where there was none. Such errors were not sparse and led us to believe, that the encoded inclination of this tool to look for sonnet-shaped schemes caused it to make errors in the diverse schemes of song lyrics. It may be a great tool for sonnets, but we have found it insufficient for our purpose, so we proceeded to create our own rhyme detector.
 
@@ -34,7 +34,7 @@ However, we were still not very satisfied with the result. As you can see in the
 	\centering
 	\begin{tabular}{c c c} 
 		Scheme & Line & \begin{tabular}{@{}c@{}}Last word's pronunciation \\ (as assigned by SPARSAR)\end{tabular}  \\ [0.5ex] 
-		\hline
+		\midrule
 		a & Pulled out from the station & s-t-ey-sh-ah-n \\ 
 		h & fifteen after two & t-uw \\
 		a &	300 miles away from Vegas & v-ey-g-ah-s\\
@@ -45,23 +45,24 @@ However, we were still not very satisfied with the result. As you can see in the
 \end{table}
 
 \section{Defining the requirements}\label{defining_the_requirements}
-Before we dive into algorithm selection and implementation details of our detector, let's define what exactly do we want our detector to do. Additionally, we also establish terms for common cases to keep our further explanations short and clear.
+Before we dive into algorithm selection and implementation details of our detector, let's define what exactly do we want our detector to do. Additionally, we also establish terms for common cases in Table \ref{terms}, to keep our further explanations short and clear.
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{>{\bfseries}l l} 
-		component & a vowel or a consonant cluster of a syllable\\
+		component & a vowel or a consonant cluster in a syllable\\
 		rhyme candidates & two lines that are being compared for rhyme \\
 		rhyming fellows & two lines that rhyme together\\
-		rhyming part & the exact components that participate in rhyme \\&(are equal or similar in sound)\\
-		rhyme group & a group of lines that all rhyme together\\& (have identical scheme letter) \\
+		rhyming part & the exact components that participate in rhyme \\&(i.e. are equal or similar in sound)\\
+		rhyme group & a group of lines that all rhyme together\\& (i.e. have identical scheme letter) \\
 		rhyme rating & rating of the quality of one rhyme between two lines\\
 		song rating & rating of the rhyming quality of the entire song\\
 	\end{tabular}
+	\caption{Establishing terms.}
 	\label{terms}
 \end{table}
 
 \paragraph{Input}
-For our input, we expect song lyrics in English, formatted in lines with rhyme always at the end of line. If there will be rhyme in the middle of the line, it will be considered an \textit{\gls{internal_rhyme}} and will not be detected, as we decided in chapter \ref{chap-related-work} to only focus on end rhymes in this thesis. Optional empty lines between stanzas or chorus will be preserved but skipped.
+For our input, we expect song lyrics in English, formatted in lines with rhyme always at the end of line. If there will be rhyme in the middle of the line, it will be considered an \textit{\gls{internal_rhyme}} and will not be detected, as we decided in Chapter \ref{chap-related-work} to only focus on \gls{end_rhyme}s in this thesis. Optional empty lines between stanzas or chorus will be preserved but skipped.
 
 \paragraph{Output}
 The main element of our output is rhyme scheme. As a single element, it gives the best overview of the song and more importantly, it allows us to compare our detector with others or with the \gls{gold_data}. Additionally, we want more information to assess rhyme quality: rhyme rating for each individual rhyme, song rating, rhyme type, pronunciation of the rhyming part, optional modification of stress, etc.

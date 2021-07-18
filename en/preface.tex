@@ -1,8 +1,9 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-As artificial intelligence keeps catching up with humans, artistic fields are still not the same without the human aspect.
+As artificial intelligence keeps catching up with humans, even despite numerous attempts, in artistic fields people still prefer human-made art.
 \MP{Tomu are still not the same without zcela nerozumím. Různé pokusy o AI+art byly, dokonce před Deep learningem, byť to je stále z hlediska AI okrajové využití.}
+\todo[inline]{Je to takto zrozumite1ne?}
 For computers, it is hard to create art, and even harder to understand and analyze it. 
 
 A piece of art in everyday life of almost everyone is music. It is a complex form, where many aspects influence the audience, i.e. melody, rhythm, lyrics, performance, etc. Although we do realize they are interconnected and may affect each other, in this thesis, we will more deeply explore only one of these aspects -- song lyrics. 
@@ -13,28 +14,23 @@ Unfortunately, there was no sufficient rhyme detector that we could use for our 
 
 Additionally, we will create a web-page that demonstrates detector's capabilities and visualizes rhymes in an innovative way. With this tool, we hope to give artists, authors of poems and songs, or even amateurs a new way to explore their texts.
 
-At the end, we will return to lyrics generation, that lead us down this path,
-\MP{leadS? Ale úplně té větě nerozumím.}
-and explore current state-of-art
-\MP{state-of-the-art}
-pre-trained GPT-2 \MP{model} and its capabilities in this field.
+At the end, we will focus on lyrics generation and explore current state-of-the-art
+pre-trained GPT-2 model and its capabilities in this field.
 
-This works\MP{work} may include some literary or technical terms that the reader is not familiar with. For their definition, please see the chapter "Glossary of literary and technical terms" at the end of this thesis.\MP{Anglické uvozovky v TeXu sázejte ``takto''. Zde by měl být i hypertextový odkaz, tedy \textbackslash ref...}
+This work may include some literary or technical terms that the reader is not familiar with. For their definition, please see the Chapter \ref{glossary-section} ``Glossary of literary and technical terms'' at the end of this thesis.\MP{Zde by měl být i hypertextový odkaz, tedy \textbackslash ref...}
 
 
 \section*{Outline}
-In Chapter \ref{chap-related-work}, we will make \MP{the, ale ještě lépe ``we will explain the literary...''} reader familiar with the literary background such as rhyme, its types, and other literary devices. We will also describe approaches and review existing tools for rhyme detection, visualization, and lyrics generation. 
+In Chapter \ref{chap-related-work}, we will make we will explain the literary background such as rhyme, its types, and other literary devices. We will also describe approaches and review existing tools for rhyme detection, visualization, and lyrics generation. 
 
 Chapter \ref{data} introduces data that we will be working with, their structure and statistics, and the steps we took to pre-process them.
 
 The most complex part of this thesis is explained in Chapter \ref{chap-rhyme-analysis}, which specifies the details of how we perform rhyme detection in song lyrics.
 
-Chapter \ref{evaluation} evaluates our rhyme detector and shows the statistics when we run it for\MP{já bych řekl ``on''} our dataset.
+Chapter \ref{evaluation} evaluates our rhyme detector and shows the statistics when we run it on our dataset.
 
 How the output of our detector is brought to life by visualization is illustrated in Chapter \ref{visualization}.
 
 In Chapter \ref{generation}, we describe and review the results of lyrics generation experiment.
 
-Lastly, the results are summed up in Conclusion, including suggestions for future works.
-\MP{Já bych i sem dodal hypertextový odkaz, tedy třeba ``Conclusion (Chapter~\ref{conclusion})''.
-Taky bych místo ``future works'' psal jen ``future work'' - tedy jako uncountable.}
+Lastly, the results are summed up in Conclusion (Chapter \ref{conclusion}), including suggestions for future work.
