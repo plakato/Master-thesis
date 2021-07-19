@@ -1,13 +1,11 @@
 
 \chapter{Rhyme detection}\label{chap-rhyme-analysis}
-Detecting rhymes may seem like a simple task at first, but looking into details one discovers many problems that need to be addressed. As we have seen in chapter \ref{chap-related-work}, it is not a well-defined task so boundaries need to be set.
-\todo[inline]{sucast zadania ze to bude bez zvukovej stranky hoci to vplyv ma}
-\todo[inline]{pri popise taggeru dat typy rymov, ktore nezvlada}
+In this Chapter, we will first consider using available tools for rhyme detection. After not finding the right tool we will reconsider to make the detection ourselves.
 
-\cite{rhymes_overview}
+Detecting rhymes may seem like a simple task at first, but looking into details one discovers many problems that need to be addressed. As we have seen in Chapter \ref{chap-related-work}, it is not a well-defined task so we need to set the requirements.
 
-- points out most works focus on rhyme schemes in well structured poetry instead of common rhymes in text
-- where to draw the line between intended rhyme and accidental word similarity
+Then we progress through individual steps needed to find the rhymes and design a rating that would song's rhymes:
+
 
 \begin{enumerate}
 	\item phonetic transcription with additional data preprocessing	
@@ -62,7 +60,7 @@ Before we dive into algorithm selection and implementation details of our detect
 \end{table}
 
 \paragraph{Input}
-For our input, we expect song lyrics in English, formatted in lines with rhyme always at the end of line. If there will be rhyme in the middle of the line, it will be considered an \textit{\gls{internal_rhyme}} and will not be detected, as we decided in Chapter \ref{chap-related-work} to only focus on \gls{end_rhyme}s in this thesis. Optional empty lines between stanzas or chorus will be preserved but skipped.
+Although we realize sound can affect rhymes, for the purpose of this thesis we will focus solely on text. As \cite{rhymes_overview} points out, most works focus on rhyme schemes in well structured poetry instead of common rhymes in text. We do not have standard rhyme scheme patterns or fixed syllable counts -- song authors use rhymes arbitrarily. For our input, we expect song lyrics in English, formatted in lines with rhyme always at the end of line. If there will be rhyme in the middle of the line, it will be considered an \textit{\gls{internal_rhyme}} and will not be detected, as we decided in Chapter \ref{chap-related-work} to only focus on \gls{end_rhyme}s in this thesis. Optional empty lines between stanzas or chorus will be preserved but skipped.
 
 \paragraph{Output}
 The main element of our output is rhyme scheme. As a single element, it gives the best overview of the song and more importantly, it allows us to compare our detector with others or with the \gls{gold_data}. Additionally, we want more information to assess rhyme quality: rhyme rating for each individual rhyme, song rating, rhyme type, pronunciation of the rhyming part, optional modification of stress, etc.
@@ -203,7 +201,8 @@ To search for rhymes in the full lyrics we need to decide which verse pairs to c
 
 We traversed the song lyrics from beginning to the end, line by line, for each line trying all rhyme candidates in the given window.
 
-Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for all words in the given line pair. For every such combination we assign rhyme rating and keep only those with rhyme rating above the selected threshold. For default, we have set this threshold to 0.8 because we found it to work quite well in our data. However, it can be adjusted by user to their value of choice, similarly with other parameters such as window size.  
+Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for all words in the given line pair. For every such combination we assign rhyme rating and keep only those with rhyme rating above the selected threshold.
+\todo[inline]{\cite{rhymes_overview}- where to draw the line between intended rhyme and accidental word similarity} For default, we have set this threshold to 0.8 because we found it to work quite well in our data. However, it can be adjusted by user to their value of choice, similarly with other parameters such as window size.  
 
 From this list of candidates for each line, we select only the candidate with the highest rhyme rating. When the ratings are identical, we select the closest line. Other candidates are saved, in case changes need to be made later in scheme adjustment phase. When the line doesn't have any suitable rhyme candidates, it is assigned rating 0. If the line rhyme with a candidate that is already a part of a rhyme, they join together into a rhyme group of 3 (or more) lines.
  
