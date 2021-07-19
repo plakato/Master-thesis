@@ -1,13 +1,14 @@
+\listofchanges
 \chapter{Related work}\label{chap-related-work}
-This chapter gives a basic overview of all relevant tools and background information researched during work on this thesis. Firstly, it gives literary background necessary to make reader familiar with rhyme and its different types, to know what to look for before we start detecting them. Secondly, it describes existing tools for rhyme detection and visualization, and the different approaches they took. Lastly, it explains current state-of-art tools for lyrics generation.
+This chapter gives a basic overview of all relevant tools and background information researched during work on this thesis. Firstly,\comment{většinou se doporučuje First, Second,... to ``ly'' je zbytečné.} it gives literary background necessary to make \added{the} reader familiar with rhyme and its different types, to know what to look for before we start detecting them. Secondly, it describes existing tools for rhyme detection and visualization, and the different approaches they took. Lastly, it explains current state-of-art tools for lyrics generation.
 
 
 \section{Rhyme types and literary devices}
 
-There are many different definitions for what a rhyme is. It is described as "a word that has the same last sound as another word" by Cambridge Dictionary (\cite{walter2008cambridge}) or a "literary device, featured particularly in poetry, in which identical or similar concluding syllables in different words are repeated" by \cite{literarydevices2020}. The definition of what a good rhyme is even changes for different languages and time periods (\cite{zhirmunsky2013introduction}). For example, full identity in sound is highly valued in French (\textit{\gls{rime_riche}}), but less valued in English (perfect rhyme requires leading consonant sounds to differ). Some authors refrain from giving an exact definition and instead leave it to reader's intuition (\cite{plechavc2018collocation}). We will define rhyme through its different types, what will be helpful for detection later. 
+There are many different definitions for what a rhyme is. It is described as ``a word that has the same last sound as another word'' by Cambridge Dictionary (\cite{walter2008cambridge}) or a ``literary device, featured particularly in poetry, in which identical or similar concluding syllables in different words are repeated'' by \cite{literarydevices2020}. The definition of what a good rhyme is even changes for different languages and time periods (\cite{zhirmunsky2013introduction}). For example, full identity in sound is highly valued in French (\textit{\gls{rime_riche}}), but less valued in English (perfect rhyme requires leading consonant sounds to differ). Some authors refrain from giving an exact definition and instead leave it to reader's intuition (\cite{plechavc2018collocation}). We will define rhyme through its different types, what will be helpful for detection later. 
 
 \subsection{Basic rhyme types}
-\paragraph{Perfect rhyme} (also true rhyme, or sometimes just "rhyme") is the most common and superior type of rhyme. It requires two conditions to be met:
+\paragraph{Perfect rhyme} (also true rhyme, or sometimes just ``rhyme'') is the most common and superior type of rhyme. It requires two conditions to be met:
 
 \begin{itemize}
 	\item last stressed vowel and all following sounds are identical
@@ -17,7 +18,7 @@ There are many different definitions for what a rhyme is. It is described as "a 
 It is also the only rhyme for which the definitions are consistent (for example, see \cite{bain1867manual}, \cite{vanphonological}, \cite{bergman2017litcharts}, Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Rhyme}}). It can be further distinguished depending on how many syllables are involved:
 
 \begin{itemize}
-	\item \textbf{Masculine} (also single, monosyllabic) -- "the commonest kind of rhyme, between single stressed syllables at the ends of verse" (\cite{oxforddict2008literary}). 
+	\item \textbf{Masculine} (also single, monosyllabic) -- ``the commonest kind of rhyme, between single stressed syllables at the ends of verse'' (\cite{oxforddict2008literary}). 
 	Examples: 
 	
 	fly /\textipa{\underline{flaI}}/ -- sky /\textipa{\underline{skaI}}/
@@ -26,13 +27,13 @@ It is also the only rhyme for which the definitions are consistent (for example,
 	\footnote{For the examples, we are using IPA transcriptions because it is more comfortable for human readers.}
 	\footnote{Stressed syllables are underlined. Syllables are separated with a dot.}
 	
-	\item \textbf{Feminine} (also double) -- "a rhyme on two syllables, the first stressed and the second unstressed" (\cite{oxforddict2008literary}). Examples: 
+	\item \textbf{Feminine} (also double) -- ``a rhyme on two syllables, the first stressed and the second unstressed'' (\cite{oxforddict2008literary}). Examples: 
 	
 	bitten /\textipa{\underline{bI}.t@n}/ -- written /\textipa{\underline{rI}.t@n}/
 	
 	lazy /\textipa{\underline{leI}.zi}/ -- crazy /textipa{\underline{kreI}.zi}/
 	
-	\item \textbf{Dactylic} (also triple) -- "a rhyme on three syllables, the first stressed and the others unstressed"(\cite{oxforddict2008literary}). Examples: 
+	\item \textbf{Dactylic} (also triple) -- ``a rhyme on three syllables, the first stressed and the others unstressed''(\cite{oxforddict2008literary}). Examples: 
 	
 	amorous /\textipa{\underline{æ}.m@r.@s}/ -- glamorous /\textipa{\underline{glæ}.m@r.@s}/
 	
@@ -40,33 +41,33 @@ It is also the only rhyme for which the definitions are consistent (for example,
 	
 \end{itemize}
 
-\paragraph{Imperfect rhyme} (also slant or half rhyme)  rhymes "the stressed syllable of one word with the unstressed syllable of another word" (\cite{bergman2017litcharts}). Examples: 
+\paragraph{Imperfect rhyme} (also slant or half rhyme)  rhymes ``the stressed syllable of one word with the unstressed syllable of another word'' (\cite{bergman2017litcharts}). Examples: 
 
 cabbage /\textipa{\underline{kæ}.bIdZ}/ -- ridge /\textipa{\underline{rIdZ}}/
 
 painting /\textipa{\underline{peIn}.tIN}/ -- ring /\textipa{\underline{rIN}}/
 
-\noindent In other sources, definitions differ -- for example \cite{literarydevices2020} calls this effect "feminine rhyme".  On the other hand, \cite{oxforddict2008literary} and \cite{britannica} use the term "imperfect rhyme" for end-line consonance (see definition below) and \cite{vanphonological} uses it for end-line assonance (see definition below). For the purpose of this thesis, we would like to keep rhyme types disjoint. Therefore we will require the sounds in the imperfect rhyme to be identical, except for the stress. This will differentiate it from \textit{forced rhyme} (see below).
+\noindent In other sources, definitions differ -- for example \cite{literarydevices2020} calls this effect ``feminine rhyme''.  On the other hand, \cite{oxforddict2008literary} and \cite{britannica} use the term ``imperfect rhyme'' for end-line consonance (see definition below) and \cite{vanphonological} uses it for end-line assonance (see definition below). For the purpose of this thesis, we would like to keep rhyme types disjoint. Therefore we will require the sounds in the imperfect rhyme to be identical, except for the stress. This will differentiate it from \textit{forced rhyme} (see below).
 
 
-\paragraph{Unaccented rhyme} (also weakened rhyme) "occurs when the relevant syllable of the rhyming word is unstressed" (\cite{britannica}). Examples: 
+\paragraph{Unaccented rhyme} (also weakened rhyme) ``occurs when the relevant syllable of the rhyming word is unstressed'' (\cite{britannica}). Examples: 
 
 hammer /\textipa{\underline{hæ}.m@r}/ -- carpenter /\textipa{\underline{kA:r}.p@n.t@r}/
 
 \noindent The difference opposed to imperfect rhyme is that here \gls{rhyming_part}s of both words are unstressed. However, for simplicity, in the scope of this thesis we will include this category under \textit{imperfect rhymes}.
 
 
-\paragraph{Identical rhyme} (also \gls{rime_riche}) is "a kind of rhyme in which the rhyming elements include matching consonants before the stressed vowel sounds." This includes "rhyming of two words with the same sound and sometimes the same spelling but different meanings e.g.:
+\paragraph{Identical rhyme} (also \gls{rime_riche}) is ``a kind of rhyme in which the rhyming elements include matching consonants before the stressed vowel sounds.'' This includes ``rhyming of two words with the same sound and sometimes the same spelling but different meanings e.g.:
 
  seen /\textipa{\underline{sin}}/ -- scene /\textipa{\underline{si:n}}/
  
  The term also covers word‐endings where the consonant preceding the stressed vowel sound is the same: 
  
- compare /\textipa{k@m.\underline{pEr}}/ -- despair /\textipa{dIs.\underline{pEr}}/." (\cite{oxforddict2008literary})
+ compare /\textipa{k@m.\underline{pEr}}/ -- despair /\textipa{dIs.\underline{pEr}}/.'' (\cite{oxforddict2008literary})
  
  It is generally considered not as good as perfect rhyme because it is too predictable for the listener\footnote{\url{https://literaryterms.net/rhyme/}}. However, all rhyme detection tools as well as gold data that we will be using (annotated by professionals) include identity in perfect rhymes. To make the comparison and evaluation with our tool easier, we will do so as well.
 
-\paragraph{Forced rhyme} (also near rhyme) "includes words with a close but imperfect match in sound in the final syllables" \cite{bergman2017litcharts}. Examples: 
+\paragraph{Forced rhyme} (also near rhyme) ``includes words with a close but imperfect match in sound in the final syllables'' \cite{bergman2017litcharts}. Examples: 
 
 green /\textipa{\underline{gri:n}}/ -- fiend /\textipa{\underline{fi:nd}}/
 
@@ -74,14 +75,14 @@ hide /\textipa{\underline{haId}}/ -- mind /\textipa{\underline{maInd}}/
 
 \noindent This includes the case when spelling is changed in order to make the rhyme work, e.g.:
 
- truth /\textipa{\underline{truT}}/ -- endu'th /\textipa{en.\underline{duT}}/ (a contraction of "endureth")
+ truth /\textipa{\underline{truT}}/ -- endu'th /\textipa{en.\underline{duT}}/ (a contraction of ``endureth'')
  
  It can also refer to using unnatural word order to get the rhyming word at the end of the line (\cite{bergman2017litcharts}) but we will not make use of this interpretation in this thesis.
 
 \subsection{Other literary devices}
 This is a short overview of other literary devices that closely correlate with forced rhyme and may, according so some sources, be considered a rhyme. We will conservatively exclude these from our classification and focus solely on rhymes occurring at the end of verse.
 
-\paragraph{Assonance} is "repetition of stressed vowel sounds within words with different end consonants" (\cite{britannica}). Examples:	
+\paragraph{Assonance} is ``repetition of stressed vowel sounds within words with different end consonants'' (\cite{britannica}). Examples:	
 
 quite /\textipa{\underline{kwaIt}}/ -- like /\textipa{\underline{laIk}}/
 
@@ -89,19 +90,19 @@ free /\textipa{\underline{fri:}}/ -- breeze /\textipa{\underline{bri:z}}/
 
 \noindent When used at the end of verse with ending consonants having a similar sound, it is equal to forced rhyme. However, the term itself defines a literary device applicable anywhere in the poem, even in the middle of the verse. Some sources classify it as rhyme, giving it various names (\cite{vanphonological}, \cite{bergman2017litcharts}, and others).
 
-\paragraph{Consonance} is "the recurrence or repetition of identical or similar consonants" (\cite{britannica}). Examples: 
+\paragraph{Consonance} is ``the recurrence or repetition of identical or similar consonants'' (\cite{britannica}). Examples: 
 
 country /\textipa{\underline{k@n}.tri}/ -- contra /\textipa{\underline{kA:n}.tr@}/
 
 hickory dickory dock /\textipa{\underline{hI}.k@.ri \underline{dI}.k@.ri \underline{dA:k}}/
 
-\noindent Similarly as assonance, it applies to repetition of consonants in any part of the verse. When seen at the end of verse, it can be considered a rhyme and again, various terms are used -- perhaps the most common is "pararhyme" (\cite{britannica}, \cite{oxforddict2008literary}).
+\noindent Similarly as assonance, it applies to repetition of consonants in any part of the verse. When seen at the end of verse, it can be considered a rhyme and again, various terms are used -- perhaps the most common is ``pararhyme'' (\cite{britannica}, \cite{oxforddict2008literary}).
 \newline
 
 The last two terms may seem as more of a tool for poets than songwriters. Surprisingly, they have found their way into song lyrics and have become a standard in genres like hip hop according to \cite{vanphonological}. From the creative point of view, it is not less sophisticated rather it enriches rhyme as we know it (\cite{brogan2016poeticterms}).
 
 
-Other rhyme types exist e.g. eye rhyme where "the spellings of the rhyming elements match, but the sounds do not, e.g. love /\textipa{\underline{l@v}}/ -- prove /\textipa{\underline{pru:v}}/" (\cite{oxforddict2008literary}). We do not consider them relevant for song lyrics or the purpose of this thesis.
+Other rhyme types exist e.g. eye rhyme where ``the spellings of the rhyming elements match, but the sounds do not, e.g. love /\textipa{\underline{l@v}}/ -- prove /\textipa{\underline{pru:v}}/'' (\cite{oxforddict2008literary}). We do not consider them relevant for song lyrics or the purpose of this thesis.
 
 
 \section{Rhyme detection tools}\label{rhyme_detection_tools}

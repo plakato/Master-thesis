@@ -96,7 +96,7 @@ CMUdict is a large dictionary and it includes also slang words so it should cove
 \end{itemize}
 
 \subsection{Dealing with out-of-dictionary words}
-In an attempt to decrease the amount of out-of-dictionary words, we replaced the closing quotation mark "\textipa{’}" (U+2019) with the typewriter apostrophe "\texttt{\fontencoding{OT1}\selectfont\symbol{13}}"
+In an attempt to decrease the amount of out-of-dictionary words, we replaced the closing quotation mark ``\textipa{’}'' (U+2019) with the typewriter apostrophe ``\texttt{\fontencoding{OT1}\selectfont\symbol{13}}''
  (U+0027) since only the second variant of apostrophe is accepted by CMUdict. However, this only decreased the percentage of unrecognized words to 5.47\%.
 
 Clearly, we needed a way to estimate the pronunciation for these words, so we used grapheme-to-phoneme library \textit{g2p} by \cite{g2pE2019}. It predicts the pronunciation for out-of-dictionary words using deep learning seq2seq model by TensorFlow (\cite{tensorflow2015-whitepaper}).
@@ -197,7 +197,7 @@ For the matrix initialization, Plechac calculates the collocations in the data a
 
 \section{Scheme}
 \subsection{Finding all rhymes}
-To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be "brute force" -- try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme -- the author can even make it a part of his artistic expression  e.g. in "Author's Prologue" by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. Realistically, a rhyme between a line at the beginning of the lyrics and 20 lines later would not have a strong effect on the song listener -- it requires a close proximity of rhyme fellows within the poem for the rhyme to be noticed by ear. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the default window size to 5. 
+To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be ``brute force'' -- try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme -- the author can even make it a part of his artistic expression  e.g. in ``Author's Prologue'' by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. Realistically, a rhyme between a line at the beginning of the lyrics and 20 lines later would not have a strong effect on the song listener -- it requires a close proximity of rhyme fellows within the poem for the rhyme to be noticed by ear. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the default window size to 5. 
 
 We traversed the song lyrics from beginning to the end, line by line, for each line trying all rhyme candidates in the given window.
 
@@ -235,14 +235,13 @@ To address this issue, we have to do one more iteration over the resulting rhyme
 \section{Calculating song rating}
 The next step is to combine these rhyme ratings into one final rating for the entire song. We will use the straight-forward approach of averaging the assigned rhyme ratings. The dilemma here is where to store the rhyme rating since rhyme is a property of two lines. The first logical idea would be to store it with each line participating in the rhyme. However, then we would add it to the final song rating twice. Moreover, for larger rhyme groups, it would be disproportionate, because third and all the following lines would be added only once. 
 
-Therefore we decided to store the rating only with the second line of the rhyme. That means the first line in each rhyme group will always be assigned the default value "-". It cannot be assigned rhyme rating 0 because that would mean it is a non-rhyming line and would lower the final average. In summary, song rating is the average of rhyme ratings for all rhymes except the lines with unassigned rating "-".
+Therefore we decided to store the rating only with the second line of the rhyme. That means the first line in each rhyme group will always be assigned the default value ``-''. It cannot be assigned rhyme rating 0 because that would mean it is a non-rhyming line and would lower the final average. In summary, song rating is the average of rhyme ratings for all rhymes except the lines with unassigned rating ``-''.
 
 
 
 
 
 
-	
 \section{Syllables}
 \todo[inline]{check if this wouldn't work with g2p}
 Since meter plays an important role in rhymes, another relevant property to examine is the number of syllables. To count syllables for each line we used Python package \textit{syllabify} \footnote{\url{https://github.com/kylebgorman/syllabify}} which returns syllables using ARPAbet transcription. For words not in CMUdict we used a simple heuristic -- since the nucleus of each syllable is most often a vowel (except for syllabic consonants) we counted the number of (groups of) vowels and used it as an estimation for the number of syllables. Although this gives a wrong estimate for some words e.g. \textit{rhythm} or \textit{house}, it performed quite well when we tested it on a few out-of-dictionary words from our dataset. We found it unnecessary to try to further improve the heuristic because the words that are not in CMUdict are often foreign words that do not follow the standard pronunciation rules of English so any application of these rules would probably be of little help.
