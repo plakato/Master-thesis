@@ -110,6 +110,9 @@ The last two terms may seem as more of a tool for poets than songwriters. Surpri
 
 Other rhyme types exist e.g. eye rhyme where ``the spellings of the rhyming elements match, but the sounds do not, e.g. love /\textipa{\underline{l@v}}/ -- prove /\textipa{\underline{pru:v}}/'' (\cite{oxforddict2008literary}). We do not consider them relevant for song lyrics or the purpose of this thesis.
 
+\MP{Někde by mohlo být také vysvětleno, co to je rhyme scheme.
+Ten termín používáte ještě před Table 3.2 -- jinak by to šlo vysvětlit až tam.\\
+Aha, teď vidím, že to máte vysvětleno v Section~\ref{sec:scheme}, takže by stačilo na to odkázat u prvního výskytu "rhyme scheme" (což je v předposlední větě následujícího odstavce).}
 
 \section{Rhyme detection tools}\label{rhyme_detection_tools}
 We have defined what to look for, and now we will focus on how to do it. According to \cite{plechac2017presentation}, there are 4 methods for rhyme detection. We will describe each one and evaluate existing tools. For our use case, it is important that we can use the tool for automatic evaluation -- there must be a way to run it with code whether it would be an API, \deleted{or} an executable script, or as a library/module.
@@ -131,9 +134,13 @@ Pak mi ale není jasné, proč následuje \textit{and notices all ``obvious'' rh
 and notices all ``obvious'' rhymes. Another downside of this approach is its limitation to the size of the dictionary.
 \MP{O žádném the dictionary dosud nebyla řeč.
 Asi by se mohlo zmínit něco jako, že English orthography is highly nonphonemic, thus a pronunciation dictionary is needed for converting graphemes to phonemes.
-Dále by se mohlo zmínit, že slovní přízvuky jsou nepravidelné, tedy že ten slovník musí obsahovat i přízvuky, chceme-li detekovat právě perfect rhymes (jinak bychom do toho museli přidat i imperfect).
+Dále by se mohlo zmínit, že slovní přízvuky jsou nepravidelné, tedy že ten slovník musí obsahovat i přízvuky, chceme-li detekovat právě perfect rhymes (jinak bychom do toho museli přidat i imperfect).\\
+Aha, teď vidím, že částečně to máte popsané v sekci 3.3 Pronunciation.
+I tak -- něco málo by mělo být zde plus odkaz do té sekce.
 }
 There are many rhyming dictionaries (of various quality and size) to choose from but the vast majority \deleted[comment={Myslím, že se říká ``majority is'' ale ``majority of dictionaries are''. To ``of them'' mi ale nakonec přijde zbytečné.}]{of them} uses or enhances CMU dictionary \added{(CMUdict)}.\footnote{\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}}
+\added{For more details about CMUdict see Section~\ref{cmudict}.}
+
 \subsubsection*{Pronouncing and CMU dictionary}
 Pronouncing\footnote{\url{https://pypi.org/project/pronouncing/}} is a Python library providing an interface for CMU Pronouncing Dictionary. One possibility is to install CMUdict directly, search for pronunciations for both words and compare then. \textit{Pronouncing} searches the dictionary automatically for a given word and returns a list of rhyming words. However, the list is truncated and probably better suited for writer's inspiration only.
 
@@ -194,7 +201,8 @@ Také by zde mohl být ten princip lépe vysvětlen.
 Ideálně tak, abyste to Vy před rokem z toho pochopila.
 Vy to máte trochu vysvětlené o kus níž u RhymeTaggeru, ale Plecháč ten základní princip převzal od Reddy\&Knight.
 Ty rozdíly asi nemusíte detailně popisovat.
-Taky by šlo sem jen přidat závorku (see an explanation of the EM algorithm below in the RhymeTagger description).
+Taky by šlo sem jen přidat závorku (see an explanation of the EM algorithm below in the RhymeTagger description).\\
+Aha, teď vidím, že EM máte dobře vysvětlen v 3.5.2 -- to byste zde taky mohla odkázat.
 }
 \cite{reddy2011unsupervised} proposed a language-independent model for finding rhyme schemes in poetry. They created an unsupervised model based on EM algorithm that assigns the most probable rhyme scheme for each sequence of line-final words. It achieved good results when tested on annotated English and French corpus with poetry from 15\textsuperscript{th} to 20\textsuperscript{th} century. However its big pitfall lies in the fact that it is biased towards the rhyme schemes from golden data. It has a predefined set of all rhyme schemes found in tested data and those are the only ones it chooses from. For illustration, in a 14-line stanza it can choose from 90 schemes which is only 0.00005\% of all possible options. In 29\% of cases from French corpus it has only one choice.\footnote{\url{http://versologie.cz/talks/2017basel/}}
 \MP{Není zřejmé, proč je zde tato url.
