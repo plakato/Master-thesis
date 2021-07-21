@@ -247,13 +247,3 @@ To address this issue, we have to do one more iteration over the resulting rhyme
 The next step is to combine these rhyme ratings into one final rating for the entire song. We will use the straight-forward approach of averaging the assigned rhyme ratings. The dilemma here is where to store the rhyme rating since rhyme is a property of two lines. The first logical idea would be to store it with each line participating in the rhyme. However, then we would add it to the final song rating twice. Moreover, for larger rhyme groups, it would be disproportionate, because third and all the following lines would be added only once. 
 
 Therefore we decided to store the rating only with the second line of the rhyme. That means the first line in each rhyme group will always be assigned the default value ``-''. It cannot be assigned rhyme rating 0 because that would mean it is a non-rhyming line and would lower the final average. In summary, song rating is the average of rhyme ratings for all rhymes except the lines with unassigned rating ``-''.
-
-
-
-
-
-
-\section{Syllables}
-\todo[inline]{I still need to add statistics of syllables, so I might rewrite this}
-Since meter plays an important role in rhymes, another relevant property to examine is the number of syllables. To count syllables for each line we used Python package \textit{syllabify} \footnote{\url{https://github.com/kylebgorman/syllabify}} which returns syllables using ARPAbet transcription. For words not in CMUdict we used a simple heuristic -- since the nucleus of each syllable is most often a vowel (except for syllabic consonants) we counted the number of (groups of) vowels and used it as an estimation for the number of syllables. Although this gives a wrong estimate for some words e.g. \textit{rhythm}, or \textit{house}, it performed quite well when we tested it on a few out-of-dictionary words from our dataset. We found it unnecessary to try to further improve the heuristic because the words that are not in CMUdict are often foreign words that do not follow the standard pronunciation rules of English so any application of these rules would probably be of little help.
-
