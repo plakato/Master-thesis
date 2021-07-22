@@ -130,52 +130,31 @@ SPARSAR (\cite{Delmonte2014}) is also a very interesting tool for poetry analysi
 User can choose between a window application with graphs and diagrams or a \gls{headless_mode} with .xml output files. Its main disadvantage for our use case is that it is written in Prolog and therefore is very strict on the input format and runs only under a specific older version of Ubuntu. 
 
 \subsubsection*{Datamuse}
-Datamuse API\footnote{\url{https://www.datamuse.com/api/}} combines the advantages of \added{a} rhyming dictionary and semantic analysis. It uses CMUdict for phonetic transcription, analyzes CommonCrawl\footnote{\url{https://commoncrawl.org/}} web data repository for forced rhymes, Google Books Ngrams (\cite{weiss2015google}) for building language model, and WordNet 3.0 (\cite{pearson2005encyclopedia}) for semantic relations. Users can send complex queries, e.g. ``words that rhyme with \textit{grape} that are related to \textit{breakfast}''. Similarly to Rhyme Genie, it focuses more on rhyme suggestion rather than rhyme detection.
+Datamuse API\footnote{\url{https://www.datamuse.com/api/}} combines the advantages of a rhyming dictionary and semantic analysis. It uses CMUdict for phonetic transcription, analyzes CommonCrawl\footnote{\url{https://commoncrawl.org/}} web data repository for forced rhymes, Google Books Ngrams (\cite{weiss2015google}) for building language model, and WordNet 3.0 (\cite{pearson2005encyclopedia}) for semantic relations. Users can send complex queries, e.g. ``words that rhyme with \textit{grape} that are related to \textit{breakfast}''. Similarly to Rhyme Genie, it focuses more on rhyme suggestion rather than rhyme detection.
 
 
 \subsection{Similarity (distance) based approach}
-Generally, substituting arbitrary consonant in perfect rhyme does not necessary create forced rhyme -- corresponding phonemes must have similar sound\added{s}. Objective criteria to measure this similarity can be phoneme's features e.g. plosive, nasal, fricative, voiced, etc. Rhyme detectors can use these features and other specific sound rules to calculate sound distance between two words. We found no specific tool focusing on this approach, but some listed tools like Rhyme Genie incorporated it into their algorithm. 
+Generally, substituting arbitrary consonant in perfect rhyme does not necessary create forced rhyme -- corresponding phonemes must have similar sounds. Objective criteria to measure this similarity can be phoneme's features e.g. plosive, nasal, fricative, voiced, etc. Rhyme detectors can use these features and other specific sound rules to calculate sound distance between two words. We found no specific tool focusing on this approach, but some listed tools like Rhyme Genie incorporated it into their algorithm. 
 
 However, not all phonetic features contribute to similar sound the same. Furthermore, speakers from different areas perceive sound differently and may have distinct boundaries for what is similar and what is not. Using AI, we can tailor the similarity based on the data.
 
 \subsection{Machine learning}\label{ml}
-The vast majority of recent tools used AI to solve this problem. We will describe one tool that uses \gls{LSTM} neural network and two tools that use the EM algorithm, with more focus towards Rhyme Tagger, as we will use this tool later for inspiration and comparison with our detector.
-\MP{Čtenář zatím neví, co je Rhyme Tagger, ani že je to jeden z těch dvou tools používajících EM.
-V tomto odstavci by šlo zmínit třeba něco jako, že machine learning approaches mají tu výhodu,
-že se mohou pravidla rýmování naučit z dat,
-a tedy se přizpůsobit různým žánrům a typům rýmů, případně i různým jazykům.
-Pak byste asi měla vysvětlit, jak fungují unsupervised machine-learning metody detekce rýmů,
-tedy zdůraznit, že stačí velké množství textů s rýmy, ale ty nemusejí být anotované/otagované.
-Také by se asi už zde mohl zavést termín vertical collocation dle Plecháče
-a nastínit ten princip -- slova (případně jejich koncové slabiky), která se často opakují na konci blízkých řádků mají vyšší pst, že budou rýmy.
-Jednou z možností, jak toho využít je EM algorithm.
-}
+The vast majority of recent tools used AI to solve this problem. Unsupervised machine-learning methods for rhyme detection require a large amount of data containing rhymes. The main advantage is that this data does not need to be annotated -- rhyming can be learned directly from the data thanks to its large quantity. Consequentially, by learning from the data, detectors can adapt to different genres, rhyme types, or even languages. 
+
+When words commonly occur next to each other in text, it is referred to as \textit{collocation}. For rhyme detection, we will define a more useful term -- \textit{vertical collocation} -- as the co-occurrence of words, syllables, or phonemes at the end of lines in close proximity. Notably, commonly vertically co-occurring words have a higher probability of being rhymes. One possibility how to take advantage of this fact is using the EM algorithm (described further in Section \ref{analysis:training}).
+
 
 \subsubsection*{Reddy \& Knight's EM algorithm}
-\MP{Také by zde mohl být ten princip lépe vysvětlen.
-Ideálně tak, abyste to Vy před rokem z toho pochopila.
-Vy to máte trochu vysvětlené o kus níž u RhymeTaggeru, ale Plecháč ten základní princip převzal od Reddy\&Knight.
-Ty rozdíly asi nemusíte detailně popisovat.
-Taky by šlo sem jen přidat závorku (see an explanation of the EM algorithm below in the RhymeTagger description).\\
-Aha, teď vidím, že EM máte dobře vysvětlen v 3.5.2 -- to byste zde taky mohla odkázat.
-}
-\cite{reddy2011unsupervised} proposed a language-independent model for finding rhyme schemes in poetry. They created an unsupervised model based on EM algorithm that assigns the most probable rhyme scheme for each sequence of line-final words. It achieved good results when tested on annotated English and French corpus with poetry from 15\textsuperscript{th} to 20\textsuperscript{th} century. However its big pitfall lies in the fact that it is biased towards the rhyme schemes from golden data. It has a predefined set of all rhyme schemes found in tested data and those are the only ones it chooses from. For illustration, in a 14-line stanza it can choose from 90 schemes which is only 0.00005\% of all possible options. In 29\% of cases from French corpus it has only one choice.\footnote{\url{http://versologie.cz/talks/2017basel/}}
-\MP{Není zřejmé, proč je zde tato url.
-Tedy není zřejmé, že je to zdroj posledních dvou (či více) vět. Lepší by bylo:
-According to Plecháč [2017], ...
-a takto citovat ten zdroj (ať už slajdy, nebo ten Plecháčův článek, který jsem Vám poslal).\\
-Pokud si pamatuji, tak to nejsou přesné citace (na těch slajdech je to v bodech). Kdyby to byla doslovná citace z toho zdroje (ať už článku či slajdů), tak by to mělo být v uvozovkách (a kurzívou).}
+\cite{reddy2011unsupervised} proposed a language-independent model for finding rhyme schemes in poetry. They created an unsupervised model based on EM algorithm that assigns the most probable rhyme scheme for each sequence of line-final words. It achieved good results when tested on annotated English and French corpus with poetry from 15\textsuperscript{th} to 20\textsuperscript{th} century. However its big pitfall lies in the fact that it is biased towards the rhyme schemes from golden data. It has a predefined set of all rhyme schemes found in tested data and those are the only ones it chooses from. For illustration, according to \cite{plechac2017presentation}, in a 14-line stanza it can choose from 90 schemes which is only 0.00005\% of all possible options. In 29\% of cases from French corpus it has only one choice.
+
 
 \subsubsection*{RhymeTagger}
-\cite{plechavc2018collocation} came \added{up} with an open-source collocation-driven \replaced{tool}{alternative} named RhymeTagger \added{as an improvement on top of citet{reddy2011unsupervised}}.
+As an improvement on top of \cite{reddy2011unsupervised}, \cite{plechavc2018collocation} came up with an open-source collocation-driven tool named RhymeTagger.
 
 It uses the same dataset as the previous approach with addition of a larger Czech poetry corpus.\footnote{\url{https://github.com/versotym/corpusCzechVerse}}
-Each line-final word is transcribed into phonetic transcription and split into two types of components -- \gls{syllable_peak} for each syllable and \gls{consonant_clusters} in between. In the \textit{expectation} step, probabilities for each component pair are calculated based on their co-occurrence in line-final words, e.g. \added{the} conditional probability of \added{the} rhyme based on peak component pair \textipa{@U}:\textipa{@U} will be very high but for consonant component pair k:r quite low. These statistics for component pairs are then used in the \textit{maximization} step to calculate the probability for line-final word pair as a combined probability of all their components (paired by means of usual association measure).
-\MP{Nerozumím, co myslíte těmi usual association measure.
-Čekal bych, že párování components je triviální -- každou slabiku rozdělíme na 3 komponenty (případně prázdné) a pak párujeme od konce.}
-If the probability of two words is above a given threshold they are considered a rhyme. After all such pairs are classified, probabilities are iteratively recalculated in the EM cycle. 
+Each line-final word is transcribed into phonetic transcription and split into two types of components -- \gls{syllable_peak} for each syllable and \gls{consonant_clusters} in between. In the \textit{expectation} step, probabilities for each component pair are calculated based on their co-occurrence in line-final words, e.g. the conditional probability of the rhyme based on peak component pair \textipa{@U}:\textipa{@U} will be very high but for consonant component pair k:r quite low. These statistics for component pairs are then used in the \textit{maximization} step to calculate the probability for line-final word pair as a combined probability of all their components (paired according to their position from the end). If the probability of two words is above a given threshold they are considered a rhyme. After all such pairs are classified, probabilities are iteratively recalculated in the EM cycle. 
 
-For words that were not successfully classified with this method, there is a fallback. The author observed that some words are now pronounced differently than during the Shakespearean era\deleted{ they were written in}, therefore using current pronunciation dictionaries may ruin the original rhyme, e.g. original near /\textipa{nE:r}/ -- there /\textipa{DE:r}/ vs. contemporary near /\textipa{nI:r}/ -- there /\textipa{DE:r}/. \added{The} original pronunciation can be therefore inferred from words with similar orthography. \replaced{\citeauthor{plechavc2018collocation}}{He} calculated rhyme probability given final character trigrams, which helped achieve higher recall. Although other methods may have better precision, collocation-driven approach wins in recall as seen in Figure \ref{screenshotRT}. 
+For words that were not successfully classified with this method, there is a fallback. The author observed that some words are now pronounced differently than during the Shakespearean era, therefore using current pronunciation dictionaries may ruin the original rhyme, e.g. original near /\textipa{nE:r}/ -- there /\textipa{DE:r}/ vs. contemporary near /\textipa{nI:r}/ -- there /\textipa{DE:r}/. The original pronunciation can be therefore inferred from words with similar orthography. \citeauthor{plechavc2018collocation} calculated rhyme probability given final character trigrams, which helped achieve higher recall. Although other methods may have better precision, collocation-driven approach wins in recall as seen in Figure \ref{screenshotRT}. 
 
 For evaluation, they used precision, recall and F-score calculated as follows:
 
@@ -257,28 +236,12 @@ Generation of text, especially artistic, is a very challenging task for a machin
 
 
 \subsection{Rule-based generating}
-Rule-based tools are inherently very complex and the output is often limited to certain structure or topic. They usually require the user to input starting configuration, whether it is genre, topic, time period, amount and type of rhymes, phrases, etc. They tend to be less creative but better at rhyming and following the form and structure. To achieve that, they may use rhyming dictionaries (see Section \ref{rhyme_detection_tools}). Simpler ones just use a large set of pre-written templates, e.g. MasterPiece Generator.\footnote{\url{https://www.song-lyrics-generator.org.uk/}} In this thesis, we will focus on generation using artificial intelligence (AI).
-\MP{Obecně se AI považuje za nadmnožinu machine learning (což je nadmnožina deep learning, což se velmi překrývá s artificial neural networks).
-Do AI tradičně spadají i rule-based metody.
-Buď vysvětlete čtenáři, že pod AI rozumíte jen moderní machine-learning-based AI,
- nebo změňte tuto větu a následující podsekci přejmenujte.
-Chtělo by to ale ověřit, že všechny uvedené online generátory jsou opravdu machine-learning based.
-Tipuji, že některé budou spíš pravidlové.
-Pokud to o nich víte, uveďte je v této podsekci.
-Samozřejmě mohou existovat metody hybridní využívající jak ručně psaná pravidla, tak strojové učení.
-Jedním z příkladů je nakonec Váš detektor.
-}
+Rule-based tools are inherently very complex and the output is often limited to certain structure or topic. They usually require the user to input starting configuration, whether it is genre, topic, time period, amount and type of rhymes, phrases, etc. They tend to be less creative but better at rhyming and following the form and structure. To achieve that, they may use rhyming dictionaries (see Section \ref{rhyme_detection_tools}). Simpler ones just use a large set of pre-written templates, e.g. MasterPiece Generator.\footnote{\url{https://www.song-lyrics-generator.org.uk/}} In this thesis, we will focus on generation using machine learning.
 
-\subsection{Generating using AI}
-The popular approach for generating song lyrics is certainly AI in its many forms. It can be proved by the large number of AI lyrics generators created by enthusiasts, e.g. \textit{These Lyrics Do Not Exist}\footnote{\url{https://theselyricsdonotexist.com/}}, \textit{Freshbots Lyrics Generator}\footnote{\url{https://www.freshbots.org/lyrics-generator}}, \textit{Random Lyrics Generator}\footnote{\url{http://www.anticulture.net/RandomLyrics.php}}, \textit{DeepBeat -- Rap Lyrics Generating AI}\footnote{\url{https://deepbeat.org/}}, \textit{BoredHumans Generator}\footnote{\url{https://boredhumans.com/lyrics_generator.php}}, \textit{RapPad Lyrics Generator}\footnote{\url{https://www.rappad.co/songs-about/}}, and many more. We will further describe Deep-speare (mentioned earlier in Section \ref{ml}) and current state-of-art GPT-2 and GPT-3.
-\MP{Jednak state-of-\textbf{the}-art.
-Jednak by mělo být jasné, v kterém ohledu jsou state-of-the-art,
- tedy nejspíš v nějaké měřitelné evaluaci.
-U benchmarků typu GLUE a SuperGLUE už jsou myslím i lepší modely,
- ale není to dávno, co bylo na prvních příčkách GPT, takže tam by to pojmenování šlo použít.
-Zde nás ale spíš zajímá generování poezie a v tom nevím o žádném benchmarku a ustáleném způsobu evaluace.
-Možná by šlo něco jako ``and GPT models, which are considered state of the art in text generation.''
-}
+
+\subsection{Generating using machine learning}
+The popular approach for generating song lyrics is certainly machine learning in its many forms. It can be proved by the large number of lyrics generators created by enthusiasts, e.g. \textit{These Lyrics Do Not Exist}\footnote{\url{https://theselyricsdonotexist.com/}}, \textit{Freshbots Lyrics Generator}\footnote{\url{https://www.freshbots.org/lyrics-generator}}, \textit{Random Lyrics Generator}\footnote{\url{http://www.anticulture.net/RandomLyrics.php}}, \textit{DeepBeat -- Rap Lyrics Generating AI}\footnote{\url{https://deepbeat.org/}}, \textit{BoredHumans Generator}\footnote{\url{https://boredhumans.com/lyrics_generator.php}}, \textit{RapPad Lyrics Generator}\footnote{\url{https://www.rappad.co/songs-about/}}, and many more. We will further describe Deep-speare (mentioned earlier in Section \ref{ml}) and GPT models, which are considered state-of-the-art in text generation.
+
 
 \subsubsection*{Deep-speare}
 Deep-speare (\cite{lau2018deep}) is a joint neural network architecture that generates only a specific type of poems with strict form and meter -- \gls{sonnet} \gls{quatrain}s. It consists of three models: language model generates one word at a time, pentameter model samples meter-conforming sentences, rhyme model enforces rhyme, and they are all trained together in multi-task learning setting. They present very good results -- generated poems are mostly indistinguishable from human-written ones, apart from expert evaluation, where they report lack of emotion and worse readability.
@@ -288,25 +251,16 @@ Generative pre-trained Transformer version 2 (GPT-2) (\cite{radford2019gpt2}) is
 
 This model was trained on and evaluated against WebText, a dataset consisting of the text contents of 45 million links on sites like Google, Blogspot, GitHub, NYTimes, BBC, eBay, etc. It offers 4 models of different sizes increasing in the number of parameters: 124 million (small), 355 million (medium), 774 million (large), and 1.5 billion (XL) parameter models.
 
-Although this model was only trained for the general task of predicting the next word, given all of the previous words within some text, it can be further fine-tuned for a more specific task to suit user's needs. However, even without fine-tuning, it can quickly adapt to the style of the input and continue in the same manner. One example of lyrics generated by GPT-2 is \textit{Keywords To Lyrics}\footnote{\url{https://lyrics.mathigatti.com/}}.
-\MP{Jenže zrovna toto je fine-tunované na písničkách, viz https://github.com/mathigatti/pop-lyrics-dataset
-Stačí tedy změnit pořadí těch posledních dvou vět.
-Po tom ``continue in the same manner'' by ještě měl následovat odkaz na Vaše experimenty v Kapitole 6.}
+Although this model was only trained for the general task of predicting the next word, given all of the previous words within some text, it can be further fine-tuned for a more specific task to suit user's needs. One example of lyrics generated by fine-tuned GPT-2 is \textit{Keywords To Lyrics}\footnote{\url{https://lyrics.mathigatti.com/}}. However, even without fine-tuning, it can quickly adapt to the style of the input and continue in the same manner, as we show later in Chapter \ref{generation}.
+
 
 \subsubsection*{GPT-3}
-During writing of this thesis, an even larger model GPT-3 (\cite{brown2020gpt3}) with 175 billion parameters was officially introduced. It is considered the largest artificial neural network created to date.
-\MP{Radši It was considered... in May 2020. Ono se to rychle mění.
-Zaznamenal jsem třeba Google Switch Transformer 6krát větší než GPT-3, ale jsou i další:
-https://towardsdatascience.com/top-5-gpt-3-successors-you-should-know-in-2021-42ffe94cbbf
-}
-It was trained on five different corpora: Common Crawl, WebText2, Books1, Books2 and Wikipedia. The architecture is the same as in GPT-2, only number of layers and other parameters increased. It is capable of writing articles indistinguishable from human-written ones,
-\MP{Zde by se velmi hodila citace.}
-even produce functional JavaScript code for natural-language formulated task.
+During writing of this thesis, an even larger model GPT-3 (\cite{brown2020gpt3}) with 175 billion parameters was officially introduced. It is considered the largest artificial neural network in May 2020. It was trained on five different corpora: Common Crawl, WebText2, Books1, Books2 and Wikipedia. The architecture is the same as in GPT-2, only number of layers and other parameters increased. It is capable of writing articles indistinguishable from human-written ones (\cite{gpt-3_overview}), even produce functional JavaScript code for natural-language formulated task.
 
 Realizing the power of this tool, the authors did not want to make it available to broad public, fearing it might be misused with bad intentions. Instead they created a form to sign up for access, reviewed individual requests, granting access only to a small portion of them.
 
 
 
-\paragraph{}Originally, this thesis intended to focus more on lyrics generation. However, as our research of works in this field shows, there is an abundance of tools for \added{that} purpose. Users can just choose a tool that fits their needs. Creating one tool that would be better or more versatile would either require more computing power or literary knowledge, and is above the scope of a master thesis. Therefore, we shifted our main focus to automatic rhyme detection and evaluation, which seems to be far less explored and more interesting topic.
+\paragraph{}Originally, this thesis intended to focus more on lyrics generation. However, as our research of works in this field shows, there is an abundance of tools for that purpose. Users can just choose a tool that fits their needs. Creating one tool that would be better or more versatile would either require more computing power or literary knowledge, and is above the scope of a master thesis. Therefore, we shifted our main focus to automatic rhyme detection and evaluation, which seems to be far less explored and more interesting topic.
 
 
