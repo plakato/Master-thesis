@@ -1,7 +1,7 @@
 \chapter{Generation}\label{generation}
 Writing song lyrics is a task that requires creativity. This is one of a few areas where AI has not become better than humans yet. While it is generally capable of keeping similar structure and topic, it still fails in using rhymes and other literary devices.
 
-As described in Section \ref{generation_tools}, \added{the} current state-of-\added{the-}art tool for generation is GPT-3 \citep{brown2020gpt3}. We have sent several requests for their API but have not received a reply to this day.
+As described in Section \ref{generation_tools}, the current state-of-the-art tool for generation is GPT-3 \citep{brown2020gpt3}. We have sent several requests for their API but have not received a reply to this day.
 
 The second-best option was its earlier version GPT-2 (\cite{radford2019gpt2}). It offers pre-trained models of sizes small, medium, large, and XL that can be further fine-tuned to the specific task. Since training models of such sizes has very high memory requirements, we would only be able to fine-tune the small model on available school clusters. 
 
@@ -14,14 +14,14 @@ Without fine-tuning, the quality of the result depends on the selection of the p
 	A chair is still a chair \\
 	\color{blue}In most other aspects, I think the two camps in this debate can agree. We're in good company, for instance, as far as the law is concerned. When it comes to the ``should'' part of the debate, the fact that some states have no-fault insurance mandates, and others have them, is not a matter of opinion, or of opinion alone. \\
 	\endminipage\hfill
-	\caption{Result of generation (in blue) using \added{a} 1-line primer (in black).} \label{fig_1line_primer}
+	\caption{Result of generation (in blue) using a 1-line primer (in black).} \label{fig_1line_primer}
 \end{figure} 
 
-Subsequently, we iteratively increased the length of the primer exponentially. We conducted experiments with several song lyrics, but the results did not differ \deleted{very} much, so we \added{only} show one example in Table \ref{generation_result}.
+Subsequently, we iteratively increased the length of the primer exponentially. We conducted experiments with several song lyrics, but the results did not differ much, so we only show one example in Table \ref{generation_result}.
 
-Except for the 4-line primer, it was able to successfully replicate the poem-like structure. It also used a lot of repetition, even when the original text did not contain any (e.g. \added{the} 2-line primer). We assume\deleted{,} it must have already learned that repetition is very common for this \added{kind of} text structures. However, it was not successful in creating rhymes of its own.
+Except for the 4-line primer, it was able to successfully replicate the poem-like structure. It also used a lot of repetition, even when the original text did not contain any (e.g. the 2-line primer). We assume it must have already learned that repetition is very common for this kind of text structures. However, it was not successful in creating rhymes of its own.
 
-Although longer primer seems to be a safer path to good result\added{s}, \replaced{they do}{it does} not seem to be significantly better than the result from \added{a} 2-line primer. Occasionally, it appears to miss the clue and continue with regular text, as it did with \added{the} 4-line primer here.
+Although longer primer seems to be a safer path to good results, they do not seem to be significantly better than the result from a 2-line primer. Occasionally, it appears to miss the clue and continue with regular text, as it did with the 4-line primer here.
 
 %"url": ''http://genius.com/Luther-vandross-a-house-is-not-a-home-lyrics", "year": "1981-08-12", "lang": "en", "id": 13056, "word_count": 310,
 
@@ -87,7 +87,5 @@ Although longer primer seems to be a safer path to good result\added{s}, \replac
 
 %Clouds Crash Lyrics by The matches, pop
 
-Overall, GPT-2 succeeded in replicating the poetic form and structure. It creatively generated meaningful content that was \deleted{very} close to human-written. A slight give-away is excessive repetition, but for an individual example, \added{it} could be mistaken for author's style.
-\MP{Osobně bych GPT-2 u básní nehodnotil tak pozitivně,
-ale snad je jasné, že je to spíš Váš názor (žádná exaktní evaluace).
-Aspoň jsem ale smazal to ``very'' close.}
+Overall, GPT-2 succeeded in replicating the poetic form and structure. It creatively generated meaningful content that was close to human-written. A slight give-away is excessive repetition, but for an individual example, it could be mistaken for author's style.
+
