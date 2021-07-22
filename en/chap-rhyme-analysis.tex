@@ -139,7 +139,7 @@ When we look at rhyme types, they do not go further then the first stressed syll
 Finding perfect rhymes is easy -- phonemes after the last stress need to agree exactly. Imperfect rhymes can be found similarly, using the trick of moving the stress described in Section \ref{extracting_relevant_phonemes}.
 To set ourselves apart from simple rhyme detectors, we need to detect more than just perfect and imperfect rhymes -- we need to find forced rhymes as well. To determine forced rhyme we have to assess the match in sound of individual phonemes.
 
-For this, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this matrix to predict rhymes, and then iteratively recalculated the matrix using EM algorithm. 
+For this, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this matrix to predict rhymes, and then iteratively recalculated the matrix using the EM algorithm. 
 
 However, our system of alignment is different so our matrix components will look differently. The differences are shown in Table \ref{alignment}. The first difference is that Plechac only has vowels and consonant clusters without acknowledging the syllable separation. We do separate the consonant cluster into two on the border of syllable (e.g. ``rp`` in carpenter is in one cluster for Plechac, but separate clusters for us). The second difference is that Plechac recognized the position of the component and paired only the components on the same position (i.e. both ``\textipa{@}'' in carpenter are in separate groups because they occur on different positions in the word). We do not believe that position has an effect on phoneme similarity and therefore we add it together for all positions, e.g. if once two phonemes co-occur on 3\textsuperscript{rd} position and once on the 5\textsuperscript{th} we will say that this pair of phonemes has 2 co-occurrences.
 
@@ -171,7 +171,7 @@ where\textit{ f(i,j)} represents the frequency of the co-occurrence of the pair 
 Technically, the matrix is only triangular because the order of \textit{i} and \textit{j} does not matter.
 
 \subsection{Training the detector}
-What we have just described is basically step 3 of learning the matrix using EM algorithm. The whole outline can be summed up in 4 steps:
+What we have just described is basically step 3 of learning the matrix using the EM algorithm. The whole outline can be summed up in 4 steps:
 \begin{enumerate}
 	\item Initialize the matrix of collocation probabilities.
 	\item Find rhymes using this matrix.
