@@ -18,6 +18,8 @@ We will be comparing different variants of the taggers to also evaluate the infl
 \subsection{Scores}
 To evaluate the performance, we need to find an appropriate measure that could compare the gold scheme with the prediction. This task may seem easy at first, but we need to be careful because the straight-forward approach of comparing the schemes letter by letter would not work. If the prediction made an error in the beginning it would alphabetically shift the rest of the scheme and it would no longer match with the gold data.
 
+\paragraph{Precision, Recall, F-score} Defined already in Section \ref{ml}, these metrics are perhaps the most commonly used for evaluation. However, they are not very suitable for scheme similarity. The difficult part is the definition of the classification groups (true positives, false positives, etc.) for rhyme schemes. If we assessed true positives by identical letter, we would run across the letter-shift problem described above. We could try to fix it by renaming the letters in scheme A to make it as similar as possible to scheme B. This would fail for some cases, e.g. if a larger rhyme group was split to two in scheme A, it would receive half the score than in scheme B. Adapting these scores for our problem would be very hard and we did not think of any satisfactory solution.
+
 \paragraph{Last Index Score (LI)} To solve this problem, we propose Last Index Score (LI score). The idea is to convert the scheme from letter representation to last rhyme's index representation. This means for each line, we will use the index of the last line that rhymed with it. If the line does not have a rhyme, we will use index -1. With such representation, we can compare these indices directly, independently from scheme letters, and the proportion of matching indices will give us a score between 0 and 1. For an illustrative example, see Table \ref{LI_score_example}.
 
 
@@ -87,7 +89,7 @@ They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_ev
 	&macro &  micro  & macro  & micro \\
 	\midrule
 	RhymeTagger (ChicagoRPC) & \textbf{0.9463} & \textbf{0.9384} & \textbf{0.9635} & \textbf{0.9534} \\
-	RhymeTagger (Genius)& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
+	RhymeTagger (Genius$\frac{1}{3}$)& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
 	\midrule
 	Rhyme Detector & 0.9040 & 0.8915 & 0.9413 & 0.9272 \\
 	Rhyme Detector -- experiment & 0.9025 & 0.8906 & 0.9406 & 0.9272 \\
@@ -98,7 +100,7 @@ They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_ev
 	\label{reddy_eval}
 \end{table}
 
-Surprisingly, as we can see in Table \ref{my_eval}, RhymeTagger (Genius) performed worse on the \textit{Genius} dataset than the original pre-trained version. The possible cause is the nature of our data -- song lyrics have a significantly smaller percentage of rhymes than poems, so the collocations approach might not work as well for our dataset. This might also be the reason why our detector, trained only on our data, does not perform as well as RhymeTagger.
+Surprisingly, as we can see in Table \ref{my_eval}, RhymeTagger (Genius$\frac{1}{3}$) performed worse on the \textit{Genius} dataset than the original pre-trained version. The possible cause is the nature of our data -- song lyrics have a significantly smaller percentage of rhymes than poems, so the collocations approach might not work as well for our dataset. This might also be the reason why our detector, trained only on our data, does not perform as well as RhymeTagger.
 
 \begin{table}[h!]
 	\centering
@@ -109,7 +111,7 @@ Surprisingly, as we can see in Table \ref{my_eval}, RhymeTagger (Genius) perform
 		&macro &  micro  & macro  & micro \\
 		\midrule
 	RhymeTagger (ChicagoRPC) &  \textbf{0.6519} &\textbf{0.6627} &\textbf{0.8021} & \textbf{0.8139} \\
-	RhymeTagger (Genius)& 0.6309 &0.6443 &0.7883 &0.8040 \\
+	RhymeTagger (Genius$\frac{1}{3}$)& 0.6309 &0.6443 &0.7883 &0.8040 \\
 	\midrule
 	Rhyme Detector & 0.6157 &0.6306 &0.7716 &0.7861 \\
 	Rhyme detector -- experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.8020 \\
