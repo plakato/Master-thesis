@@ -7,12 +7,12 @@ To evaluate the quality of our Rhyme Detector, we will compare its rhyme scheme 
 \subsection{Taggers}
 We will be comparing different variants of the taggers to also evaluate the influence some factors have on the performance. The variants are following:
 \begin{itemize}
-	\item \textbf{Rhyme Tagger} - the original version of Rhyme Tagger, as it was trained by Plechac.
-	\item \textbf{Rhyme Tagger - fine-tuned} - Rhyme Tagger trained on one third of our data.
-	\item \textbf{Rhyme Detector} - our detector, as described in Chapter \ref{chap-rhyme-analysis}, with default settings
-	\item \textbf{Rhyme Detector - experiment} - an experimental version of our detector, that was not trained with the EM algorithm, but instead the matrix was created by counting the co-occurrences in the data and using their probabilities
-	\item \textbf{Rhyme Detector - 1 iteration} - our detector after 1\textsuperscript{st} iteration of training
-	\item \textbf{Rhyme Detector - perfect} - our detector using the setting of only finding perfect rhymes - the co-occurrence matrix is an identity matrix
+	\item \textbf{Rhyme Tagger} -- the original version of Rhyme Tagger, as it was trained by Plechac.
+	\item \textbf{Rhyme Tagger -- fine-tuned} -- Rhyme Tagger trained on one third of our data.
+	\item \textbf{Rhyme Detector} -- our detector, as described in Chapter \ref{chap-rhyme-analysis}, with default settings
+	\item \textbf{Rhyme Detector -- experiment} -- an experimental version of our detector, that was not trained with EM algorithm, but instead the matrix was created by counting the co-occurrences in the data and using their probabilities
+	\item \textbf{Rhyme Detector -- 1 iteration} -- our detector after 1\textsuperscript{st} iteration of training
+	\item \textbf{Rhyme Detector -- perfect} -- our detector using the setting of only finding perfect rhymes -- the co-occurrence matrix is an identity matrix
 \end{itemize}
 
 \subsection{Scores}
@@ -66,9 +66,9 @@ They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_ev
 	Rhyme Tagger fine-tuned& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
 	\midrule
 	Rhyme Detector & 0.9040 & 0.8915 & 0.9413 & 0.9272 \\
-	Rhyme Detector - experiment & 0.9025 & 0.8906 & 0.9406 & 0.9272 \\
-	Rhyme Detector - 1 iteration & \textbf{0.9066} &\textbf{0.8926} &\textbf{0.9426} &\textbf{0.9277} \\
-	Rhyme Detector - perfect &0.8824 &0.8732 &0.9293 &0.9149 \\
+	Rhyme Detector -- experiment & 0.9025 & 0.8906 & 0.9406 & 0.9272 \\
+	Rhyme Detector -- 1 iteration & \textbf{0.9066} &\textbf{0.8926} &\textbf{0.9426} &\textbf{0.9277} \\
+	Rhyme Detector -- perfect &0.8824 &0.8732 &0.9293 &0.9149 \\
  \end{tabular}
 	\caption{Evaluation of taggers on Chicago Rhyming Poetry Corpus.}
 	\label{reddy_eval}
@@ -88,9 +88,9 @@ On our dataset (Table \ref{my_eval}), however, the best performing was the exper
 	Rhyme Tagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.804 \\
 	\midrule
 	Rhyme Detector & 0.6157 &0.6306 &0.7716 &0.7861 \\
-	Rhyme detector - experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.802 \\
-	Rhyme detector - 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
-	Rhyme Detector - perfect &0.6224 &0.641 &0.7838 &\textbf{0.803}\\
+	Rhyme detector -- experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.802 \\
+	Rhyme detector -- 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
+	Rhyme Detector -- perfect &0.6224 &0.641 &0.7838 &\textbf{0.803}\\
 	\end{tabular}
 	\caption{Evaluation of taggers on my annotated dataset.}
 	\label{my_eval}

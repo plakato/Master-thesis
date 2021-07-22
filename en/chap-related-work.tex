@@ -102,6 +102,9 @@ The last two terms may seem as more of a tool for poets than songwriters. Surpri
 
 Other rhyme types exist e.g. eye rhyme where ``the spellings of the rhyming elements match, but the sounds do not, e.g. love /\textipa{\underline{l@v}}/ -- prove /\textipa{\underline{pru:v}}/'' (\cite{oxforddict2008literary}). We do not consider them relevant for song lyrics or the purpose of this thesis.
 
+\MP{Někde by mohlo být také vysvětleno, co to je rhyme scheme.
+Ten termín používáte ještě před Table 3.2 -- jinak by to šlo vysvětlit až tam.\\
+Aha, teď vidím, že to máte vysvětleno v Section~\ref{sec:scheme}, takže by stačilo na to odkázat u prvního výskytu "rhyme scheme" (což je v předposlední větě následujícího odstavce).}
 
 \section{Rhyme detection tools}\label{rhyme_detection_tools}
 We have defined what to look for, and now we will focus on how to do it. According to \cite{plechac2017presentation}, there are 4 methods for rhyme detection. We will describe each one and evaluate existing tools. For our use case, it is important that we can use the tool for automatic evaluation -- there must be a way to run it with code whether it would be a web service,  an executable script, or as a library/module.
@@ -113,7 +116,7 @@ Notably, English orthography is highly nonphonemic, thus a pronunciation diction
 \subsection{Naive rule-based approach} 
 The simplest approach is to compare for identity of phonemes at the end of lines. Noticeably,  this only detects perfect rhymes. Nevertheless the result will seem decent because it has almost 100\% precision, i.e. notices all ``obvious'' rhymes. Another downside of this approach is its limitation to the size of the dictionary.
 
-There are many rhyming dictionaries (of various quality and size) to choose from but the vast majority uses or enhances CMU dictionary (CMUdict).\footnote{\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}}
+There are many rhyming dictionaries (of various quality and size) to choose from but the vast majority uses or enhances CMU dictionary (CMUdict).\footnote{\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}} For more details about CMUdict see Section~\ref{cmudict}.
 \subsubsection*{Pronouncing and CMU dictionary}
 Pronouncing\footnote{\url{https://pypi.org/project/pronouncing/}} is a Python library providing an interface for CMU Pronouncing Dictionary. One possibility is to install CMUdict directly, search for pronunciations for both words and compare then. \textit{Pronouncing} searches the dictionary automatically for a given word and returns a list of rhyming words. However, the list is truncated and probably better suited for writer's inspiration only.
 
@@ -147,13 +150,19 @@ a tedy se přizpůsobit různým žánrům a typům rýmů, případně i různ�
 Pak byste asi měla vysvětlit, jak fungují unsupervised machine-learning metody detekce rýmů,
 tedy zdůraznit, že stačí velké množství textů s rýmy, ale ty nemusejí být anotované/otagované.
 Také by se asi už zde mohl zavést termín vertical collocation dle Plecháče
-a nastínit ten princip - slova (případně jejich koncové slabiky), která se často opakují na konci blízkých řádků mají vyšší pst, že budou rýmy.
+a nastínit ten princip -- slova (případně jejich koncové slabiky), která se často opakují na konci blízkých řádků mají vyšší pst, že budou rýmy.
 Jednou z možností, jak toho využít je EM algorithm.
 }
 
 \subsubsection*{Reddy \& Knight's EM algorithm}
-\MP{Také by zde mohl být ten princip lépe vysvětlen.Ideálně tak, abyste to Vy před rokem z toho pochopila.Vy to máte trochu vysvětlené o kus níž u RhymeTaggeru, ale Plecháč ten základní princip převzal od Reddy\&Knight.Ty rozdíly asi nemusíte detailně popisovat. Taky by šlo sem jen přidat závorku (see an explanation of the EM algorithm below in the RhymeTagger description).}
-\cite{reddy2011unsupervised} proposed a language-independent model for finding rhyme schemes in poetry. They created an unsupervised model based on the EM algorithm that assigns the most probable rhyme scheme for each sequence of line-final words. It achieved good results when tested on annotated English and French corpus with poetry from 15\textsuperscript{th} to 20\textsuperscript{th} century. However its big pitfall lies in the fact that it is biased towards the rhyme schemes from golden data. It has a predefined set of all rhyme schemes found in tested data and those are the only ones it chooses from. For illustration, in a 14-line stanza it can choose from 90 schemes which is only 0.00005\% of all possible options. In 29\% of cases from French corpus it has only one choice.\footnote{\url{http://versologie.cz/talks/2017basel/}}
+\MP{Také by zde mohl být ten princip lépe vysvětlen.
+Ideálně tak, abyste to Vy před rokem z toho pochopila.
+Vy to máte trochu vysvětlené o kus níž u RhymeTaggeru, ale Plecháč ten základní princip převzal od Reddy\&Knight.
+Ty rozdíly asi nemusíte detailně popisovat.
+Taky by šlo sem jen přidat závorku (see an explanation of the EM algorithm below in the RhymeTagger description).\\
+Aha, teď vidím, že EM máte dobře vysvětlen v 3.5.2 -- to byste zde taky mohla odkázat.
+}
+\cite{reddy2011unsupervised} proposed a language-independent model for finding rhyme schemes in poetry. They created an unsupervised model based on EM algorithm that assigns the most probable rhyme scheme for each sequence of line-final words. It achieved good results when tested on annotated English and French corpus with poetry from 15\textsuperscript{th} to 20\textsuperscript{th} century. However its big pitfall lies in the fact that it is biased towards the rhyme schemes from golden data. It has a predefined set of all rhyme schemes found in tested data and those are the only ones it chooses from. For illustration, in a 14-line stanza it can choose from 90 schemes which is only 0.00005\% of all possible options. In 29\% of cases from French corpus it has only one choice.\footnote{\url{http://versologie.cz/talks/2017basel/}}
 \MP{Není zřejmé, proč je zde tato url.
 Tedy není zřejmé, že je to zdroj posledních dvou (či více) vět. Lepší by bylo:
 According to Plecháč [2017], ...
@@ -264,8 +273,15 @@ Jedním z příkladů je nakonec Váš detektor.
 }
 
 \subsection{Generating using AI}
-The popular approach for generating song lyrics is certainly AI in its many forms. It can be proved by the large number of AI lyrics generators created by enthusiasts, e.g. \textit{These Lyrics Do Not Exist}\footnote{\url{https://theselyricsdonotexist.com/}}, \textit{Freshbots Lyrics Generator}\footnote{\url{https://www.freshbots.org/lyrics-generator}}, \textit{Random Lyrics Generator}\footnote{\url{http://www.anticulture.net/RandomLyrics.php}}, \textit{DeepBeat - Rap Lyrics Generating AI}\footnote{\url{https://deepbeat.org/}}, \textit{BoredHumans Generator}\footnote{\url{https://boredhumans.com/lyrics_generator.php}}, \textit{RapPad Lyrics Generator}\footnote{\url{https://www.rappad.co/songs-about/}}, and many more. We will further describe Deep-speare (mentioned earlier in Section \ref{ml}) and current state-of-the-art GPT-2 and GPT-3.
-\MP{Jednak by mělo být jasné, v kterém ohledu jsou state-of-the-art, tedy nejspíš v nějaké měřitelné evaluaci.U benchmarků typu GLUE a SuperGLUE už jsou myslím i lepší modely, ale není to dávno, co bylo na prvních příčkách GPT, takže tam by to pojmenování šlo použít.Zde nás ale spíš zajímá generování poezie a v tom nevím o žádném benchmarku a ustáleném způsobu evaluace.Možná by šlo něco jako ``and GPT models, which are considered state of the art in text generation.''}
+The popular approach for generating song lyrics is certainly AI in its many forms. It can be proved by the large number of AI lyrics generators created by enthusiasts, e.g. \textit{These Lyrics Do Not Exist}\footnote{\url{https://theselyricsdonotexist.com/}}, \textit{Freshbots Lyrics Generator}\footnote{\url{https://www.freshbots.org/lyrics-generator}}, \textit{Random Lyrics Generator}\footnote{\url{http://www.anticulture.net/RandomLyrics.php}}, \textit{DeepBeat -- Rap Lyrics Generating AI}\footnote{\url{https://deepbeat.org/}}, \textit{BoredHumans Generator}\footnote{\url{https://boredhumans.com/lyrics_generator.php}}, \textit{RapPad Lyrics Generator}\footnote{\url{https://www.rappad.co/songs-about/}}, and many more. We will further describe Deep-speare (mentioned earlier in Section \ref{ml}) and current state-of-art GPT-2 and GPT-3.
+\MP{Jednak state-of-\textbf{the}-art.
+Jednak by mělo být jasné, v kterém ohledu jsou state-of-the-art,
+ tedy nejspíš v nějaké měřitelné evaluaci.
+U benchmarků typu GLUE a SuperGLUE už jsou myslím i lepší modely,
+ ale není to dávno, co bylo na prvních příčkách GPT, takže tam by to pojmenování šlo použít.
+Zde nás ale spíš zajímá generování poezie a v tom nevím o žádném benchmarku a ustáleném způsobu evaluace.
+Možná by šlo něco jako ``and GPT models, which are considered state of the art in text generation.''
+}
 
 \subsubsection*{Deep-speare}
 Deep-speare (\cite{lau2018deep}) is a joint neural network architecture that generates only a specific type of poems with strict form and meter -- \gls{sonnet} \gls{quatrain}s. It consists of three models: language model generates one word at a time, pentameter model samples meter-conforming sentences, rhyme model enforces rhyme, and they are all trained together in multi-task learning setting. They present very good results -- generated poems are mostly indistinguishable from human-written ones, apart from expert evaluation, where they report lack of emotion and worse readability.

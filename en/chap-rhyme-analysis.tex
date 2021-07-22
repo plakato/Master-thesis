@@ -4,14 +4,14 @@ In this Chapter, we will first consider using available tools for rhyme detectio
 
 Detecting rhymes may seem like a simple task at first, but looking into details one discovers many problems that need to be addressed. As we have seen in Chapter \ref{chap-related-work}, it is not a well-defined task so we need to set the requirements.
 
-Then we progress through individual steps needed to find the rhymes and design a rating that would song's rhymes:
+Then we progress through individual steps needed to find the rhymes and design a rating that would \added{evaluate} song's rhymes:
 
 
 \begin{enumerate}
-	\item phonetic transcription with additional data preprocessing	
+	\item phonetic transcription with additional data preprocessing
 	\item syllabification and extraction of phonemes after last stressed syllable
-	\item comparison of two lines and calculating their rhyme rating  
-	\item finding all rhymes and assigning scheme
+	\item comparison of two lines and calculating their rhyme rating
+	\item finding all rhymes and assigning \added{a} scheme
 	\item calculating song rating
 \end{enumerate}
 
@@ -25,22 +25,51 @@ To bridge the outdated system requirements, we contacted the authors for a newer
 
 Lastly, when SPARSAR encountered an unknown word, it failed for the entire song. Since our data were crowd-sourced, it contained many unusual words, so in the beginning it failed on 80\% of our data. We iteratively worked with the authors for months on fixing bugs and adding words (mainly contractions, such as I'mma, y'all, yo', 'em, etc.) into their dictionary. In the end, we were able to successfully run it on 95\% of our data.
 
-However, we were still not very satisfied with the result. As you can see in the example in Table \ref{sparsar_wrong_scheme}, it failed to detect the perfect rhyme between 2\textsuperscript{nd} and 4\textsuperscript{th} line, and instead marked a rhyme on line 1 and 3, where there was none. Such errors were not sparse and led us to believe, that the encoded inclination of this tool to look for sonnet-shaped schemes caused it to make errors in the diverse schemes of song lyrics. It may be a great tool for sonnets, but we have found it insufficient for our purpose, so we proceeded to create our own rhyme detector.
+However, we were still not very satisfied with the result. As you can see in the example in Table \ref{sparsar_wrong_scheme}, it failed to detect the perfect rhyme between 2\textsuperscript{nd} and 4\textsuperscript{th} line, and instead marked a rhyme on line 1 and 3, where there was none. Such errors were not sparse and led us to believe\deleted{,} that the encoded inclination of this tool to look for sonnet-shaped schemes caused it to make errors in the diverse schemes of song lyrics. It may be a great tool for sonnets, but we have found it insufficient for our purpose, so we proceeded to create our own rhyme detector.
 
+
+% \begin{table}[h!]
+% 	\centering
+% 	\begin{tabular}{c c c} 
+% 		Scheme & Line & \begin{tabular}{@{}c@{}}Last word's pronunciation \\ (as assigned by SPARSAR)\end{tabular}  \\ [0.5ex] 
+% 		\midrule
+% 		a & Pulled out from the station & s-t-ey-sh-ah-n \\ 
+% 		h & fifteen after two & t-uw \\
+% 		a &	300 miles away from Vegas & v-ey-g-ah-s\\
+% 		b & We had nothin better to do & d-uw\\
+% 	\end{tabular}
+% 	\caption{Exampleof incorrect scheme assignment by SPARSAR. Excerpt from the song \textit{Good Life}.}
+% 	\label{sparsar_wrong_scheme}
+% \end{table}
 
 \begin{table}[h!]
 	\centering
-	\begin{tabular}{c c c} 
-		Scheme & Line & \begin{tabular}{@{}c@{}}Last word's pronunciation \\ (as assigned by SPARSAR)\end{tabular}  \\ [0.5ex] 
+	\begin{tabular}{@{}c c c c@{}}\toprule
+		\multicolumn{2}{c}{Scheme} & Line & Last word's pronunciation \\\cmidrule{1-2}
+ 		correct & SPARSAR & & as assigned by SPARSAR  \\
 		\midrule
-		a & Pulled out from the station & s-t-ey-sh-ah-n \\ 
-		h & fifteen after two & t-uw \\
-		a &	300 miles away from Vegas & v-ey-g-ah-s\\
-		b & We had nothin better to do & d-uw\\
+		A & a & Pulled out from the station & s-t-ey-sh-ah-n \\ 
+		B & h & fifteen after two & t-uw \\
+		C & a &	300 miles away from Vegas & v-ey-g-ah-s\\
+		B & b & We had nothin better to do & d-uw\\
+		\bottomrule
 	\end{tabular}
 	\caption{Example of incorrect scheme assignment by SPARSAR. Excerpt from the song \textit{Good Life}.}
-	\label{sparsar_wrong_scheme}
+\label{sparsar_wrong_scheme}
 \end{table}
+\MP{Dovolil jsem si do tabulky \ref{sparsar_wrong_scheme} přidat sloupec s correct scheme.
+Možná by šlo ještě do caption přidat něco jako
+ The correct scheme is marked in capital letters,
+ the scheme assigned by SPARSAR is marked in lowercase letters.
+Případně obojí převeďte na stejnou velikost, ale jde o to naznačit,
+ že schémata nelze porovnávat na přesnou shodu.
+Pokud nesouhlasíte, původní verze tabulky je zakomentovaná ve zdrojáku.
+Mimochodem: proč SPARSAR přiřadil druhé řádce zrovna ``h''?
+Nebylo to kvůli nějakým předchozím veršům té básně?
+A kdyby se daly SPARSARu pouze tyto 4 verše, tak tomu přiřadí abac?
+Pokud ano, tak by asi bylo lepší tam napsat toto schéma,
+ ať si s tím h čtenáři nelámou hlavu jako teď já.}
+
 
 \section{Defining the requirements}\label{defining_the_requirements}
 Before we dive into algorithm selection and implementation details of our detector, let's define what exactly do we want our detector to do. Additionally, we also establish terms for common cases in Table \ref{terms}, to keep our further explanations short and clear.
@@ -81,11 +110,11 @@ Unlike many other languages, English does not have a straightforward pronunciati
 	\caption{Short comparison of different pronunciation alphabets.}
 	\label{pronunciation_table}
 \end{table}
-\subsection{CMUdict}
+\subsection{CMUdict}\label{cmudict}
 Carnegie Mellon University Pronouncing Dictionary (CMUdict) is an open-source pronunciation dictionary.\footnote{\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}} Currently it contains 134,373 words (including their inflections) and their pronunciations in 2-character ARPAbet. 
-For each word, there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation, we used its Python wrapper package \textit{cmudict} \footnote{\url{https://pypi.org/project/cmudict/}}. To use this we had to strip the input of punctuation and convert it to lower case.
+For each word, there is one or several possible pronunciations in North American English including stress markers for primary, secondary or no stress. For the implementation, we used its Python wrapper package \textit{cmudict}.\footnote{\url{https://pypi.org/project/cmudict/}} To use this we had to strip the input of punctuation and convert it to lower case.
 
-CMUdict is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not in CMU dictionary. We manually inspected a small portion of them and found out that they can be mostly split into these 5 categories:
+CMUdict is a large dictionary and it includes also slang words so it should cover most of our input. To test this, we looked at all last words on each line of our data (since those are the important ones for rhyme analysis) and we found out that 5.52\% of them are not included in CMU dictionary. We manually inspected a small portion of them and found out that they can be mostly split into \replaced{the following}{these} 5 categories:
 
 \begin{itemize}
 	\item uncommon words, e.g. superglue, redundantly
@@ -96,7 +125,7 @@ CMUdict is a large dictionary and it includes also slang words so it should cove
 \end{itemize}
 
 \subsection{Dealing with out-of-dictionary words}
-In an attempt to decrease the amount of out-of-dictionary words, we replaced the closing quotation mark ``\textipa{’}'' (U+2019) with the typewriter apostrophe ``\texttt{\fontencoding{OT1}\selectfont\symbol{13}}''
+In an attempt to decrease the amount of out-of-dictionary words, we replaced the closing \added{single} quotation mark ``\textipa{’}'' (U+2019) with the typewriter apostrophe ``\texttt{\fontencoding{OT1}\selectfont\symbol{13}}''
  (U+0027) since only the second variant of apostrophe is accepted by CMUdict. However, this only decreased the percentage of unrecognized words to 5.47\%.
 
 Clearly, we needed a way to estimate the pronunciation for the rest of the words, so we used grapheme-to-phoneme library \textit{g2p} by \cite{g2pE2019}. It predicts the pronunciation for out-of-dictionary words using deep learning seq2seq model by TensorFlow (\cite{tensorflow2015-whitepaper}).
@@ -105,26 +134,27 @@ Even having the pronunciation for every word will not ensure we find every rhyme
 
 \section{Syllabification}
 \subsection{Alignment}
-When comparing lines for rhymes, we have to establish a system of alignment so that we analyze only relevant pairs of phonemes. Initially, we created a simple rhyme detector that just traversed both verses backwards phoneme by phoneme\footnote{For simplification, we use the term phoneme for one symbol in ARPAbet.} and compared them. However, rhyming words do not have to have an equal number of phonemes. For example words in the Table \ref{phon_misalign_table} have a 2-syllable rhyme. If we compared each phonemes one by one they get misaligned on consonant clusters S-T-R and P-L and we will miss the second syllable rhyme. For forced rhymes this inherently becomes a very frequent issue.
+When comparing lines for rhymes, we have to establish a system of alignment so that we analyze only relevant pairs of phonemes. Initially, we created a simple rhyme detector that just traversed both verses backwards phoneme by phoneme\footnote{For simplification, we use the term phoneme for one symbol in ARPAbet.} and compared them. However, rhyming words do not have to have an equal number of phonemes. For example words in the Table \ref{phon_misalign_table} have a 2-syllable rhyme. If we compared \replaced[comment={nebo each phoneme}]{all}{each} phonemes one by one they get misaligned on consonant clusters S-T-R and P-L and we will miss the \replaced{penultimate}{second} syllable rhyme. For forced rhymes this inherently becomes a very frequent issue.
 
 \begin{table}[h!]
 		\centering
 	\begin{tabular}{c r} 
 		Word & ARPAbet transcription \\ [0.5ex] 
 		\hline
-		constrain & K AH N - S \space\space T R EY N \\ 
-		complain & K AH\space  M -  P L EY N \\
+		constrain & K AH N -- S \space\space T R EY N \\ 
+		complain & K AH\space  M --  P L EY N \\
 	\end{tabular}
 	\caption{Example of misalignment when aligning by phonemes.}
 	\label{phon_misalign_table}
 \end{table}
 
 We need to make sure that we are comparing corresponding parts of verses otherwise we will miss the rhyme. A better approach would be to compare corresponding syllables because they naturally create an alignment in the rhythm of the song. Each syllable can be further split into 3 groups (``CVC'') -- leading consonant cluster (\textit{onset}), vowel (\textit{nucleus}), and trailing consonant cluster (\textit{coda}). Consonant clusters can sometimes be empty. For syllabification we used Python library \textit{syllabify},\footnote{\url{https://github.com/kylebgorman/syllabify}} which conveniently returns syllables in CVC triplets as described above.
-
+\MP{Šlo by též zmínit, že \textit{syllabify} potřebuje na vstupu fonetický přepis v ARPAbet,
+ k čemuž používáte výstup z CMUdict, tedy nemůže nastat, že by ty dva nástroje vrátily různou výslovnost.}
 
 
 \subsection{Extracting relevant components}\label{extracting_relevant_phonemes}
-Since we established that rhymes are located at the end of each line, there is no need to analyze the entire verse. How far should we look? The first choice would be to look at the last word. However rhymes can extend over more words as we see in example in Figure \ref{two-word_rhyme}.
+Since we established that rhymes are located at the end of each line, there is no need to analyze the entire verse. How far should we look? The first choice would be to look at the last word \added{only}. However rhymes can extend over more words as we see in example in Figure \ref{two-word_rhyme}.
 \begin{figure}[htb]\centering
 	I was the man the Duke \textbf{spoke to};\\
 	I helped the Duchess to cast off his \textbf{yoke, too};\\
@@ -132,41 +162,52 @@ Since we established that rhymes are located at the end of each line, there is n
 	\label{two-word_rhyme}
 \end{figure} 
 
-When we look at rhyme types, they do not go further then the first stressed syllable (looking at the line backwards). Notably, even if the rhyme does extend further we can ignore the rest because it cannot increase the rating. For example, if there are more rhyming syllables preceding the perfect rhyme, they cannot make the score better. Similarly, if the rhyme is not perfect, syllables preceding the final stress would already be considered an \gls{internal_rhyme} -- which is also used (mainly in rap lyrics) but less valued than the classical end rhyme and as stated in section \ref{defining_the_requirements}, not a target of analysis in this thesis. We will therefore limit our window to the minimal number of syllables needed to include the stressed syllable in both rhyme fellows. If one rhyme fellow needs less syllable than other, we will move stress to the right to match the shorter syllable span (and later compensate for this in the rating).
+When we look at rhyme types, they do not go further then the first stressed syllable (looking at the line backwards). Notably, even if the rhyme does extend further we can ignore the rest because it cannot increase the rating. For example, if there are more rhyming syllables preceding the perfect rhyme, they cannot make the score better. Similarly, if the rhyme is not perfect, syllables preceding the final stress would already be considered an \gls{internal_rhyme} -- which is also used (mainly in rap lyrics) but less valued than the classical end rhyme and as stated in Section \ref{defining_the_requirements}, not a target of analysis in this thesis. We will therefore limit our window to the minimal number of syllables needed to include the stressed syllable in both rhyme fellows. If one rhyme fellow needs less syllable\added{s} than \added{the} other \added{(i.e. it is an imperfect rhyme)}, we will move stress to the right to match the shorter syllable span (and later \replaced{decrease the rhyme rating by a \textit{stress penalty, cf. Section~\ref{rhyme-rating}}}{compensate for this in the rating}).
+
 
 \section{Rhyme analysis}
 \subsection{Finding similar phonemes}
 Finding perfect rhymes is easy -- phonemes after the last stress need to agree exactly. Imperfect rhymes can be found similarly, using the trick of moving the stress described in Section \ref{extracting_relevant_phonemes}.
-To set ourselves apart from simple rhyme detectors, we need to detect more than just perfect and imperfect rhymes -- we need to find forced rhymes as well. To determine forced rhyme we have to assess the match in sound of individual phonemes.
+To set ourselves apart from simple rhyme detectors, we need to detect more than just perfect and imperfect rhymes -- we need to find forced rhymes as well. To determine forced rhyme\added{s} we have to assess the match in sound of individual phonemes.
 
-For this, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this matrix to predict rhymes, and then iteratively recalculated the matrix using the EM algorithm. 
+For this, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this \added{co-occurrence} matrix to predict rhymes, and then iteratively recalculated the matrix using \added{the} EM algorithm.
 
-However, our system of alignment is different so our matrix components will look differently. The differences are shown in Table \ref{alignment}. The first difference is that Plechac only has vowels and consonant clusters without acknowledging the syllable separation. We do separate the consonant cluster into two on the border of syllable (e.g. ``rp`` in carpenter is in one cluster for Plechac, but separate clusters for us). The second difference is that Plechac recognized the position of the component and paired only the components on the same position (i.e. both ``\textipa{@}'' in carpenter are in separate groups because they occur on different positions in the word). We do not believe that position has an effect on phoneme similarity and therefore we add it together for all positions, e.g. if once two phonemes co-occur on 3\textsuperscript{rd} position and once on the 5\textsuperscript{th} we will say that this pair of phonemes has 2 co-occurrences.
+However, our system of alignment is different so our matrix components will look differently. The differences are shown in Table \ref{alignment}. The first difference is that Plecháč only \replaced{uses}{has} vowels and consonant clusters without acknowledging the syllable separation. We do separate the consonant cluster into two on the border of syllable\added{s} (e.g. ``rp`` in carpenter is in one cluster for Plecháč, but \added{in two} separate clusters for us). The second difference is that Plecháč recognized the position of the component and paired only the components on the same position (i.e. both ``\textipa{@}'' in carpenter are in separate groups because they occur on different positions in the word). We do not believe that position has an effect on phoneme similarity and therefore we add it together for all positions, e.g. if once two phonemes co-occur on 3\textsuperscript{rd} position and once on the 5\textsuperscript{th} we will say that this pair of phonemes has 2 co-occurrences.
 
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{c r} 
-		Plechac & \textipa{\color{blue}k \color{magenta}A: \color{PineGreen} r.p \space\space \color{BurntOrange} @ \color{BrickRed}  n.t \space\space\color{Cerulean} @ \color{Fuchsia}r}\\
+		Plecháč & \textipa{\color{blue}k \color{magenta}A: \color{PineGreen} r.p \space\space \color{BurntOrange} @ \color{BrickRed}  n.t \space\space\color{Cerulean} @ \color{Fuchsia}r}\\
 		Us & \textipa{\color{blue}k \color{magenta} A: \color{blue}r \space .p \color{magenta} @ \color{blue} n \space .t \color{magenta} @ \color{blue}r} \\
 	\end{tabular}
 	\caption[Comparison of alignments]{Comparison of our components for word \textit{carpenter} with those of \cite{plechavc2018collocation}. Different color signifies different component group.} 
 	\label{alignment}
 \end{table}
 
-Another difference is that Plechac only looks at the last word and its 1 or 2 last syllables while we look at everything after the last stress up to 4 syllables.
+Another difference is that Plecháč only looks at the last word and its 1 or 2 last syllables while we look at everything after the last stress up to 4 syllables.
 
-Knowing that perfect match in sound always means perfect rhyme, we froze the values on matrix diagonal to reflect it. In \cite{plechavc2018collocation}, the diagonal was being recalculated as the rest of the matrix, and although it seemed to converge to high numbers we felt it did not reflect the superiority of the perfect match.
+Knowing that perfect match in sound always means perfect rhyme \added{(which should intuitivelly get the highest possible rhyme rating of 1.0)}, we froze the values on matrix diagonal to reflect it. In \cite{plechavc2018collocation}, the diagonal was being recalculated as the rest of the matrix, and although it seemed to converge to high numbers we felt it did not reflect the superiority of the perfect match.
 
-To calculate the probabilities in the matrix, we used the formula from \cite{plechavc2018collocation} adding the adjustments described above. The formula for a the value in the matrix on coordinates i, j is following: 
+To calculate the probabilities in the matrix, we used the formula from \cite{plechavc2018collocation} adding the adjustments described above. The formula for a the value in the matrix on coordinates i, j is \replaced[comment={asi by šlo i the following}]{as follows}{following}: 
 
 
 	    \[ p(i,j) = \begin{cases} 
 	    \mbox{1.0,} & \mbox{if  i=j} \\ 
-	   \dfrac{f(a,b)}{f(a,b) + f(a)f(b)},
+	  \replaced{\dfrac{f(i,j)}{f(i,j) + f(i)f(j)}}{\dfrac{f(a,b)}{f(a,b) + f(a)f(b)}},
 	     & \mbox{otherwise} \\
 	    \end{cases} \]
 
 where\textit{ f(i,j)} represents the frequency of the co-occurrence of the pair of components \textit{i} and \textit{j}, and similarly \textit{f(i)} represents the total number of occurrences of the component \textit{i}.
+\MP{Ale Plecháč definuje f(i,j) jako \textbf{relative} frequency, tedy pravděpodobnost souvýskytu, nikoli absolutní počet souvýskytů.
+Obdobně f(i) = count(i) / total\_count. Kde $\sum_i f(i) = total\_count$.
+Je-li to jen nepřesnost v textu, tak jen doplňte k frequency přívlastek relative a nahraďte ten total number of occurrences.
+Je-li v kódu taky absolutní počet, tak nevím -- opravit to už zjevně není čas.
+Omlouvám se, že jsem si toho všiml až teď.
+}
+\MP{Ještě by chtělo lépe definovat, co je occurrence -- tedy výskyt dané komponenty na konci řádku po posledním přízvuku.
+Započítáváte do toho i výskyty, kde odpovídající komponenta v rhyming fellow je identická?}
+\MP{I ty co-occurerences by bylo dobré lépe definovat -- je to souvýskyt na odpovídají pozici v rhyming fellow, přičemž je k tomu tedy potřeba mít nějak určené rýmy,
+abychom věděli, který z předchozích řádků je ten fellow, což máte vysvětlené v následující sekci.}
 
 Technically, the matrix is only triangular because the order of \textit{i} and \textit{j} does not matter.
 
@@ -180,14 +221,18 @@ What we have just described is basically step 3 of learning the matrix using the
 \end{enumerate} 
 
 To improve the matrix in step 3, in each iteration we will count the collocations only from the pairs that were marked as rhyming in the previous iteration.
+\MP{Collocation je normálně nějaká fráze -- slova těsně za sebou.
+Buď důsledně všude pište vertical collocation, nebo na začátku upozorněte čtenáře,
+že pro jednoduchost budete místo vertical collocation psát jen collocation.}
 
-For the matrix initialization, Plechac calculates the collocations in the data and preserves only pairs with number of collocations above a set threshold. We instead initialized it with default value of 0.2. 
+For the matrix initialization, Plecháč calculates the collocations in the data and preserves only pairs with number of collocations above a set threshold. We instead initialized it with \added[comment={nebo neurčitý člen a, nejsem si jist}]{the} default value of 0.2. 
 
 Finding rhymes (step 2) is further described in Section \ref{finding-all-rhymes}.
 
 
-\subsection{Rhyme rating}
- We will first calculate rhyme ratings for pairs of verses and then use them to calculate an overall song rating. Not only do these rhyme ratings help us evaluate the rhyming quality of the song but they might also be an interesting feedback for the writer. 
+\subsection{Rhyme rating}\label{rhyme-rating}
+ We will first calculate rhyme ratings for pairs of verses and then use them to calculate an overall song rating. Not only do these rhyme ratings help us evaluate the rhyming quality of the song but they might also be an interesting feedback for the \replaced{users (e.g. authors of song lyrics) -- we thus show the rhyme ratings in our web visualization as described in Section~\ref{visualization-matrix}}{writer}.
+ 
  
  For each rhyme, we would like to assign a rating between 0 and 1. Since perfect rhyme is often in literature described as superior because it represents the perfect match in sound it will logically receive the highest rating of 1.
  
@@ -199,7 +244,9 @@ This is the final formula
 	
 	\[rhyme\ rating = -0.1 * stress\_penalty + \prod_{i,j\ \epsilon\ rhyming\ part} p(i,j) \]
 	
-where \textit{stress\_penalty} is a boolean indicator -- 0 if stress was not moved, 1 otherwise. Indexes \textit{i, j} iterate over components in rhyming parts of the both words.
+where \textit{stress\_penalty} is a boolean indicator -- 0 if stress was not moved, 1 otherwise.
+\MP{Aha, já jsem někde výše navrhoval ``decreased by stress penalty'', protože jsem myslel, že stress\_penalty=0.1. Ono by to šlo tak i tak, jen by to mělo být konzistentní, tak buď změňte můj návrh, nebo tento vzoreček.}
+\replaced{Indices}{Indexes} \textit{i, j} iterate over components in rhyming parts of the both words.
 
 
 
@@ -207,25 +254,26 @@ where \textit{stress\_penalty} is a boolean indicator -- 0 if stress was not mov
 
 \section{Scheme}
 \subsection{Finding all rhymes}\label{finding-all-rhymes}
-To search for rhymes in the full lyrics we need to decide which verse pairs to check. The most straight-forward approach would be ``brute force'' -- try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme -- the author can even make it a part of his artistic expression  e.g. in \textit{Author's Prologue} by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. Realistically, a rhyme between a line in the beginning of the lyrics and 20 lines later, would hardly be noticed at all by song's listener -- it requires a close proximity of rhyme fellows within the poem. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the default window size to 5, to include support rhyme propagation between stanzas. 
+To search for rhymes in the full lyrics\added{,} we need to decide which verse pairs to check. The most straight-forward approach would be ``brute force'' -- try each line with all the other lines. Besides its obvious disadvantage of increased time requirements it also detects rhymes that span across tens of lines. It is not strictly defined how many lines apart can the rhyme fellows be to still be considered a rhyme -- the author can even make it a part of his artistic expression\added{,} e.g. in \textit{Author's Prologue} by \cite{thomas1952author} the 1\textsuperscript{st} line rhymes with 102\textsuperscript{th}, 2\textsuperscript{nd} with 101\textsuperscript{th} and so on. Realistically, a rhyme between a line in the beginning of the lyrics and 20 lines later, would hardly be noticed at all by song's listeners -- it requires a close proximity of rhyme fellows within the poem. Since the most common stanzaic form in English is a quatrain, a stanza of four lines (\cite{eastman1970norton}), we decided to set the default window size to 5, to include support \added{for} rhyme propagation between stanzas.
+\MP{Opravdu myslíte between, nebo spíš within stanzas?}
 
 We traversed the song lyrics from beginning to the end, line by line, for each line trying all rhyme candidates in the given window.
 
 Some words may have multiple possible pronunciations -- in that case we evaluate each possible combination of pronunciations for all words in the given pair. For every such combination we assign rhyme rating and create a list of candidates.
 
-As \cite{rhymes_overview} states, it is difficult to know where to draw the line between intended rhyme and accidental word similarity. However, a threshold must be set to draw a boundary between the two. For default, we have set this threshold to 0.8 because we found it to work quite well in our data. However, it can be adjusted by user to their value of choice, similarly with other parameters such as window size. The list of rhyme candidates can now be reduces to the ones with rhyme rating above the selected threshold.
+As \cite{rhymes_overview} states, it is difficult to know where to draw the line between intended rhyme and accidental word similarity. However, a threshold must be set to draw a boundary between the two. \replaced{By}{For} default, we have set this threshold to 0.8 because we found it to work quite well in our data. However, it can be adjusted by user\added{s} to their value of choice; similarly with other parameters such as window size. The list of rhyme candidates can now be reduce\replaced{d}{s} to the ones with rhyme rating above the selected threshold.
 
-From this list of candidates for each line, we select only the candidate with the highest rhyme rating. When the ratings are identical, we select the closest line. Other candidates are saved, in case changes need to be made later in scheme adjustment phase. When the line does not have any suitable rhyme candidates, it is assigned rating 0. If the line rhymes with a candidate that is already a part of a rhyme, they join together into a rhyme group of 3 (or more) lines.
+From this list of candidates for each line, we select only the candidate with the highest rhyme rating. When the ratings are identical, we select the closest line. Other candidates are saved, in case changes need to be made later in scheme adjustment phase\added{, cf. Section~\ref{sec:scheme-adjustment}}. When the line does not have any suitable rhyme candidates, it is assigned rating 0. If the line rhymes with a candidate that is already a part of a rhyme, they join together into a rhyme group of 3 (or more) lines.
  
 
 
 
-\subsection{Assigning rhyme scheme}
- Rhymes in songs or poems are typically marked using a rhyme scheme. That means each verse gets assigned a letter -- lines that share the same letter rhyme and those with different letters do not. We also decided to adapt this common notation. In case the song needs more letters than there are in the alphabet we will add another letter and continue alphabetically -- a, b, c, ..., aa, ab, ac, ..., ba, bb, bc, ..., ca, etc.
+\subsection{Assigning rhyme scheme}\label{sec:scheme}
+ Rhymes in songs or poems are typically marked using a rhyme scheme. That means each verse gets assigned a letter -- lines that share the same letter rhyme and those with different letters do not. We also decided to adapt this common notation. In case the song needs more letters than there are in the alphabet\added{,} we will add another letter and continue alphabetically -- a, b, c, ..., aa, ab, ac, ..., ba, bb, bc, ..., ca, etc.
  
- There are two options for representing non-rhyming lines. The first is to assign every non-rhyming line the same default character. We chose this option as the default (using character ``--''), because it is easier to read for the user. The second option is to assign each non-rhyming line a unique rhyme scheme letter. This approach is more suitable for metrics that look at rhyme scheme letters as clusters of rhyming words. We support both options and can convert one the other when needed.
+ There are two options for representing non-rhyming lines. The first is to assign every non-rhyming line the same default character. We chose this option as the default (using character ``--''), because it is easier to read for the user. The second option is to assign each non-rhyming line a unique rhyme scheme letter. This approach is more suitable for metrics that look at rhyme scheme letters as clusters of rhyming words. We support both options and can convert one \added{into} the other when needed.
 
-\subsection{Scheme adjustment}
+\subsection{Scheme adjustment}\label{sec:scheme-adjustment}
 In some cases, the algorithm of selecting the best rhyme for each line does not yield the best possible scheme. Consider, for illustration, the example in Table \ref{scheme_adjustment}. There is a perfect rhyme between lines 1-2 and 3-4, and a forced rhyme between lines 2-3. With the algorithm as is, it would receive \textit{aaaa} scheme. However, that is not what a human, for example a gold data annotator, would assign. He would see that similarity inside the first and the second tuple is greater so they logically form two rhyme groups and the scheme is \textit{aabb}. 
 
 Additionally, song rating for scheme \textit{aaaa} would be less than 1 (because of the lower rating of the forced rhyme between lines 2 and 3) while the song rating for \textit{aabb} would be equal to 1. Loosing rating by marking weaker rhymes does not make sense so we must add an exception to only keep the better score. We can see that this problem is similar to the problem of maximizing song rating. 
