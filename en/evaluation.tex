@@ -135,12 +135,12 @@ Je ale možné, že se na něco takového zeptám ve svém posudku.}
 		&macro &  micro  & macro  & micro \\
 		\midrule
 	RhymeTagger &  \textbf{0.6519} &\textbf{0.6627} &\textbf{0.8021} & \textbf{0.8139} \\
-	RhymeTagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.804 \\
+	RhymeTagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.8040 \\
 	\midrule
 	Rhyme Detector & 0.6157 &0.6306 &0.7716 &0.7861 \\
-	Rhyme detector -- experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.802 \\
+	Rhyme detector -- experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.8020 \\
 	Rhyme detector -- 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
-	Rhyme Detector -- perfect &0.6224 &0.641 &0.7838 &\textbf{0.803}\\
+	Rhyme Detector -- perfect &0.6224 &0.6410 &0.7838 &\textbf{0.8030}\\
 	\end{tabular}
 	\caption{Evaluation of taggers on our annotated dataset.}
 	\label{my_eval}
@@ -166,7 +166,10 @@ Although our detector was trained on our dataset, it was unsupervised so we can 
 % 	\label{rhyme_line_stats}
 % \end{table}
 \MP{Opět jsem si dovolil předělat tabulku, tentokrát včetně transpozice,
-aby ve sloupcích pod sebou byla čísla stejného typu.}
+aby ve sloupcích pod sebou byla čísla stejného typu, což usnadňuje porovnávání a je to základní pravidlo pro tabulky.
+Bohužel jsem tím narušil jednotu -- v některých tabulkách jsou teď žánry ve sloupcích a v jiných v řádcích, ale přišlo mi to jako menší zlo.
+Tedy šlo by i ty zbývající transponovat, aby byly všude žánry v řádcích, což by asi bylo nejlepší, ale na to jsem neměl čas.
+}
 \begin{table}[h!]\centering
 \begin{tabular}{l  r r r r r}\toprule
        &         & \multicolumn{4}{c}{Lines} \\\cmidrule(l){3-6}
@@ -175,7 +178,7 @@ aby ve sloupcích pod sebou byla čísla stejného typu.}
 Pop    & 293,679 & 9,104,273 & 31.001        & 4,536,554 & 49.8 \\
 Rap    &  99,185 & 5,661,603 &\textbf{57.081}& 2,849,905 & 50.3 \\
 Rock   &  34,372 & 1,087,245 & 31.632        &   523,879 & 48.2 \\
-R\&B   &   5,125 &   225,344 & 43.970        &   117,862 & 52.3 \\
+R\&B   &   5,125 &   225,344 & 43.970        &   117,862 & \textbf{52.3} \\
 Country&   3,816 &   121,207 & 31.763        &    61,142 & 50.4 \\\bottomrule
 \end{tabular}
 \caption{General statistics about dataset and rhymes, per genre.} 
@@ -184,78 +187,170 @@ Country&   3,816 &   121,207 & 31.763        &    61,142 & 50.4 \\\bottomrule
 
 In Table \ref{rhyme_line_stats}, we sum up the basic information for all genres including the portion of lines that rhyme and we can already see some interesting results. Surprisingly, the highest portion of rhyming lines is in the R\&B genre. We do not see any characteristic of this genre that could cause this. However, it is not a big difference and maybe having more examples from this genre would make it less significant. 
 
-We can see that throughout genres typically only about half of the lines rhyme. This shows, that rhyming in songs is not as essential as perhaps in poems. Predictably, rap has a significantly higher average number of lines per song which confirms the fact that this genre is more talkative. What may be unexpected is that it is nearly two times more than for the other genres -- only R\&B slightly stands out but that is not a surprise because it has been influenced by rap.
+We can see that throughout genres typically only about half of the lines rhyme. This shows\deleted{,} that rhyming in songs is not as essential as perhaps in poems.
+\MP{Taky by to mohlo být kvůli chybám detektoru.
+Kdyby v tabulce \ref{my_eval} bylo i precision a recall a recall bylo vysoké,
+tedy většina rýmů je detekována, tak by tím šlo námitku o chybách detektoru částečně vyvrátit.
+Úplně nejlepší by ale bylo změřit procento rhyming lines ve zlatých datech ve Vašich písních
+a v Chicago básních a ověřit, zda i tam platí Vaše hypotéza, že básně se rýmují víc než písně.
+}
+Predictably, rap has a significantly higher average number of lines per song\added{,} which confirms the fact that this genre is more talkative. What may be unexpected is that it is nearly two times more than for the other genres -- only R\&B slightly stands out but that is not a surprise because it has been influenced by rap.
+\MP{Moc se v tom nevyznám, ale dle Wikipedie "Rap was used to describe talking on records as early as 1971" a "Rhythm and blues ... is a genre of popular music that originated in African-American communities in the 1940s."
+Tak bych řekl, že spíš R\&B ovlivnilo rap, pokud už se nebere rap jako součást hip hopu a ten jako součást moderního R\&B.
+Možná by šlo napsat, že ty styly jsou podobné, a nebo to "but that is not a surprise..." vypustit.}
+\MP{Při diskuzi délky by šlo analyzovat, jak moc které žánry obsahují nějaké opakující se sloky/refrény.
+Zásadní pak je, zda jsou tato opakování vypsána ve vašich textech.
+Toto druhé by šlo detekovat automaticky, to první možná taky, pokud se tam píše aspoň "Ref".
+Analýzu už nestihnete, ale víte-li, že třeba v country jsou refrény časté, ale v datech typicky/nikdy nejsou vypasné, můžete to napsat do poznámky pod čarou.}
+% \begin{table}[h!]
+% 	\centering
+% 	\begin{tabular}{l | r r r r r} 	
+% 		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
+% 		\midrule
+% 		Perfect masculine &	72.5& 	\textbf{58.2}& 	72.3& 	70.2& 	73.5 \\
+% 		Perfect feminine &	7.9&		8.4& 		7.7& 		8.5& 		6.2 \\
+% 		Perfect dactylic & 	0.7 &		0.5 & 	0.9 &		0.5& 		0.3 \\  
+% 		Imperfect & 		12.0& 	\textbf{22.3} & 	12.1 & 	13.5 & 	12.2 \\
+% 		Forced &  			6.9 & 	\textbf{10.6} & 	7.0 & 	7.3 &		7.8 \\
+% 	\end{tabular}
+% 	\caption{Percentage of different rhyme types from all rhymes in the dataset, per genre.} 
+% 	\label{rhyme_types_perc}
+% \end{table}
 
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
-		\midrule
-		Perfect masculine &	72.5& 	\textbf{58.2}& 	72.3& 	70.2& 	73.5 \\
-		Perfect feminine &	7.9&		8.4& 		7.7& 		8.5& 		6.2 \\
-		Perfect dactylic & 	0.7 &		0.5 & 	0.9 &		0.5& 		0.3 \\  
-		Imperfect & 		12.0& 	\textbf{22.3} & 	12.1 & 	13.5 & 	12.2 \\
-		Forced &  			6.9 & 	\textbf{10.6} & 	7.0 & 	7.3 &		7.8 \\
-	\end{tabular}
-	\caption{Percentage of different rhyme types from all rhymes in the dataset, per genre.} 
-	\label{rhyme_types_perc}
+\begin{table}[h!]\centering
+\begin{tabular}{l r r r r r}\toprule
+                     & \multicolumn{5}{c}{Genre} \\\cmidrule{2-6}
+ \pulrad{Rhyme type} & Pop  & Rap     & Rock & R\&B & Country\\\midrule
+ Perfect             & 81.1 &\bf 67.1 & 80.9 & 79.2 & 80.0 \\
+ \quad --- masculine & 72.5 &    58.2 & 72.3 & 70.2 & 73.5 \\
+ \quad --- feminine  &  7.9 &     8.4 &  7.7 &  8.5 &  6.2 \\
+ \quad --- dactylic  &  0.7 &     0.5 &  0.9 &  0.5 &  0.3 \\  
+ Imperfect           & 12.0 &\bf 22.3 & 12.1 & 13.5 & 12.2 \\
+ Forced              &  6.9 &\bf 10.6 &  7.0 &  7.3 &  7.8 \\\bottomrule
+\end{tabular}
+\caption{Percentage of different rhyme types from all rhymes in the dataset, per genre.} 
+\label{rhyme_types_perc}
 \end{table}
+\MP{Opět jsem upravil tabulku a přidal součet pro všechny typy perfect.}
 
 Next, Table \ref{rhyme_types_perc} shows distribution of different rhyme types. It did not come as a surprise that the most common type, by a long shot, is perfect masculine. The reasons behind this might be several -- not only has perfect match the strongest effect melodically, it is also the easiest to come up with, and makes the lyrics easy to remember. The multi-syllable perfect rhymes have a lower percentage as longer matching word pairs are rather rare. The amount of forced rhymes might be higher in reality because their detection is the hardest and they might be missed more often.
+\MP{To by šlo změřit na testsetu (byť dost nepřesně, protože je na to malý, ale ten Chicago by šel)
+jaká je úspěšnost (a precision a recall) na kterém typu rýmů
+a zda jsou opravdu forced nejtěžší.
+Opět: tu analýzu teď nestihnete, tak to nechte; možná se na to zeptám v posudku.}
 
 Concerning rhyme types, we see that genres are generally not very different, except for rap. Rap is very unique with rhymes, its artists are known for playing with them more creatively, using \gls{internal_rhyme}s, consonance, and assonance more often. They frequently play with emphasis what can be seen as a rapid increase in imperfect rhymes. There are more forced rhymes as well and perfect rhymes are decreased as a result.
 
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
-		\midrule
-		2-syllable rhymes & 91.1& 90.3& 91.1& 90.6 & 93.3\\
-		5-syllable rhymes& 8.2& 9.2& 8.0& 8.9& 6.4  \\
-		8-syllable rhymes& 0.7& 0.5& 0.9& 0.5& 0.3 \\
-		Perfect sound match & 93.1&\textbf{ 89.4}& 93.0& 92.7& 92.2  \\
-		Stress moved & 14.5& \textbf{28.3}& 14.5& 16.5& 14.8 \\
-		
-	\end{tabular}
-	\caption{Statistics about rhyme properties in general, disregarding rhyme types, in percentage from total rhymes.} 
-	\label{rhyme_stats}
+% \begin{table}[h!]
+% 	\centering
+% 	\begin{tabular}{l | r r r r r} 	
+% 		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
+% 		\midrule
+% 		2-syllable rhymes & 91.1& 90.3& 91.1& 90.6 & 93.3\\
+% 		5-syllable rhymes& 8.2& 9.2& 8.0& 8.9& 6.4  \\
+% 		8-syllable rhymes& 0.7& 0.5& 0.9& 0.5& 0.3 \\
+% 		Perfect sound match & 93.1&\textbf{ 89.4}& 93.0& 92.7& 92.2  \\
+% 		Stress moved & 14.5& \textbf{28.3}& 14.5& 16.5& 14.8 \\
+% 		
+% 	\end{tabular}
+% 	\caption{Statistics about rhyme properties in general, disregarding rhyme types, in percentage from total rhymes.} 
+% 	\label{rhyme_stats}
+% \end{table}
+\begin{table}[h!]\centering
+\begin{tabular}{l r r r r r}\toprule
+                                 & \multicolumn{5}{c}{Genre} \\\cmidrule{2-6}
+ \pulrad{Rhyme category}         & Pop  & Rap     & Rock & R\&B & Country\\\midrule
+ 1-syllable (2-component) rhymes & 91.1 &    90.3 & 91.1 & 90.6 & 93.3 \\
+ 2-syllable (5-component) rhymes &  8.2 &     9.2 &  8.0 &  8.9 &  6.4 \\
+ 3-syllable (8-component) rhymes &  0.7 &     0.5 &  0.9 &  0.5 &  0.3 \\
+ Perfect sound match             & 93.1 &\bf 89.4 & 93.0 & 92.7 & 92.2 \\
+ Stress moved                    & 14.5 &\bf 28.3 & 14.5 & 16.5 & 14.8 \\\bottomrule
+\end{tabular}
+\caption{Statistics about rhyme properties in general, disregarding rhyme types, in percentage from total rhymes.} 
+\label{rhyme_stats}
+\end{table}
+\MP{Opět jsem upravil tabulku a opravil nesmyslné 8-syllable.}
+
+Table \ref{rhyme_stats} is quite similar to the previous table, but by counting syllables regardless of rhyme type, and evaluating sound match and stress separately, it offers us a little bit different angle. By seeing that the percentages of \replaced{3-syllable}{8-syllable} rhymes match the percentages we have seen in Table \ref{rhyme_types_perc}, we can assume that \replaced{3-syllable}{8-syllable} rhymes might be exclusively perfect.
+\MP{Kdyby to nebyl pefect rhyme, tak přesunete přízvuk doprava a už nebude započítán jako tříslabičný, ne?
+Leda by tam byl nějaký forced rhyme, kde je podobnost zvuků na třetí slabice velmi vysoká,
+ takže se ho vyplatí zahrnout radši než utrpět 0.1 stress penalty,
+ pokud to tedy takto opravdu porovnáváte.
+Každopádně ale ve skutečnosti by mohlo být těch 3-slabičných více,
+ jen je jako 3 slabičné nepočítáte.
+Nebo snad ty kategorie ``3-syllable (8-component)'' počítáte podle původních přízvuků ještě před případným přesunem přízvuku?
+Pak ale není jasné, co děláte s rýmy, kde má každý fellow jiný počet slabik po přízvuku.
+}
+The decreased match in sound and increased moving of stress in rap confirm the unique properties of rap we have seen previously.
+
+A slightly increased percentage of \replaced{1-syllable rhymes}{2-syllable} in country may be noteworthy but we see no significant properties of country that could support this as a general claim.
+
+% \begin{table}[h!]
+% 	\centering
+% 	\begin{tabular}{l | r r r r r} 	
+% 		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
+% 		\midrule
+% 		Average groups per song& 6.134 &\textbf{11.484} &6.091 &8.620 &6.676  \\
+% 		Average groups per 100 lines &19.787 &20.119 &19.255 &19.605 &\textbf{21.018} \\
+% 		Max groups per song & 169 &224 & 81 & 48 &98\\
+% 		Average group size & 2.518 &2.502 &2.502 &2.668 &\textbf{2.400} \\
+% 		Max group size & 159 &98 & 68 & 42 & 24\\
+% 	\end{tabular}
+% 	\caption{Statistics about rhyme group size per genre.} 
+% 	\label{rhyme_group_size}
+% \end{table}
+
+\begin{table}[h!]\centering
+\begin{tabular}{l rr r rr}\toprule
+       & \multicolumn{2}{c}{groups per song}
+                        & groups per & \multicolumn{2}{c}{group size} \\\cmidrule(r){2-3}\cmidrule(l){5-6}
+\pulrad{Genre}&avg& max & 100 lines&     avg &   max \\\midrule
+Pop    &     6.13 & 169 &    19.79 &    2.52 &   159 \\
+Rap    &\bf 11.48 & 224 &    20.12 &    2.50 &    98 \\
+Rock   &     6.09 &  81 &    19.26 &    2.50 &    68 \\
+R\&B   &     8.62 &  48 &    19.61 &    2.67 &    42 \\
+Country&     6.68 &  98 &\bf 21.02 &\bf 2.40 &\bf 24 \\\bottomrule
+\end{tabular}
+\caption{Statistics about rhyme group size \added{and counts} per genre.} 
+\label{rhyme_group_size}
 \end{table}
 
-Table \ref{rhyme_stats} is quite similar to the previous table, but by counting syllables regardless of rhyme type, and evaluating sound match and stress separately, it offers us a little bit different angle. By seeing that the percentages of 8-syllable rhymes match the percentages we have seen in Table \ref{rhyme_types_perc}, we can assume that 8-syllable rhymes might be exclusively perfect. The decreased match in sound and increased moving of stress in rap confirm the unique properties of rap we have seen previously.
-
-A slightly increased percentage of 2-syllable in country may be noteworthy but we see no significant properties of country that could support this as a general claim.
-
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
-		\midrule
-		Average groups per song& 6.134 &\textbf{11.484} &6.091 &8.620 &6.676  \\
-		Average groups per 100 lines &19.787 &20.119 &19.255 &19.605 &\textbf{21.018} \\
-		Max groups per song & 169 &224 & 81 & 48 &98\\
-		Average group size & 2.518 &2.502 &2.502 &2.668 &\textbf{2.400} \\
-		Max group size & 159 &98 & 68 & 42 & 24\\
-	\end{tabular}
-	\caption{Statistics about rhyme group size per genre.} 
-	\label{rhyme_group_size}
-\end{table}
 
 Table \ref{rhyme_group_size} summarizes statistics concerning size of rhyme groups. We can observe nearly double average size for rap compared to other genres, which directly corresponds to nearly double average song length, as we have seen in Table \ref{basic_stats}. 
 
-An interesting observation can be made for country -- average number of rhyme groups per 100 lines is slightly higher than for other genres. This corresponds with average group size being lower -- obviously country tends to contain more and smaller rhymes groups. It would be interesting to know, whether this is only a property of our dataset or a property of country music in general. Although maximum group size does not tell us any general information about the group because it may only be an outlier, but it is still interesting to see, that this number is again the smallest for country.
+An interesting observation can be made \replaced{about}{for} country -- average number of rhyme groups per 100 lines is slightly higher than for other genres. This corresponds with average group size being lower -- obviously country tends to contain more and smaller rhymes groups. It would be interesting to know\deleted{,} whether this is only a property of our dataset or a property of country music in general. Although \added{the} maximum group size does not tell us any general information about the group because it may only be an outlier, \deleted{but} it is still interesting to see\deleted{,} that this number is again the smallest for country.
 
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
-		\midrule
-		Average song rating& 0.432 & \textbf{0.599} &0.420 &0.520 &0.456  \\
-		Median & \textbf{0.521} & 0.380 &0.357 &0.235 & 0.269\\
-	\end{tabular}
-	\caption{Song rating per genre.} 
-	\label{song_rating_stats}
+% \begin{table}[h!]
+% 	\centering
+% 	\begin{tabular}{l | r r r r r} 	
+% 		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
+% 		\midrule
+% 		Average song rating& 0.432 & \textbf{0.599} &0.420 &0.520 &0.456  \\
+% 		Median & \textbf{0.521} & 0.380 &0.357 &0.235 & 0.269\\
+% 	\end{tabular}
+% 	\caption{Song rating per genre.} 
+% 	\label{song_rating_stats}
+% \end{table}
+\begin{table}[h!]\centering
+\begin{tabular}{l r r r r r}\toprule
+                    & \multicolumn{5}{c}{Genre} \\\cmidrule{2-6}
+                    & Pop      & Rap      & Rock  &	R\&B  & Country\\\midrule
+Average song rating &    0.432 &\bf 0.599 & 0.420 & 0.520 & 0.456 \\
+Median song rating  &\bf 0.521 &    0.380 & 0.357 & 0.235 & 0.269 \\\bottomrule
+\end{tabular}
+\caption{Song rating per genre.} 
+\label{song_rating_stats}
 \end{table}
 
-Looking at average and median ratings in Table \ref{song_rating_stats}, we can observe two curious extremes -- rap having the highest average rating and pop with the highest median rating. Rap leading in the average, but this dominance not being translated into median, tells us that there must be some extremely high rated songs that pulled up the average. Although we did not predict this result, it shows that some artists probably took the importance of rhyme in rap very seriously and elaborately incorporated it densely into their lyrics.
+Looking at average and median \added{song} ratings in Table \ref{song_rating_stats}, we can observe two curious extremes -- rap having the highest average rating and pop with the highest median rating.
+%Rap leading in the average, but this dominance not being translated into median, tells us that
+So there must be some extremely high\added{ly} rated \added{rap} songs that pulled up the average.
+\MP{Jednak jsem zde smazal/zakomentoval větu, která mi přišla zbytečným opakováním.
+Jednak by to taky mohlo být tím, že jsou v popu písně s extrémně nízkým ratingem, na rozdíl od rapu, jak vlastně píšete v dalším odstavci.
+Ono asi bude platit obojí.
+To by mělo být vidět při vykreslení celé distribuce ratingů do grafu (třeba violin plot with whiskers, s kvartily, s vyznačenými outliers).
+Asi to nechte, jak to je.
+}
+Although we did not predict this result, it shows that some artists probably took the importance of rhyme in rap very seriously and elaborately incorporated it densely into their lyrics.
 
-Highest median in pop shows that many pop songs are filled with more rhymes what can be explained by their strong tendency to be memorable. However, it seems that there are some low extremes that pulled the average rating down.
+\added{The} highest median in pop shows that many pop songs are filled with more rhymes\replaced{, which}{ what} can be explained by their strong tendency to be memorable. However, it seems that there are some low extremes that pulled the average rating down.
