@@ -17,6 +17,8 @@ In future, it would be worth to consider a more advanced data pre-processing or 
 
 Alternatively, this pre-processing could be included in a more robust detector, that would take care of typing errors and automatically separate text into verses by rhymes.
 
+For more comparisons with RhymeTagger, it could be interesting to train our detector on ChicagoRPC dataset (the same that RhymeTagger was trained on) and compare the results whether the poetry data help the detector learn rhymes better.
+
 For more evaluation statistics, it could be interesting to design a metric that would evaluate the structure of the text (e.g. metre, rhythm, syllable count, and higher-level structure). Not only would this create a measure that would quantify how GPT-2 generated lyrics resemble human-written ones, but it would probably yield more interesting statistical differences between genres.
 
 Another metric could be designed to evaluate repetitiveness in lyrics. Some repetition is common in lyrics but there is no implicit way to quantify how much is normal. This could also be used, in combination with other metrics, to automatically recognize machine-generated lyrics.

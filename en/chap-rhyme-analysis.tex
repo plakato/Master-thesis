@@ -195,7 +195,7 @@ What we have just described is basically step 3 of learning the matrix using the
 	\item Initialize the matrix of vertical collocation probabilities.
 	\item Find rhymes using this matrix.
 	\item Adjust the matrix based on detected rhymes.
-	\item Repeat steps 2 and 3 until convergence.
+	\item Repeat steps 2 and 3 until convergence, i.e. when matrix reaches a state it already had.
 \end{enumerate} 
 
 To improve the matrix in step 3, in each iteration we will count the vertical collocations only from the pairs that were marked as rhyming in the previous iteration.

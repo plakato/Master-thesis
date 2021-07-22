@@ -2,36 +2,24 @@
 In this chapter, we will evaluate our rhyme detector. In the beginning, we will compare its performance with RhymeTagger. Then we will use it to analyze our dataset and calculate statistics about song lyrics.
 
 \section{Performance evaluation on schemes}
-To evaluate the quality of our Rhyme Detector, we will compare its rhyme scheme predictions with \gls{gold_data}. We have two annotated datasets we can use -- Chicago Rhyming Poetry Corpus and  the annotated subset of our own dataset.
-\MP{Takže dev set, nebo test set?}
-We will also compare our performance with that of RhymeTagger.
+To evaluate the quality of our Rhyme Detector, we will compare its rhyme scheme predictions with \gls{gold_data}. We have two annotated datasets we can use -- Chicago Rhyming Poetry Corpus (ChicagoRPC) and  the annotated test subset of our dataset (Genius). We will also compare our performance with that of RhymeTagger.
 
 \subsection{Taggers}
 We will be comparing different variants of the taggers to also evaluate the influence some factors have on the performance. The variants are following:
 \begin{itemize}
-	\item \textbf{RhymeTagger} -- the original version of RhymeTagger, as it was trained by Plecháč.
-	\item \textbf{RhymeTagger -- fine-tuned} -- RhymeTagger trained on one third of our data.
-	\MP{Proč jen třetina? Předpokládám, že trénování RhymeTaggeru bylo pomalé (pomalejší než Rhyme Detectoru?) či vyžadovalo víc paměti, než jste měla k dispozici.
-	Je-li to tak, napište to sem, třeba do poznámky pod čarou.
-	Metodologicky ideální by bylo ještě natrénovat i váš Detector jen na té třetině, aby to bylo porovnatelné.}
-	\MP{To jste trénovala zcela znovu, že? Tedy se nejedná o fine-tuning, ale training from scratch.
-	Tedy by šlo RhymeTagger přejmenovat na RhymeTagger(ChicagoRPC) a fine-tuned na RhymeTagger(Genius$\frac{1}{3}$), kde ChicagoRPC a Genius by se zadefinovalo jako názvy těch datasetů,
-	respektive jejich trénovacích částí.}
-	\item \textbf{Rhyme Detector} -- our detector, as described in Chapter \ref{chap-rhyme-analysis}, with \added{the} default settings
-	\MP{Kolik iterací EM to tedy bylo? A dosáhlo to opravdu konvergence?}
-	\item \textbf{Rhyme Detector -- experiment} -- an experimental version of our detector\deleted{,} that was not trained with \added{the} EM algorithm, but instead the matrix was created by counting the co-occurrences in the data and using their probabilities
-	\MP{Pokud si pamatuji, tak zde jste ale co-occurrences nepočítala z rhyme fellows,
-	ale ze všech adeptů (tedy rhyme candidates) v rámci daného window.
-	}
-	\item \textbf{Rhyme Detector -- 1 iteration} -- our detector after \added{the} 1\textsuperscript{st} iteration of \replaced{the EM algorithm}{training}
-	\item \textbf{Rhyme Detector -- perfect} -- our detector \replaced{configured to}{using the setting of} only finding perfect rhymes -- the co-occurrence matrix is an identity matrix
+	\item \textbf{RhymeTagger (ChicagoRPC)} -- the original version of RhymeTagger, as it was trained by Plecháč.
+	\item \textbf{RhymeTagger (Genius$\frac{1}{3}$)} -- RhymeTagger trained on one third of our data.\footnote{Training of RhymeTagger was significantly more time consuming than training of our detector so we did not manage to train in on a larger portion.}
+	\item \textbf{Rhyme Detector} -- our detector, as described in Chapter \ref{chap-rhyme-analysis}, with the default settings, trained until the EM algorithm reached convergence in 4\textsuperscript{th} iteration.
+	\item \textbf{Rhyme Detector -- experiment} -- an experimental version of our detector that was not trained with the EM algorithm, but instead the matrix was created by counting the co-occurrences in the data and using their probabilities. In this experiment, we counted the co-occurrences for all the lines; in case the line did not have a rhyme within the window, we took the line immediately preceding it instead.
+	\item \textbf{Rhyme Detector -- 1 iteration} -- our detector after the 1\textsuperscript{st} iteration of the EM algorithm.
+	\item \textbf{Rhyme Detector -- perfect} -- our detector configured to only finding perfect rhymes -- the co-occurrence matrix is an identity matrix.
 \end{itemize}
 
 \subsection{Scores}
 To evaluate the performance, we need to find an appropriate measure that could compare the gold scheme with the prediction. This task may seem easy at first, but we need to be careful because the straight-forward approach of comparing the schemes letter by letter would not work. If the prediction made an error in the beginning it would alphabetically shift the rest of the scheme and it would no longer match with the gold data.
 
-\paragraph{Last Index Score (LI)} To solve this problem, we propose Last Index Score (LI score). The idea is to convert the scheme from letter representation to last rhyme's index representation. This means for each line, we will use the index of the last line that rhymed with it. If the line does not have a rhyme, we will use index -1. With such representation, we can compare these \replaced{indices}{indexes} directly, independently from scheme letters, and the proportion of matching \replaced{indices}{indexes} will give us a score between 0 and 1. For an illustrative example, see Table \ref{LI_score_example}.
-\MP{Dovolil jsem si přidat do tabulky sloupec line index a trochu přeformátovat}
+\paragraph{Last Index Score (LI)} To solve this problem, we propose Last Index Score (LI score). The idea is to convert the scheme from letter representation to last rhyme's index representation. This means for each line, we will use the index of the last line that rhymed with it. If the line does not have a rhyme, we will use index -1. With such representation, we can compare these indices directly, independently from scheme letters, and the proportion of matching indices will give us a score between 0 and 1. For an illustrative example, see Table \ref{LI_score_example}.
+
 
 % \begin{table}[h!]
 % 	\centering
@@ -88,10 +76,7 @@ To evaluate the performance, we need to find an appropriate measure that could c
 \subsection{Comparison of the results}
 We calculated the aforementioned scores for all variants of tagger\added{s} and summed up the results in Tables \ref{reddy_eval} and \ref{my_eval}. 
 
-They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_eval}). Surprisingly, our detector performed the best after 1\textsuperscript{st} iteration, but the difference is not \deleted{very} significant.
-\MP{Signifikance je přesně matematicky definovaná, měl by se uvést i test, kterým se počítala a alpha.
-Nelze psát very/more significant.
-Pokud nebyla exaktně měřena signifikance, lze o tom rozdílu psát třeba substantial nebo large.}
+They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_eval}). Surprisingly, our detector performed the best after 1\textsuperscript{st} iteration, but the difference is not substantial.
 
 \begin{table}[h!]
 	\centering
@@ -101,8 +86,8 @@ Pokud nebyla exaktně měřena signifikance, lze o tom rozdílu psát třeba sub
 	\cline{2-5}	
 	&macro &  micro  & macro  & micro \\
 	\midrule
-	RhymeTagger & \textbf{0.9463} & \textbf{0.9384} & \textbf{0.9635} & \textbf{0.9534} \\
-	RhymeTagger fine-tuned& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
+	RhymeTagger (ChicagoRPC) & \textbf{0.9463} & \textbf{0.9384} & \textbf{0.9635} & \textbf{0.9534} \\
+	RhymeTagger (Genius)& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
 	\midrule
 	Rhyme Detector & 0.9040 & 0.8915 & 0.9413 & 0.9272 \\
 	Rhyme Detector -- experiment & 0.9025 & 0.8906 & 0.9406 & 0.9272 \\
@@ -113,18 +98,7 @@ Pokud nebyla exaktně měřena signifikance, lze o tom rozdílu psát třeba sub
 	\label{reddy_eval}
 \end{table}
 
-On our dataset (Table \ref{my_eval}), however, the best performing was the experiment variant.
-\MP{No, celkově nejlepší byl ve všech 4 evaluacích původní RhymeTagger.}
-Surprisingly, the fine-tuned RhymeTagger performed worse than the original pre-trained version. The possible cause is the nature of our data -- song lyrics have a significantly smaller percentage of rhymes than poems, so the collocations approach might not work as well for our dataset. This might also be the reason why our detector, trained only on our data, does not perform as well as RhymeTagger.
-\MP{Nabízí se otázka, proč jste tedy nenatrénovala Váš detector na ChicagoRPC.
-Můžete té otázce předejít, že to poznamenáte jako future work.
-Případně to můžete ignorovat a čekat, zda se Vás na to nezeptá oponent
-a nestihnete to ještě do obhajoby.}
-\MP{Těch otázek k diskutování se nabízí více.
-Např. nemáte-li v tom EM chybu, když to nikdy není nejlepší z Vašich verzí.
-A obecně: čím jsou způsobené ty rozdíly.
-Teď už na tyto otázky odpovědi nalézt nestihneme.
-Je ale možné, že se na něco takového zeptám ve svém posudku.}
+Surprisingly, as we can see in Table \ref{my_eval}, RhymeTagger (Genius) performed worse on the \textit{Genius} dataset than the original pre-trained version. The possible cause is the nature of our data -- song lyrics have a significantly smaller percentage of rhymes than poems, so the collocations approach might not work as well for our dataset. This might also be the reason why our detector, trained only on our data, does not perform as well as RhymeTagger.
 
 \begin{table}[h!]
 	\centering
@@ -134,15 +108,15 @@ Je ale možné, že se na něco takového zeptám ve svém posudku.}
 		\cline{2-5}	
 		&macro &  micro  & macro  & micro \\
 		\midrule
-	RhymeTagger &  \textbf{0.6519} &\textbf{0.6627} &\textbf{0.8021} & \textbf{0.8139} \\
-	RhymeTagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.8040 \\
+	RhymeTagger (ChicagoRPC) &  \textbf{0.6519} &\textbf{0.6627} &\textbf{0.8021} & \textbf{0.8139} \\
+	RhymeTagger (Genius)& 0.6309 &0.6443 &0.7883 &0.8040 \\
 	\midrule
 	Rhyme Detector & 0.6157 &0.6306 &0.7716 &0.7861 \\
 	Rhyme detector -- experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.8020 \\
 	Rhyme detector -- 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
 	Rhyme Detector -- perfect &0.6224 &0.6410 &0.7838 &\textbf{0.8030}\\
 	\end{tabular}
-	\caption{Evaluation of taggers on our annotated dataset.}
+	\caption{Evaluation of taggers on test subset of Genius.}
 	\label{my_eval}
 \end{table}
 
@@ -165,11 +139,7 @@ Although our detector was trained on our dataset, it was unsupervised so we can 
 % 	\caption{General statistics about dataset and rhymes, per genre.} 
 % 	\label{rhyme_line_stats}
 % \end{table}
-\MP{Opět jsem si dovolil předělat tabulku, tentokrát včetně transpozice,
-aby ve sloupcích pod sebou byla čísla stejného typu, což usnadňuje porovnávání a je to základní pravidlo pro tabulky.
-Bohužel jsem tím narušil jednotu -- v některých tabulkách jsou teď žánry ve sloupcích a v jiných v řádcích, ale přišlo mi to jako menší zlo.
-Tedy šlo by i ty zbývající transponovat, aby byly všude žánry v řádcích, což by asi bylo nejlepší, ale na to jsem neměl čas.
-}
+
 \begin{table}[h!]\centering
 \begin{tabular}{l  r r r r r}\toprule
        &         & \multicolumn{4}{c}{Lines} \\\cmidrule(l){3-6}
@@ -187,28 +157,11 @@ Country&   3,816 &   121,207 & 31.763        &    61,142 & 50.4 \\\bottomrule
 
 In Table \ref{rhyme_line_stats}, we sum up the basic information for all genres including the portion of lines that rhyme and we can already see some interesting results. Surprisingly, the highest portion of rhyming lines is in the R\&B genre. We do not see any characteristic of this genre that could cause this. However, it is not a big difference and maybe having more examples from this genre would make it less significant. 
 
-We can see that throughout genres typically only about half of the lines rhyme. This shows\deleted{,} that rhyming in songs is not as essential as perhaps in poems.
-\MP{Taky by to mohlo být kvůli chybám detektoru.
-Kdyby v tabulce \ref{my_eval} bylo i precision a recall a recall bylo vysoké,
-tedy většina rýmů je detekována, tak by tím šlo námitku o chybách detektoru částečně vyvrátit.
-Úplně nejlepší by ale bylo změřit procento rhyming lines ve zlatých datech ve Vašich písních
-a v Chicago básních a ověřit, zda i tam platí Vaše hypotéza, že básně se rýmují víc než písně.
-}
-\MP{Další možný důvod nižšího množství detekovaných rýmů v písních může být ten,
-že Vaše data nejsou ``správně'' formátována, tedy nemají vždy rým na konci řádky, jak předpokládáte.
-Třeba ve Figure 5.2 v písni Love Game se zřejmě rýmují řádky 4 a 5 s kiss you a miss you,
-ale za tím druhým je ještě ``, babe'', takže ten rým Vašemu detektoru unikne.
-Tohle byste zde (v textu či poznámce pod čarou) případně taky mohla zmínit.
-Tipuji, že docela dost z těch řádků bez detekovaných rýmů může být způsobeno právě tímto.
-}
-Predictably, rap has a significantly higher average number of lines per song\added{,} which confirms the fact that this genre is more talkative. What may be unexpected is that it is nearly two times more than for the other genres -- only R\&B slightly stands out but that is not a surprise because it has been influenced by rap.
-\MP{Moc se v tom nevyznám, ale dle Wikipedie "Rap was used to describe talking on records as early as 1971" a "Rhythm and blues ... is a genre of popular music that originated in African-American communities in the 1940s."
-Tak bych řekl, že spíš R\&B ovlivnilo rap, pokud už se nebere rap jako součást hip hopu a ten jako součást moderního R\&B.
-Možná by šlo napsat, že ty styly jsou podobné, a nebo to "but that is not a surprise..." vypustit.}
-\MP{Při diskuzi délky by šlo analyzovat, jak moc které žánry obsahují nějaké opakující se sloky/refrény.
-Zásadní pak je, zda jsou tato opakování vypsána ve vašich textech.
-Toto druhé by šlo detekovat automaticky, to první možná taky, pokud se tam píše aspoň "Ref".
-Analýzu už nestihnete, ale víte-li, že třeba v country jsou refrény časté, ale v datech typicky/nikdy nejsou vypasné, můžete to napsat do poznámky pod čarou.}
+We can see that throughout genres typically only about half of the lines rhyme. There are more reasons that could cause this. One possibility is that rhyming in songs is not as essential as perhaps in poems and there are in fact no more rhymes to be detected. A more likely possibility is that there are more rhymes but were not detected, either because our detector did not see them or because of the imperfect formatting of our dataset. For example, in Figure \ref{web-form}, lines 4 and 5 could have a rhyme \textit{kiss you} -- \textit{miss you}, but on the 5\textsuperscript{th} line \textit{miss you} is followed by ``, babe'' what causes this rhyme to go unnoticed by our detector.
+
+
+Predictably, rap has a significantly higher average number of lines per song, which confirms the fact that this genre is more talkative. What may be unexpected is that it is nearly two times more than for the other genres -- only R\&B slightly stands out but that can be explained by the fact that these two genres are known to have influenced each other throughout history.
+
 % \begin{table}[h!]
 % 	\centering
 % 	\begin{tabular}{l | r r r r r} 	
@@ -238,13 +191,10 @@ Analýzu už nestihnete, ale víte-li, že třeba v country jsou refrény čast�
 \caption{Percentage of different rhyme types from all rhymes in the dataset, per genre.} 
 \label{rhyme_types_perc}
 \end{table}
-\MP{Opět jsem upravil tabulku a přidal součet pro všechny typy perfect.}
 
-Next, Table \ref{rhyme_types_perc} shows distribution of different rhyme types. It did not come as a surprise that the most common type, by a long shot, is perfect masculine. The reasons behind this might be several -- not only has perfect match the strongest effect melodically, it is also the easiest to come up with, and makes the lyrics easy to remember. The multi-syllable perfect rhymes have a lower percentage as longer matching word pairs are rather rare. The amount of forced rhymes might be higher in reality because their detection is the hardest and they might be missed more often.
-\MP{To by šlo změřit na testsetu (byť dost nepřesně, protože je na to malý, ale ten Chicago by šel)
-jaká je úspěšnost (a precision a recall) na kterém typu rýmů
-a zda jsou opravdu forced nejtěžší.
-Opět: tu analýzu teď nestihnete, tak to nechte; možná se na to zeptám v posudku.}
+
+Next, Table \ref{rhyme_types_perc} shows distribution of different rhyme types. It did not come as a surprise that the most common type, by a long shot, is perfect masculine. The reasons behind this might be several -- not only has perfect match the strongest effect melodically, it is also the easiest to come up with, and makes the lyrics easy to remember. The multi-syllable perfect rhymes have a lower percentage as longer matching word pairs are rather rare. The amount of forced rhymes might be higher in reality because their detection is inherently the hardest and they might be missed more often.
+
 
 Concerning rhyme types, we see that genres are generally not very different, except for rap. Rap is very unique with rhymes, its artists are known for playing with them more creatively, using \gls{internal_rhyme}s, consonance, and assonance more often. They frequently play with emphasis what can be seen as a rapid increase in imperfect rhymes. There are more forced rhymes as well and perfect rhymes are decreased as a result.
 
@@ -276,29 +226,13 @@ Concerning rhyme types, we see that genres are generally not very different, exc
 \caption{Statistics about rhyme properties in general, disregarding rhyme types, in percentage from total rhymes.} 
 \label{rhyme_stats}
 \end{table}
-\MP{Opět jsem upravil tabulku a opravil nesmyslné 8-syllable.}
 
-Table \ref{rhyme_stats} is quite similar to the previous table, but by counting syllables regardless of rhyme type, and evaluating sound match and stress separately, it offers us a little bit different angle. By seeing that the percentages of \replaced{3-syllable}{8-syllable} rhymes match the percentages we have seen in Table \ref{rhyme_types_perc}, we can assume that \replaced{3-syllable}{8-syllable} rhymes might be exclusively perfect.
-\MP{Kdyby to nebyl pefect rhyme, tak přesunete přízvuk doprava a už nebude započítán jako tříslabičný, ne?
-Leda by tam byl nějaký forced rhyme, kde je podobnost zvuků na třetí slabice velmi vysoká,
- takže se ho vyplatí zahrnout radši než utrpět 0.1 stress penalty,
- pokud to tedy takto opravdu porovnáváte.
-Každopádně ale ve skutečnosti by mohlo být těch 3-slabičných více,
- jen je jako 3 slabičné nepočítáte.
-Nebo snad ty kategorie ``3-syllable (8-component)'' počítáte podle původních přízvuků ještě před případným přesunem přízvuku?
-Pak ale není jasné, co děláte s rýmy, kde má každý fellow jiný počet slabik po přízvuku.
-}
-\MP{Zkusil jsem do Vašeho detektoru zadat ``něco kiss you -- něco miss you'' a zanalyzovalo to jako masculine, jak jsem čekal.
-Stejně tak Váš příklad z 3.4.2 ``spoke to -- yoke, too'' se zanalyzuje jako masculine.
-Dle Vaší definice je to tak správně -- ve slovníku je přízvuk na začátku každého slova
-a neřešíte, že některá slova (obzvlášť krátká a neplnovýznamová) lze vyslovit i bez přízvuku,
-respektive dohromady s předchozím slovem.
-To může být další důvod, proč detektor nachází tak málo víceslabičných rýmů, byť v datech jsou.
-Opět: opravit to nestíháme, šlo by to ale zmínit někde v textu -- a dát najevo, že o tom víte.
-}
+
+Table \ref{rhyme_stats} is quite similar to the previous table, but by counting syllables regardless of rhyme type, and evaluating sound match and stress separately, it offers us a little bit different angle. The low percentage of multi-syllable rhymes may be caused by the fact that we only look at the components after the last stress and stress is more often on the last or penultimate syllable -- even if more syllables rhyme, only shorter rhyme will be detected.
+
 The decreased match in sound and increased moving of stress in rap confirm the unique properties of rap we have seen previously.
 
-A slightly increased percentage of \replaced{1-syllable rhymes}{2-syllable} in country may be noteworthy but we see no significant properties of country that could support this as a general claim.
+A slightly increased percentage of 1-syllable rhymes in country may be noteworthy but we see no significant properties of country that could support this as a general claim.
 
 % \begin{table}[h!]
 % 	\centering
@@ -326,14 +260,14 @@ Rock   &     6.09 &  81 &    19.26 &    2.50 &    68 \\
 R\&B   &     8.62 &  48 &    19.61 &    2.67 &    42 \\
 Country&     6.68 &  98 &\bf 21.02 &\bf 2.40 &\bf 24 \\\bottomrule
 \end{tabular}
-\caption{Statistics about rhyme group size \added{and counts} per genre.} 
+\caption{Statistics about rhyme group size and counts per genre.} 
 \label{rhyme_group_size}
 \end{table}
 
 
 Table \ref{rhyme_group_size} summarizes statistics concerning size of rhyme groups. We can observe nearly double average size for rap compared to other genres, which directly corresponds to nearly double average song length, as we have seen in Table \ref{basic_stats}. 
 
-An interesting observation can be made \replaced{about}{for} country -- average number of rhyme groups per 100 lines is slightly higher than for other genres. This corresponds with average group size being lower -- obviously country tends to contain more and smaller rhymes groups. It would be interesting to know\deleted{,} whether this is only a property of our dataset or a property of country music in general. Although \added{the} maximum group size does not tell us any general information about the group because it may only be an outlier, \deleted{but} it is still interesting to see\deleted{,} that this number is again the smallest for country.
+An interesting observation can be made about country -- average number of rhyme groups per 100 lines is slightly higher than for other genres. This corresponds with average group size being lower -- obviously country tends to contain more and smaller rhymes groups. It would be interesting to know whether this is only a property of our dataset or a property of country music in general. Although the maximum group size does not tell us any general information about the group because it may only be an outlier, it is still interesting to see that this number is again the smallest for country.
 
 % \begin{table}[h!]
 % 	\centering
@@ -357,15 +291,9 @@ Median song rating  &\bf 0.521 &    0.380 & 0.357 & 0.235 & 0.269 \\\bottomrule
 \label{song_rating_stats}
 \end{table}
 
-Looking at average and median \added{song} ratings in Table \ref{song_rating_stats}, we can observe two curious extremes -- rap having the highest average rating and pop with the highest median rating.
-%Rap leading in the average, but this dominance not being translated into median, tells us that
-So there must be some extremely high\added{ly} rated \added{rap} songs that pulled up the average.
-\MP{Jednak jsem zde smazal/zakomentoval větu, která mi přišla zbytečným opakováním.
-Jednak by to taky mohlo být tím, že jsou v popu písně s extrémně nízkým ratingem, na rozdíl od rapu, jak vlastně píšete v dalším odstavci.
-Ono asi bude platit obojí.
-To by mělo být vidět při vykreslení celé distribuce ratingů do grafu (třeba violin plot with whiskers, s kvartily, s vyznačenými outliers).
-Asi to nechte, jak to je.
-}
-Although we did not predict this result, it shows that some artists probably took the importance of rhyme in rap very seriously and elaborately incorporated it densely into their lyrics.
+Looking at average and median song ratings in Table \ref{song_rating_stats}, we can observe two curious extremes -- rap having the highest average rating and pop with the highest median rating.
+So there must be some extremely highly rated rap songs that pulled up the average.
 
-\added{The} highest median in pop shows that many pop songs are filled with more rhymes\replaced{, which}{ what} can be explained by their strong tendency to be memorable. However, it seems that there are some low extremes that pulled the average rating down.
+Although we did not predict this result, it can be a sign that some artists took the importance of rhyme in rap very seriously and elaborately incorporated it densely into their lyrics.
+
+The highest median in pop shows that many pop songs are filled with more rhymes, which can be explained by their strong tendency to be memorable. However, it seems that there are some low extremes that pulled the average rating down.
