@@ -1,58 +1,97 @@
 \chapter{Evaluation}\label{evaluation}
-In this chapter, we will evaluate our rhyme detector. In the beginning, we will compare its performance with Rhyme Tagger. Then we will use it to analyze our dataset and calculate statistics about song lyrics.
+In this chapter, we will evaluate our rhyme detector. In the beginning, we will compare its performance with RhymeTagger. Then we will use it to analyze our dataset and calculate statistics about song lyrics.
 
 \section{Performance evaluation on schemes}
-To evaluate the quality of our Rhyme Detector, we will compare its rhyme scheme predictions with \gls{gold_data}. We have two annotated datasets we can use -- Chicago Rhyming Poetry Corpus and  the annotated subset of our own dataset. We will also compare our performance with that of RhymeTagger.
+To evaluate the quality of our Rhyme Detector, we will compare its rhyme scheme predictions with \gls{gold_data}. We have two annotated datasets we can use -- Chicago Rhyming Poetry Corpus and  the annotated subset of our own dataset.
+\MP{Takže dev set, nebo test set?}
+We will also compare our performance with that of RhymeTagger.
 
 \subsection{Taggers}
 We will be comparing different variants of the taggers to also evaluate the influence some factors have on the performance. The variants are following:
 \begin{itemize}
-	\item \textbf{Rhyme Tagger} -- the original version of Rhyme Tagger, as it was trained by Plechac.
-	\item \textbf{Rhyme Tagger -- fine-tuned} -- Rhyme Tagger trained on one third of our data.
-	\item \textbf{Rhyme Detector} -- our detector, as described in Chapter \ref{chap-rhyme-analysis}, with default settings
-	\item \textbf{Rhyme Detector -- experiment} -- an experimental version of our detector, that was not trained with EM algorithm, but instead the matrix was created by counting the co-occurrences in the data and using their probabilities
-	\item \textbf{Rhyme Detector -- 1 iteration} -- our detector after 1\textsuperscript{st} iteration of training
-	\item \textbf{Rhyme Detector -- perfect} -- our detector using the setting of only finding perfect rhymes -- the co-occurrence matrix is an identity matrix
+	\item \textbf{RhymeTagger} -- the original version of RhymeTagger, as it was trained by Plecháč.
+	\item \textbf{RhymeTagger -- fine-tuned} -- RhymeTagger trained on one third of our data.
+	\MP{Proč jen třetina? Předpokládám, že trénování RhymeTaggeru bylo pomalé (pomalejší než Rhyme Detectoru?) či vyžadovalo víc paměti, než jste měla k dispozici.
+	Je-li to tak, napište to sem, třeba do poznámky pod čarou.
+	Metodologicky ideální by bylo ještě natrénovat i váš Detector jen na té třetině, aby to bylo porovnatelné.}
+	\MP{To jste trénovala zcela znovu, že? Tedy se nejedná o fine-tuning, ale training from scratch.
+	Tedy by šlo RhymeTagger přejmenovat na RhymeTagger(ChicagoRPC) a fine-tuned na RhymeTagger(Genius$\frac{1}{3}$), kde ChicagoRPC a Genius by se zadefinovalo jako názvy těch datasetů,
+	respektive jejich trénovacích částí.}
+	\item \textbf{Rhyme Detector} -- our detector, as described in Chapter \ref{chap-rhyme-analysis}, with \added{the} default settings
+	\MP{Kolik iterací EM to tedy bylo? A dosáhlo to opravdu konvergence?}
+	\item \textbf{Rhyme Detector -- experiment} -- an experimental version of our detector\deleted{,} that was not trained with \added{the} EM algorithm, but instead the matrix was created by counting the co-occurrences in the data and using their probabilities
+	\MP{Pokud si pamatuji, tak zde jste ale co-occurrences nepočítala z rhyme fellows,
+	ale ze všech adeptů (tedy rhyme candidates) v rámci daného window.
+	}
+	\item \textbf{Rhyme Detector -- 1 iteration} -- our detector after \added{the} 1\textsuperscript{st} iteration of \replaced{the EM algorithm}{training}
+	\item \textbf{Rhyme Detector -- perfect} -- our detector \replaced{configured to}{using the setting of} only finding perfect rhymes -- the co-occurrence matrix is an identity matrix
 \end{itemize}
 
 \subsection{Scores}
 To evaluate the performance, we need to find an appropriate measure that could compare the gold scheme with the prediction. This task may seem easy at first, but we need to be careful because the straight-forward approach of comparing the schemes letter by letter would not work. If the prediction made an error in the beginning it would alphabetically shift the rest of the scheme and it would no longer match with the gold data.
 
-\paragraph{Last Index Score (LI)} To solve this problem, we propose Last Index Score (LI score). The idea is to convert the scheme from letter representation to last rhyme's index representation. This means for each line, we will use the index of the last line that rhymed with it. If the line does not have a rhyme, we will use index -1. With such representation, we can compare these indexes directly, independently from scheme letters, and the proportion of matching indexes will give us a score between 0 and 1. For an illustrative example, see Table \ref{LI_score_example}.
+\paragraph{Last Index Score (LI)} To solve this problem, we propose Last Index Score (LI score). The idea is to convert the scheme from letter representation to last rhyme's index representation. This means for each line, we will use the index of the last line that rhymed with it. If the line does not have a rhyme, we will use index -1. With such representation, we can compare these \replaced{indices}{indexes} directly, independently from scheme letters, and the proportion of matching \replaced{indices}{indexes} will give us a score between 0 and 1. For an illustrative example, see Table \ref{LI_score_example}.
+\MP{Dovolil jsem si přidat do tabulky sloupec line index a trochu přeformátovat}
 
+% \begin{table}[h!]
+% 	\centering
+% 	\begin{tabular}{c c | c c}
+% 		\multicolumn{2}{c |}{Straight-forward} &
+% 		\multicolumn{2}{c }{Last Index}\\
+% 		\hline
+% 		Gold & Prediction & Gold & Prediction\\
+% 		\hline
+% 		\color{OliveGreen}a		&\color{OliveGreen}a		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
+% 		\color{Bittersweet}a		&\color{Bittersweet}b		&\color{Bittersweet}0		&\color{Bittersweet}-1	\\
+% 		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}-1		&\color{OliveGreen}-1\\
+% 		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}2		&\color{OliveGreen}2	\\
+% 		\color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
+% 		\color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}4		&\color{OliveGreen}4	\\
+% 		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}3		&\color{OliveGreen}3	\\
+% 		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}6		&\color{OliveGreen}6	\\
+% 		\midrule
+% 		\multicolumn{2}{c |}{SCORE: 0.125} &
+% 		\multicolumn{2}{c }{SCORE: 0.875}\\
+% 	\end{tabular}
+% 	\caption[Comparison of the straight-forward approach and LI score.]{Comparison of the straight-forward approach and LI score.}
+% 	\label{LI_score_example}
+% \end{table}
 \begin{table}[h!]
 	\centering
-	\begin{tabular}{c c | c c}
-		\multicolumn{2}{c |}{Straight-forward} &
-		\multicolumn{2}{c }{Last Index}\\
-		\hline
-		Gold & Prediction & Gold & Prediction\\
-		\hline
-		\color{OliveGreen}a		&\color{OliveGreen}a		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
-		\color{Bittersweet}a		&\color{Bittersweet}b		&\color{Bittersweet}0		&\color{Bittersweet}-1	\\
-		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}-1		&\color{OliveGreen}-1\\
-		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}2		&\color{OliveGreen}2	\\
-		\color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
-		\color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}4		&\color{OliveGreen}4	\\
-		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}3		&\color{OliveGreen}3	\\
-		\color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}6		&\color{OliveGreen}6	\\
+	\begin{tabular}{c cc cc}\toprule
+	 line &
+		\multicolumn{2}{c}{Straight-forward} &
+		\multicolumn{2}{c}{Last Index}\\\cmidrule(r){2-3}\cmidrule(l){4-5}
+      index    & Gold & Prediction & Gold & Prediction\\\midrule
+		0 & \color{OliveGreen}a		&\color{OliveGreen}a		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
+		1 & \color{Bittersweet}a		&\color{Bittersweet}b		&\color{Bittersweet}0		&\color{Bittersweet}-1	\\
+		2 & \color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}-1		&\color{OliveGreen}-1\\
+		3 & \color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}2		&\color{OliveGreen}2	\\
+		4 & \color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}-1		&\color{OliveGreen}-1	\\
+		5 & \color{Bittersweet}c		&\color{Bittersweet}d		&\color{OliveGreen}4		&\color{OliveGreen}4	\\
+		6 & \color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}3		&\color{OliveGreen}3	\\
+		7 & \color{Bittersweet}b		&\color{Bittersweet}c		&\color{OliveGreen}6		&\color{OliveGreen}6	\\
 		\midrule
-		\multicolumn{2}{c |}{SCORE: 0.125} &
-		\multicolumn{2}{c }{SCORE: 0.875}\\
+		& \multicolumn{2}{c}{SCORE: 0.125} &
+		\multicolumn{2}{c}{SCORE: 0.875}\\\bottomrule
 	\end{tabular}
 	\caption[Comparison of the straight-forward approach and LI score.]{Comparison of the straight-forward approach and LI score.}
 	\label{LI_score_example}
 \end{table}
 
-\paragraph{ARI score} If we look at the rhyme scheme, we can notice that scheme letters can equally be represented as line cluster. All lines that share a scheme letter form one cluster together, and every line that does not have a rhyme is a cluster of its own. Adjusted Random Index Score is a corrected-for-chance statistical measure of similarity between two data clusterings. We can therefore convert the schemes to use a unique letter for each non-rhyming line and use this score to evaluate the similarity of the schemes. 
+
+\paragraph{ARI score} If we look at the rhyme scheme, we can notice that scheme letters can equally be represented as line cluster. All lines that share a scheme letter form one cluster \replaced{(a rhyme group)}{together}, and every line that does not have a rhyme is a cluster of its own. Adjusted Rand\deleted[comment={je to pojmenované po panu Randovi}]{om} Index \added{(ARI)} Score\footnote{\url{https://en.wikipedia.org/wiki/Rand_index#Adjusted_Rand_index}} is a corrected-for-chance statistical measure of similarity between two data clusterings. We can therefore convert the schemes to use a unique letter for each non-rhyming line and use this score to evaluate the similarity of the schemes. 
 
 \paragraph{} For these two scores, we include both micro and macro average on the dataset. Macro average is the average of all song scores, while micro average is the average of song scores weighted by the number of lines in each song.
 
 
 \subsection{Comparison of the results}
-We calculated the aforementioned scores for all variants of tagger and summed up the results in Tables \ref{reddy_eval} and \ref{my_eval}. 
+We calculated the aforementioned scores for all variants of tagger\added{s} and summed up the results in Tables \ref{reddy_eval} and \ref{my_eval}. 
 
-They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_eval}). Surprisingly, our detector performed the best after 1\textsuperscript{st} iteration, but the difference is not very significant.
+They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_eval}). Surprisingly, our detector performed the best after 1\textsuperscript{st} iteration, but the difference is not \deleted{very} significant.
+\MP{Signifikance je přesně matematicky definovaná, měl by se uvést i test, kterým se počítala a alpha.
+Nelze psát very/more significant.
+Pokud nebyla exaktně měřena signifikance, lze o tom rozdílu psát třeba substantial nebo large.}
 
 \begin{table}[h!]
 	\centering
@@ -62,8 +101,8 @@ They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_ev
 	\cline{2-5}	
 	&macro &  micro  & macro  & micro \\
 	\midrule
-	Rhyme Tagger & \textbf{0.9463} & \textbf{0.9384} & \textbf{0.9635} & \textbf{0.9534} \\
-	Rhyme Tagger fine-tuned& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
+	RhymeTagger & \textbf{0.9463} & \textbf{0.9384} & \textbf{0.9635} & \textbf{0.9534} \\
+	RhymeTagger fine-tuned& 0.8819 & 0.8822 & 0.9282 & 0.9202 \\
 	\midrule
 	Rhyme Detector & 0.9040 & 0.8915 & 0.9413 & 0.9272 \\
 	Rhyme Detector -- experiment & 0.9025 & 0.8906 & 0.9406 & 0.9272 \\
@@ -74,7 +113,18 @@ They both performed better on the Chicago Poetry Corpus (see Table \ref{reddy_ev
 	\label{reddy_eval}
 \end{table}
 
-On our dataset (Table \ref{my_eval}), however, the best performing was the experiment variant. Surprisingly, the fine-tuned Rhyme Tagger performed worse than the original pre-trained version. The possible cause is the nature of our data -- song lyrics have a significantly smaller percentage of rhymes than poems, so the collocations approach might not work as well for our dataset. This might also be the reason why our detector, trained only on our data, does not perform as well as Rhyme Tagger.
+On our dataset (Table \ref{my_eval}), however, the best performing was the experiment variant.
+\MP{No, celkově nejlepší byl ve všech 4 evaluacích původní RhymeTagger.}
+Surprisingly, the fine-tuned RhymeTagger performed worse than the original pre-trained version. The possible cause is the nature of our data -- song lyrics have a significantly smaller percentage of rhymes than poems, so the collocations approach might not work as well for our dataset. This might also be the reason why our detector, trained only on our data, does not perform as well as RhymeTagger.
+\MP{Nabízí se otázka, proč jste tedy nenatrénovala Váš detector na ChicagoRPC.
+Můžete té otázce předejít, že to poznamenáte jako future work.
+Případně to můžete ignorovat a čekat, zda se Vás na to nezeptá oponent
+a nestihnete to ještě do obhajoby.}
+\MP{Těch otázek k diskutování se nabízí více.
+Např. nemáte-li v tom EM chybu, když to nikdy není nejlepší z Vašich verzí.
+A obecně: čím jsou způsobené ty rozdíly.
+Teď už na tyto otázky odpovědi nalézt nestihneme.
+Je ale možné, že se na něco takového zeptám ve svém posudku.}
 
 \begin{table}[h!]
 	\centering
@@ -84,15 +134,15 @@ On our dataset (Table \ref{my_eval}), however, the best performing was the exper
 		\cline{2-5}	
 		&macro &  micro  & macro  & micro \\
 		\midrule
-	Rhyme Tagger &  \textbf{0.6519} &\textbf{0.6627} &\textbf{0.8021} & \textbf{0.8139} \\
-	Rhyme Tagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.804 \\
+	RhymeTagger &  \textbf{0.6519} &\textbf{0.6627} &\textbf{0.8021} & \textbf{0.8139} \\
+	RhymeTagger fine-tuned& 0.6309 &0.6443 &0.7883 &0.804 \\
 	\midrule
 	Rhyme Detector & 0.6157 &0.6306 &0.7716 &0.7861 \\
 	Rhyme detector -- experiment &\textbf{0.6359} &\textbf{0.6571} &\textbf{0.7866} &0.802 \\
 	Rhyme detector -- 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
 	Rhyme Detector -- perfect &0.6224 &0.641 &0.7838 &\textbf{0.803}\\
 	\end{tabular}
-	\caption{Evaluation of taggers on my annotated dataset.}
+	\caption{Evaluation of taggers on \replaced[comment={nebo to nazvěte třeba Genius-Test}]{our}{my} annotated dataset.}
 	\label{my_eval}
 \end{table}
 
@@ -100,20 +150,36 @@ On our dataset (Table \ref{my_eval}), however, the best performing was the exper
 
 \section{Statistical analysis of the dataset}
 Although our detector was trained on our dataset, it was unsupervised so we can still use our detector to evaluate this dataset and give us new statistical information about a large number of song lyrics. We ran rhyme detection for nearly half a million songs and summed up the results in Tables \ref{rhyme_line_stats}, \ref{rhyme_types_perc}, \ref{rhyme_group_size}, \ref{song_rating_stats}, and \ref{rhyme_stats}. In the rest of this section, we will look at them more closely and discuss the outcome that might be surprising, or the opposite, confirms the specific  characteristics of a particular genre. Extreme values are emphasized in the tables. Keep in mind, that the lyrics and their classification to genres is crowd-sourced and might be biased.
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l | r r r r r} 	
-		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
-		\midrule
-		 Total songs& 293,679 & 99,185& 34,372& 5,125& 3,816 \\
-		Total lines& 9,104,273 &5,661,603& 1,087,245& 225,344& 121,207 \\ 
-		Total rhyming lines& 4,536,554& 2,849,905& 523,879& 117,862& 61,142 \\ 
-		 Rhyming lines (\%) & 49.8\%& 50.3\%& 48.2\%& 52.3\%& 50.4\%  \\
-		 Average lines per song & 31.001 & \textbf{57.081} & 31.632 & 43.970 & 31.763  \\
-
-	\end{tabular}
-	\caption{General statistics about dataset and rhymes, per genre.} 
-	\label{rhyme_line_stats}
+% \begin{table}[h!]
+% 	\centering
+% 	\begin{tabular}{l | r r r r r} 	
+% 		Genre & 			Pop & 		Rap & 		Rock & 		R\&B & 		Country\\ 
+% 		\midrule
+% 		 Total songs& 293,679 & 99,185& 34,372& 5,125& 3,816 \\
+% 		Total lines& 9,104,273 &5,661,603& 1,087,245& 225,344& 121,207 \\ 
+% 		Total rhyming lines& 4,536,554& 2,849,905& 523,879& 117,862& 61,142 \\ 
+% 		 Rhyming lines (\%) & 49.8\%& 50.3\%& 48.2\%& 52.3\%& 50.4\%  \\
+% 		 Average lines per song & 31.001 & \textbf{57.081} & 31.632 & 43.970 & 31.763  \\
+% 
+% 	\end{tabular}
+% 	\caption{General statistics about dataset and rhymes, per genre.} 
+% 	\label{rhyme_line_stats}
+% \end{table}
+\MP{Opět jsem si dovolil předělat tabulku, tentokrát včetně transpozice,
+aby ve sloupcích pod sebou byla čísla stejného typu.}
+\begin{table}[h!]\centering
+\begin{tabular}{l  r r r r r}\toprule
+       &         & \multicolumn{4}{c}{Lines} \\\cmidrule(l){3-6}
+\pulrad{Genre}& \pulrad{Songs}
+                 & total     & avg per song  & rhyming   & (\%) \\\midrule
+Pop    & 293,679 & 9,104,273 & 31.001        & 4,536,554 & 49.8 \\
+Rap    &  99,185 & 5,661,603 &\textbf{57.081}& 2,849,905 & 50.3 \\
+Rock   &  34,372 & 1,087,245 & 31.632        &   523,879 & 48.2 \\
+R\&B   &   5,125 &   225,344 & 43.970        &   117,862 & 52.3 \\
+Country&   3,816 &   121,207 & 31.763        &    61,142 & 50.4 \\\bottomrule
+\end{tabular}
+\caption{General statistics about dataset and rhymes, per genre.} 
+\label{rhyme_line_stats}
 \end{table}
 
 In Table \ref{rhyme_line_stats}, we sum up the basic information for all genres including the portion of lines that rhyme and we can already see some interesting results. Surprisingly, the highest portion of rhyming lines is in the R\&B genre. We do not see any characteristic of this genre that could cause this. However, it is not a big difference and maybe having more examples from this genre would make it less significant. 
