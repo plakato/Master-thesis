@@ -156,7 +156,9 @@ When we look at rhyme types, they do not go further then the first stressed syll
 Finding perfect rhymes is easy -- phonemes after the last stress need to agree exactly. Imperfect rhymes can be found similarly, using the trick of moving the stress described in Section \ref{extracting_relevant_phonemes}.
 To set ourselves apart from simple rhyme detectors, we need to detect more than just perfect and imperfect rhymes -- we need to find forced rhymes as well. To determine forced rhymes we have to assess the match in sound of individual phonemes.
 
-For this, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this co-occurrence matrix to predict rhymes, and then iteratively recalculated the matrix using the EM algorithm.
+We will refer to an occurrence of a given component after the last stress simply as \textit{occurence}. Similarly, \textit{co-occurrence} of a component will refer to the occurrence of the same component on the same position in the rhyme fellow (as detected by the algorithm described in Section~\ref{analysis:training}).
+
+For assessing the match in sound, we took inspiration from \cite{plechavc2018collocation}. He used the fact that rhymes tend to reoccur and, having enough data, commonly co-occurring pairs are most probably rhymes even without the knowledge of their pronunciation. He calculated the probabilities of phoneme co-occurrences in line-end words from their frequencies in data, used this co-occurrence matrix to predict rhymes, and then iteratively recalculated the matrix using the EM algorithm.
 
 However, our system of alignment is different so our matrix components will look differently. The differences are shown in Table \ref{alignment}. The first difference is that Plecháč only uses vowels and consonant clusters without acknowledging the syllable separation. We do separate the consonant cluster into two on the border of syllables (e.g. ``rp`` in carpenter is in one cluster for Plecháč, but in two separate clusters for us). The second difference is that Plecháč recognized the position of the component and paired only the components on the same position (i.e. both ``\textipa{@}'' in carpenter are in separate groups because they occur on different positions in the word). We do not believe that position has an effect on phoneme similarity and therefore we add it together for all positions, e.g. if once two phonemes co-occur on 3\textsuperscript{rd} position and once on the 5\textsuperscript{th} we will say that this pair of phonemes has 2 co-occurrences.
 
@@ -172,7 +174,7 @@ However, our system of alignment is different so our matrix components will look
 
 Another difference is that Plecháč only looks at the last word and its 1 or 2 last syllables while we look at everything after the last stress up to 4 syllables.
 
-Knowing that perfect match in sound always means perfect rhyme (which should intuitivelly get the highest possible rhyme rating of 1.0), we froze the values on matrix diagonal to reflect it. In \cite{plechavc2018collocation}, the diagonal was being recalculated as the rest of the matrix, and although it seemed to converge to high numbers we felt it did not reflect the superiority of the perfect match.
+Knowing that perfect match in sound always means perfect rhyme (which should intuitively get the highest possible rhyme rating of 1.0), we froze the values on matrix diagonal to reflect it. In \cite{plechavc2018collocation}, the diagonal was being recalculated as the rest of the matrix, and although it seemed to converge to high numbers we felt it did not reflect the superiority of the perfect match.
 
 To calculate the probabilities in the matrix, we used the formula from \cite{plechavc2018collocation} adding the adjustments described above. The formula for a the value in the matrix on coordinates i, j is as follows: 
 
@@ -183,17 +185,7 @@ To calculate the probabilities in the matrix, we used the formula from \cite{ple
 	     & \mbox{otherwise} \\
 	    \end{cases} \]
 
-where\textit{ f(i,j)} represents the frequency of the co-occurrence of the pair of components \textit{i} and \textit{j}, and similarly \textit{f(i)} represents the total number of occurrences of the component \textit{i}.
-\MP{Ale Plecháč definuje f(i,j) jako \textbf{relative} frequency, tedy pravděpodobnost souvýskytu, nikoli absolutní počet souvýskytů.
-Obdobně f(i) = count(i) / total\_count. Kde $\sum_i f(i) = total\_count$.
-Je-li to jen nepřesnost v textu, tak jen doplňte k frequency přívlastek relative a nahraďte ten total number of occurrences.
-Je-li v kódu taky absolutní počet, tak nevím -- opravit to už zjevně není čas.
-Omlouvám se, že jsem si toho všiml až teď.
-}
-\MP{Ještě by chtělo lépe definovat, co je occurrence -- tedy výskyt dané komponenty na konci řádku po posledním přízvuku.
-Započítáváte do toho i výskyty, kde odpovídající komponenta v rhyming fellow je identická?}
-\MP{I ty co-occurerences by bylo dobré lépe definovat -- je to souvýskyt na odpovídají pozici v rhyming fellow, přičemž je k tomu tedy potřeba mít nějak určené rýmy,
-abychom věděli, který z předchozích řádků je ten fellow, což máte vysvětlené v následující sekci.}
+where\textit{ f(i,j)} represents the relative frequency of the co-occurrence of the pair of components \textit{i} and \textit{j}, and similarly \textit{f(i)} represents the relative frequency of the component \textit{i}, i.e. $f(i) = count(i) / total\_count$. In both relative frequencies, only the occurrences from the co-occurrences of two different components we used to reflect the frozen diagonal.
 
 Technically, the matrix is only triangular because the order of \textit{i} and \textit{j} does not matter.
 

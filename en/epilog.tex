@@ -1,27 +1,26 @@
 \chapter*{Conclusion}\label{conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
-We started this thesis with a thorough research about rhyme\deleted[comment={čárku mezi dva členy koordinace nedává ani Oxford comma style}]{,} and tools used for its detection, visualization, and generation. We explored our dataset and cleared it from impurities to improve our chances for a better analysis. After overcoming many obstacles of creating a rhyme detector, we evaluated it and performed \added{an} analysis over our entire dataset. At the end, we visualized the results and explored the generation using GPT-2.
+We started this thesis with a thorough research about rhyme and tools used for its detection, visualization, and generation. We explored our dataset and cleared it from impurities to improve our chances for a better analysis. After overcoming many obstacles of creating a rhyme detector, we evaluated it and performed an analysis over our entire dataset. At the end, we visualized the results and explored the generation using GPT-2.
 
-Designing the detector was not easy, we rebuilt it several times as unpredictable exceptions came our way. The biggest difficulty was working with crowd-sourced data -- although we did what we could in the pre-processing phase, still in a dataset this large, there \deleted{was} were words we had to deal with almost individually.
+Designing the detector was not easy, we rebuilt it several times as unpredictable exceptions came our way. The biggest difficulty was working with crowd-sourced data -- although we did what we could in the pre-processing phase, still in a dataset this large, there were words we had to deal with almost individually.
 
-Another problem was the ambiguity of the resulting scheme. Often, there is no \replaced{single}{one} correct scheme to be assigned. It is possible that different people would assign different schemes to the same song\deleted{,} because someone would group all rhyming lines together under one letter, but another \added{person} may create separate groups by stanzas or other rule\added{s}. Clearly, for evaluation we only have \replaced[comment={nebo jste chtěl napsat něco jiného?}]{the}{when} gold scheme that was assigned by the annotator. We needed to compensate for this by regrouping rhymes so they are more reminiscent of common human annotation.
-\MP{Není jasné, co přesně myslíte tou poslední větou. Pokud sekci 3.6.3, tak se na ni zde odkažte.}
+Another problem was the ambiguity of the resulting scheme. Often, there is no single correct scheme to be assigned. It is possible that different people would assign different schemes to the same song because someone would group all rhyming lines together under one letter, but another person may create separate groups by stanzas or other rules. Clearly, for evaluation we only have the gold scheme that was assigned by the annotator. We needed to compensate for this by adjusting the rhyme scheme in Section \ref{sec:scheme-adjustment} so that it is more reminiscent of common human annotation.
 
-Although, in the comparison test, our detector did not outperform Rhyme Tagger, it was still a powerful detector and we believe it was a contribution to this research field. We tried new methods and approaches, and we were able to calculate statistics on almost half a million songs, \replaced{which}{that} confirmed what we suspected about genre differences, but also gave evidence for new interesting \replaced{findings}{properties}. Our automated evaluation could, for some use-cases, replace human evaluators.
+Although, in the comparison test, our detector did not outperform Rhyme Tagger, it was still a powerful detector and we believe it was a contribution to this research field. We tried new methods and approaches, and we were able to calculate statistics on almost half a million songs, which confirmed what we suspected about genre differences, but also gave evidence for new interesting findings. Our automated evaluation could, for some use-cases, replace human evaluators.
 
-On top of that, we created \added{an} online web visualization that made this tool accessible for public. We implemented an innovative representation of rhymes using \added{a} self-similarity matrix.
+On top of that, we created an online web visualization that made this tool accessible for public. We implemented an innovative representation of rhymes using a self-similarity matrix.
 
 Finally, we generated lyrics using GPT-2 and experimented with different primers, trying to achieve the best result. The generator was capable of replicating the form of the lyrics and even generating meaningful content. 
 
 \section*{Future work}
-In future, it would be worth to consider a more advanced data pre-processing or a cleaner dataset. Although cleaning such a big dataset has to be done automatically, every mistake can contribute to worse performance of both the detector and the generator.
-\MP{Já bych spíš navrhoval robustnější detektor, který si poradí s překlepy a rýmy uprostřed řádů (tedy bude umět rozdělit řádky na verše), ale to je věc názoru.
-Takový detektor by nakonec měl být schopen vydat i vyčištěnou verzi vstupu.}
+In future, it would be worth to consider a more advanced data pre-processing or a cleaner dataset. Although cleaning such a big dataset has to be done automatically, every mistake can contribute to worse performance of both the detector and the generator. 
 
-For more evaluation statistics, it could be interesting to design a metric that would evaluate structure of the text \added{(e.g. metre, rhythm, syllable count, and higher-level structure)}. Not only would this create a measure that would quantify how GPT-2 generated lyrics resemble human-written ones, but it would probably yield more interesting statistical differences between genres.
+Alternatively, this pre-processing could be included in a more robust detector, that would take care of typing errors and automatically separate text into verses by rhymes.
+
+For more evaluation statistics, it could be interesting to design a metric that would evaluate the structure of the text (e.g. metre, rhythm, syllable count, and higher-level structure). Not only would this create a measure that would quantify how GPT-2 generated lyrics resemble human-written ones, but it would probably yield more interesting statistical differences between genres.
 
 Another metric could be designed to evaluate repetitiveness in lyrics. Some repetition is common in lyrics but there is no implicit way to quantify how much is normal. This could also be used, in combination with other metrics, to automatically recognize machine-generated lyrics.
 
-An interesting experiment would be to combine the detector and the generator to get better generated results. After generation of \deleted{a }new lyrics, it could be evaluated and regenerated until the score reached \added{a} desired threshold.
+An interesting experiment would be to combine the detector and the generator to get better generated results. After generation of new lyrics, it could be evaluated and regenerated until the score reached a desired threshold.
 
 Having access to GPT-3, we believe more impressing results in generation could be achieved.
