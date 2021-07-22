@@ -80,7 +80,7 @@ To evaluate the performance, we need to find an appropriate measure that could c
 \end{table}
 
 
-\paragraph{ARI score} If we look at the rhyme scheme, we can notice that scheme letters can equally be represented as line cluster. All lines that share a scheme letter form one cluster \replaced{(a rhyme group)}{together}, and every line that does not have a rhyme is a cluster of its own. Adjusted Rand\deleted[comment={je to pojmenované po panu Randovi}]{om} Index \added{(ARI)} Score\footnote{\url{https://en.wikipedia.org/wiki/Rand_index#Adjusted_Rand_index}} is a corrected-for-chance statistical measure of similarity between two data clusterings. We can therefore convert the schemes to use a unique letter for each non-rhyming line and use this score to evaluate the similarity of the schemes. 
+\paragraph{ARI score} If we look at the rhyme scheme, we can notice that scheme letters can equally be represented as line cluster. All lines that share a scheme letter form one cluster (a rhyme group), and every line that does not have a rhyme is a cluster of its own. Adjusted Rand Index (ARI) Score\footnote{\url{https://en.wikipedia.org/wiki/Rand\_index\#Adjusted\_Rand\_index}} is a corrected-for-chance statistical measure of similarity between two data clusterings. We can therefore convert the schemes to use a unique letter for each non-rhyming line and use this score to evaluate the similarity of the schemes. 
 
 \paragraph{} For these two scores, we include both micro and macro average on the dataset. Macro average is the average of all song scores, while micro average is the average of song scores weighted by the number of lines in each song.
 
@@ -142,7 +142,7 @@ Je ale možné, že se na něco takového zeptám ve svém posudku.}
 	Rhyme detector -- 1 iteration& 0.6096 &0.6256 &0.7682 &0.7832 \\
 	Rhyme Detector -- perfect &0.6224 &0.641 &0.7838 &\textbf{0.803}\\
 	\end{tabular}
-	\caption{Evaluation of taggers on \replaced[comment={nebo to nazvěte třeba Genius-Test}]{our}{my} annotated dataset.}
+	\caption{Evaluation of taggers on our annotated dataset.}
 	\label{my_eval}
 \end{table}
 

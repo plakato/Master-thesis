@@ -102,14 +102,11 @@ The last two terms may seem as more of a tool for poets than songwriters. Surpri
 
 Other rhyme types exist e.g. eye rhyme where ``the spellings of the rhyming elements match, but the sounds do not, e.g. love /\textipa{\underline{l@v}}/ -- prove /\textipa{\underline{pru:v}}/'' (\cite{oxforddict2008literary}). We do not consider them relevant for song lyrics or the purpose of this thesis.
 
-\MP{Někde by mohlo být také vysvětleno, co to je rhyme scheme.
-Ten termín používáte ještě před Table 3.2 -- jinak by to šlo vysvětlit až tam.\\
-Aha, teď vidím, že to máte vysvětleno v Section~\ref{sec:scheme}, takže by stačilo na to odkázat u prvního výskytu "rhyme scheme" (což je v předposlední větě následujícího odstavce).}
 
 \section{Rhyme detection tools}\label{rhyme_detection_tools}
 We have defined what to look for, and now we will focus on how to do it. According to \cite{plechac2017presentation}, there are 4 methods for rhyme detection. We will describe each one and evaluate existing tools. For our use case, it is important that we can use the tool for automatic evaluation -- there must be a way to run it with code whether it would be a web service,  an executable script, or as a library/module.
 
-Another requirement is to be able to run on a block of text and generate rhyme scheme as a result. Lastly, it has to be free and preferably open-source.
+Another requirement is to be able to run on a block of text and generate rhyme scheme as a result (for rhyme scheme definition see Section \label{sec:scheme}). Lastly, it has to be free and preferably open-source.
 
 Notably, English orthography is highly nonphonemic, thus a pronunciation dictionary is needed for converting graphemes to phonemes. Additionally word stress in English is irregular, so the dictionary must contain markers of stress to detect the rhyme types as we defined them.
 
@@ -223,7 +220,7 @@ Quite complex and comprehensive visualization tool is Poem Viewer \citep{Abdul20
 \end{figure}
 
 \begin{figure}[h]\centering
-	\includegraphics[scale=0.4]{../img/snapshotPV_options.pdf}
+	\includegraphics[scale=0.4]{../img/PV_options-pdfxa.pdf}
 	\caption{Available options and their default mappings in Poem Viewer.}\label{screenshotPV-options}
 \end{figure}
 
