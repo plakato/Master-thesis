@@ -194,6 +194,13 @@ tedy většina rýmů je detekována, tak by tím šlo námitku o chybách detek
 Úplně nejlepší by ale bylo změřit procento rhyming lines ve zlatých datech ve Vašich písních
 a v Chicago básních a ověřit, zda i tam platí Vaše hypotéza, že básně se rýmují víc než písně.
 }
+\MP{Další možný důvod nižšího množství detekovaných rýmů v písních může být ten,
+že Vaše data nejsou ``správně'' formátována, tedy nemají vždy rým na konci řádky, jak předpokládáte.
+Třeba ve Figure 5.2 v písni Love Game se zřejmě rýmují řádky 4 a 5 s kiss you a miss you,
+ale za tím druhým je ještě ``, babe'', takže ten rým Vašemu detektoru unikne.
+Tohle byste zde (v textu či poznámce pod čarou) případně taky mohla zmínit.
+Tipuji, že docela dost z těch řádků bez detekovaných rýmů může být způsobeno právě tímto.
+}
 Predictably, rap has a significantly higher average number of lines per song\added{,} which confirms the fact that this genre is more talkative. What may be unexpected is that it is nearly two times more than for the other genres -- only R\&B slightly stands out but that is not a surprise because it has been influenced by rap.
 \MP{Moc se v tom nevyznám, ale dle Wikipedie "Rap was used to describe talking on records as early as 1971" a "Rhythm and blues ... is a genre of popular music that originated in African-American communities in the 1940s."
 Tak bych řekl, že spíš R\&B ovlivnilo rap, pokud už se nebere rap jako součást hip hopu a ten jako součást moderního R\&B.
@@ -280,6 +287,14 @@ Každopádně ale ve skutečnosti by mohlo být těch 3-slabičných více,
  jen je jako 3 slabičné nepočítáte.
 Nebo snad ty kategorie ``3-syllable (8-component)'' počítáte podle původních přízvuků ještě před případným přesunem přízvuku?
 Pak ale není jasné, co děláte s rýmy, kde má každý fellow jiný počet slabik po přízvuku.
+}
+\MP{Zkusil jsem do Vašeho detektoru zadat ``něco kiss you -- něco miss you'' a zanalyzovalo to jako masculine, jak jsem čekal.
+Stejně tak Váš příklad z 3.4.2 ``spoke to -- yoke, too'' se zanalyzuje jako masculine.
+Dle Vaší definice je to tak správně -- ve slovníku je přízvuk na začátku každého slova
+a neřešíte, že některá slova (obzvlášť krátká a neplnovýznamová) lze vyslovit i bez přízvuku,
+respektive dohromady s předchozím slovem.
+To může být další důvod, proč detektor nachází tak málo víceslabičných rýmů, byť v datech jsou.
+Opět: opravit to nestíháme, šlo by to ale zmínit někde v textu -- a dát najevo, že o tom víte.
 }
 The decreased match in sound and increased moving of stress in rap confirm the unique properties of rap we have seen previously.
 
